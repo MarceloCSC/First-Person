@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a76acc7255f90c47aefa40cb7524474, type: 3}
+  m_Name: Cheese Recipe
+  m_EditorClassIdentifier: 
+  itemToCraft:
+    item: {fileID: 11400000, guid: afcaabe1b8212f94bb4bce01920d2bca, type: 2}
+    currentAmount: 1
+  ingredients:
+  - item: {fileID: 11400000, guid: c2aa240e181d31145908c9f584020e54, type: 2}
+    currentAmount: 2
+  - item: {fileID: 11400000, guid: 041dad495eb602448956af7a8115e3c0, type: 2}
+    currentAmount: 1
+  - item: {fileID: 11400000, guid: 041dad495eb602448956af7a8115e3c0, type: 2}
+    currentAmount: 1
+  - item: {fileID: 0}
+    currentAmount: 0
+  isAvailable: 1
