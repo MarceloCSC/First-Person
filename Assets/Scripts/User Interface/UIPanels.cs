@@ -59,16 +59,16 @@ namespace FirstPerson.UI
             if (!PlayerExamine.Panel.activeSelf && !PlayerMovement.IsJumping)
             {
                 panel.SetActive(!panel.activeSelf);
-                Player.LockCursor(!IsOnScreen);
-                Player.LockIntoPlace(IsOnScreen);
+                PlayerController.Player.LockCursor(!IsOnScreen);
+                PlayerController.Player.LockIntoPlace(IsOnScreen);
             }
         }
 
         public static void ToggleExamineUI(bool isActive)
         {
             CloseOpenPanels();
-            Player.LockCursor(!isActive);
-            Player.LockIntoPlace(isActive);
+            PlayerController.Player.LockCursor(!isActive);
+            PlayerController.Player.LockIntoPlace(isActive);
             PlayerExamine.Panel.SetActive(isActive);
         }
 
