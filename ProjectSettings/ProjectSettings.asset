@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: An01malia
-  productName: First Person
+  productName: First Person (Prototype)
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -155,7 +155,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Standalone: com.An01malia.First-Person
+    Standalone: com.An01malia.First-Person--Prototype-
   buildNumber:
     Standalone: 0
     iPhone: 0
@@ -782,11 +782,11 @@ PlayerSettings:
     m_VersionName: 
   apiCompatibilityLevel: 6
   activeInputHandler: 1
-  cloudProjectId: fbdcacf1-d7d5-462a-bc97-d3a90d83f577
+  cloudProjectId: 591da8b6-9d5c-46f3-9c5f-9c5865b67770
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: First Person (Prototype)
+  organizationId: marcelocsc
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 
