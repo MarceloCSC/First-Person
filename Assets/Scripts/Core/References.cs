@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using FirstPerson.Examine;
+using An01malia.FirstPerson.Inspection;
 
-namespace FirstPerson
+namespace An01malia.FirstPerson
 {
 
     public class References : MonoBehaviour
@@ -49,9 +49,9 @@ namespace FirstPerson
             Tooltip = tooltip;
             IconToDrag = iconToDrag;
             canvas.worldCamera = renderCamera;
-            ExamineItem.ExamineCamera = renderCamera;
-            ExamineItem.ExamineSpot = itemPlacement;
-            PlayerExamine.LightSource = lightSource;
+            InspectItem.ExamineCamera = renderCamera;
+            InspectItem.ExamineSpot = itemPlacement;
+            PlayerItemInspection.LightSource = lightSource;
         }
 
     }

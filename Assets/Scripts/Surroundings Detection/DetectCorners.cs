@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace FirstPerson.Surroundings
+namespace An01malia.FirstPerson.Surroundings
 {
 
     public class DetectCorners : MonoBehaviour

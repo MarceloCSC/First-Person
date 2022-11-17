@@ -12,18 +12,18 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
   - Player
-  - Examine
-  - Interactable
   - Enemy
+  - 
+  - 
+  - Interactive
+  - Inspectable
+  - Pickable
+  - Pushable
+  - Climbable
+  - 
+  - 
   - Obstacle
-  - 
-  - 
-  - 
-  - 
-  - 
   - 
   - 
   - 

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-namespace FirstPerson
+namespace An01malia.FirstPerson
 {
 
     public static class CustomExtensions

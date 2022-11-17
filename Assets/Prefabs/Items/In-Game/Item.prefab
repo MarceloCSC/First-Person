@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3789870229156560978}
   - component: {fileID: 3789870229156560977}
   - component: {fileID: 3789870229156560976}
-  - component: {fileID: 3789870229156560975}
+  - component: {fileID: 5485077396051729660}
   m_Layer: 10
   m_Name: Item
   m_TagString: Untagged
@@ -29,6 +29,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -59,7 +60,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3789870229156560975
+--- !u!114 &5485077396051729660
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -71,7 +72,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebb5966a6ac94b14186aca58034d3811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameToDisplay: item
-  item:
+  _item:
     item: {fileID: 0}
-    currentAmount: 1
+    currentAmount: 0
