@@ -11,8 +11,8 @@ namespace An01malia.FirstPerson.PlayerModule.States
     {
         #region Fields
 
-        [SerializeField] private float _climbSpeed = 5.0f;
-        [SerializeField] private float _approachSpeed = 10.0f;
+        [SerializeField] private float _speed = 5.0f;
+        [SerializeField] private float _speedToApproach = 10.0f;
         [SerializeField] private float _rayLength = 1.0f;
         [SerializeField] private LayerMask _layerToClimb;
 
@@ -96,7 +96,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
             Vector3 movementVector = HandleInput();
             movementVector = RestrainMovement(movementVector);
 
-            Controller.Move(_climbSpeed * Time.fixedDeltaTime * movementVector);
+            Controller.Move(_speed * Time.fixedDeltaTime * movementVector);
         }
 
         private Vector3 HandleInput()
@@ -122,7 +122,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
             return movementVector;
         }
 
-        private float GetInitialSpeed(float speed) => speed != 0.0f ? speed : _approachSpeed;
+        private float GetInitialSpeed(float speed) => speed != 0.0f ? speed : _speedToApproach;
 
         private bool HasNoSurfaceToClimb() => !Physics.Raycast(Player.Transform.position + (Vector3.down * Controller.height / 2),
                                                                _data.SurfaceDirection,

@@ -10,7 +10,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
     {
         #region Fields
 
-        [SerializeField] private float _walkSpeed = 5.0f;
+        [SerializeField] private float _speed = 5.0f;
         [SerializeField] private float _gravityPull = 10.0f;
         [SerializeField] private float _crouchingHeight = 1.0f;
         [SerializeField] private float _distanceToCeiling = 1.0f;
@@ -27,7 +27,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
             StateData = new CrouchStateData(Controller.height, Player.SightPosition, dto)
             {
-                Speed = _walkSpeed,
+                Speed = _speed,
             };
 
             _data = StateData as CrouchStateData;
@@ -114,7 +114,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
             Vector3 movementVector = HandleInput();
 
-            movementVector = movementVector * _walkSpeed + _gravityPull * Vector3.down;
+            movementVector = movementVector * _speed + _gravityPull * Vector3.down;
 
             Controller.Move(movementVector * Time.fixedDeltaTime);
         }

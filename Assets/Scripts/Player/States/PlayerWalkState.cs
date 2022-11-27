@@ -9,7 +9,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
     {
         #region Fields
 
-        [SerializeField] private float _walkSpeed = 10.0f;
+        [SerializeField] private float _speed = 10.0f;
         [SerializeField] private float _acceleration = 0.0f;
         [SerializeField] private float _gravityPull = 10.0f;
 
@@ -22,7 +22,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
             StateData = new PlayerStateData(dto)
             {
                 IsRunPressed = false,
-                Speed = _walkSpeed
+                Speed = _speed
             };
         }
 

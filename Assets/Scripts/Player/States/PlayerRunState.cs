@@ -9,7 +9,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
     {
         #region Fields
 
-        [SerializeField] private float _runSpeed = 20.0f;
+        [SerializeField] private float _speed = 20.0f;
         [SerializeField] private float _acceleration = 2.0f;
         [SerializeField] private float _gravityPull = 10.0f;
 
@@ -111,7 +111,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         private void SetSpeed()
         {
-            StateData.Speed = Mathf.Lerp(StateData.Speed, _runSpeed, Time.fixedDeltaTime * _acceleration);
+            StateData.Speed = Mathf.Lerp(StateData.Speed, _speed, Time.fixedDeltaTime * _acceleration);
         }
 
         private Vector3 HandleInput()

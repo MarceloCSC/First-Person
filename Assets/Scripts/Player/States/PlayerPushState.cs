@@ -11,9 +11,9 @@ namespace An01malia.FirstPerson.PlayerModule.States
     {
         #region Fields
 
-        [SerializeField] private float _approachSpeed = 10.0f;
+        [SerializeField] private float _speedToApproach = 10.0f;
         [SerializeField] private float _gravityPull = 10.0f;
-        [SerializeField] private float _distanceToBox = 0.2f;
+        [SerializeField] private float _distanceToPlayer = 0.2f;
         [SerializeField] private float _distanceToCollision = 0.1f;
         [SerializeField] private LayerMask _layerToPush;
         [SerializeField] private LayerMask _layersToCollide;
@@ -139,7 +139,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
             return Mathf.Lerp(_data.CurrentSpeed, _data.Speed, Time.fixedDeltaTime * _data.Acceleration);
         }
 
-        private float GetInitialSpeed(float speed) => speed != 0.0f ? speed : _approachSpeed;
+        private float GetInitialSpeed(float speed) => speed != 0.0f ? speed : _speedToApproach;
 
         private bool IsPushingForward()
         {
@@ -210,7 +210,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
         private Vector3 GetTargetPosition(RaycastHit hit)
         {
             Vector3 targetPosition = hit.collider.ClosestPoint(Player.Transform.position) +
-                                     hit.normal * (Player.Transform.localScale.z / 2 + _distanceToBox);
+                                     hit.normal * (Player.Transform.localScale.z / 2 + _distanceToPlayer);
 
             targetPosition.y = Player.Transform.position.y;
 

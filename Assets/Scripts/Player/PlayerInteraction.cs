@@ -17,19 +17,28 @@ namespace An01malia.FirstPerson.PlayerModule
 
         [SerializeField] private float _distanceToExamine = 10.0f;
         [SerializeField] private float _distanceToInteract = 3.0f;
-        [SerializeField] private Vector3 _lowerBounds = new(0.0f, 0.9f, 0.0f);
         [SerializeField] private LayerMask _visibleLayers;
         [SerializeField] private LayerMask _examinableLayers;
         [SerializeField] private LayerMask _reachableLayers;
 
         private Transform _examinedItem;
         private Transform _interactiveItem;
+        private PlayerSurroundings _surroundings;
 
         #endregion
 
         #region Properties
 
         public Transform InteractiveItem => _interactiveItem;
+
+        #endregion
+
+        #region Unity Methods
+
+        private void Awake()
+        {
+            SetReferences();
+        }
 
         #endregion
 
@@ -40,6 +49,10 @@ namespace An01malia.FirstPerson.PlayerModule
             if (CanExamine(out RaycastHit hit))
             {
                 SetExamined(hit);
+
+                bool canInteract = TrySetInteractive(hit);
+
+                OnItemExamined(true, canInteract);
             }
             else if (_examinedItem)
             {
@@ -47,7 +60,7 @@ namespace An01malia.FirstPerson.PlayerModule
             }
         }
 
-        public bool TrySetInteractive(out IInteractive interactive)
+        public bool TryGetInteractive(out IInteractive interactive)
         {
             interactive = null;
 
@@ -68,22 +81,30 @@ namespace An01malia.FirstPerson.PlayerModule
             {
                 _examinedItem = hit.transform;
             }
+        }
 
-            bool canInteract = TrySetInteractive(hit);
-
-            OnItemExamined(true, canInteract);
+        private void SetInteractive(RaycastHit hit)
+        {
+            if (hit.transform != _interactiveItem)
+            {
+                _interactiveItem = _examinedItem;
+            }
         }
 
         private bool TrySetInteractive(RaycastHit hit)
         {
-            bool canInteract = false;
-
             if (CanInteract(hit))
             {
-                _interactiveItem = _examinedItem;
+                SetInteractive(hit);
+
+                return true;
+            }
+            else if (_interactiveItem)
+            {
+                _interactiveItem = null;
             }
 
-            return canInteract;
+            return false;
         }
 
         private void ClearExamined()
@@ -100,33 +121,34 @@ namespace An01malia.FirstPerson.PlayerModule
                                    Player.CameraTransform.forward,
                                    out hit,
                                    _distanceToExamine,
-                                   _visibleLayers) && hit.transform && IsExaminable(ref hit);
+                                   _visibleLayers) && hit.transform && IsExaminableLayer(ref hit);
         }
 
         private bool CanInteract(RaycastHit hit)
         {
-            if (IsReachable(ref hit))
-            {
-                return !Physics.Raycast(hit.transform.position,
-                                        hit.normal,
-                                        1.0f,
-                                        _visibleLayers) &&
-
-                        Physics.Raycast(transform.position - _lowerBounds,
-                                        transform.forward,
-                                        out RaycastHit raycastHit,
-                                        _distanceToInteract,
-                                        _visibleLayers) &&
-
-                        raycastHit.transform == hit.transform;
-            }
+            if (IsReachableLayer(ref hit)) return CanReach(hit);
 
             return Vector3.Distance(transform.position, hit.point) <= _distanceToInteract;
         }
 
-        private bool IsExaminable(ref RaycastHit hit) => _examinableLayers == (_examinableLayers | (1 << hit.transform.gameObject.layer));
+        private bool IsExaminableLayer(ref RaycastHit hit) => _examinableLayers == (_examinableLayers | (1 << hit.transform.gameObject.layer));
 
-        private bool IsReachable(ref RaycastHit hit) => _reachableLayers == (_reachableLayers | (1 << hit.transform.gameObject.layer));
+        private bool IsReachableLayer(ref RaycastHit hit) => _reachableLayers == (_reachableLayers | (1 << hit.transform.gameObject.layer));
+
+        private bool CanReach(RaycastHit hit)
+        {
+            return !Physics.Raycast(hit.transform.position, hit.normal, 1.0f, _visibleLayers) &&
+                        Physics.Raycast(_surroundings.LowerBounds,
+                                        transform.forward,
+                                        out RaycastHit raycastHit,
+                                        _distanceToInteract,
+                                        _visibleLayers) && raycastHit.transform == hit.transform;
+        }
+
+        private void SetReferences()
+        {
+            _surroundings = GetComponent<PlayerSurroundings>();
+        }
 
         #endregion
     }

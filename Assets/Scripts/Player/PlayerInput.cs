@@ -24,12 +24,6 @@ namespace An01malia.FirstPerson.PlayerModule
     {
         #region Fields
 
-        [Header("Grab Ledge")]
-        [SerializeField] private float _rayLength = 0.75f;
-        [SerializeField] private Vector3 _upperBounds = new(0.0f, 0.45f, 0.0f);
-        [SerializeField] private Vector3 _lowerBounds = new(0.0f, 0.9f, 0.0f);
-        [SerializeField] private LayerMask _layersToGrab;
-
         private Vector2 _movementInputValues;
         private Vector2 _viewInputValues;
         private Vector2 _cursorInputValues;
@@ -37,6 +31,7 @@ namespace An01malia.FirstPerson.PlayerModule
         private InputActions _actions;
         private PlayerController _context;
         private PlayerInteraction _interaction;
+        private PlayerSurroundings _surroundings;
 
         #endregion
 
@@ -88,8 +83,7 @@ namespace An01malia.FirstPerson.PlayerModule
 
         private void OnJumpPressed(InputAction.CallbackContext callback)
         {
-            if (Physics.Raycast(transform.position - _lowerBounds, transform.forward, _rayLength, _layersToGrab) &&
-                !Physics.Raycast(transform.position + _upperBounds, transform.forward, _rayLength, _layersToGrab))
+            if (_surroundings.CanGrabLedge)
             {
                 _context.CurrentState.TriggerSwitchState(ActionType.GrabLedge);
             }
@@ -112,7 +106,7 @@ namespace An01malia.FirstPerson.PlayerModule
 
         private void OnInteractionPressed(InputAction.CallbackContext callback)
         {
-            if (_interaction.TrySetInteractive(out IInteractive interactive))
+            if (_interaction.TryGetInteractive(out IInteractive interactive))
             {
                 var item = _interaction.InteractiveItem;
 
@@ -155,6 +149,7 @@ namespace An01malia.FirstPerson.PlayerModule
             _actions = new InputActions();
             _context = GetComponent<PlayerController>();
             _interaction = GetComponent<PlayerInteraction>();
+            _surroundings = GetComponent<PlayerSurroundings>();
         }
 
         private void SubscribeToInputs()
