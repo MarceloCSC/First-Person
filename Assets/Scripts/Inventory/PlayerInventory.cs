@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace An01malia.FirstPerson.Inventory
+namespace An01malia.FirstPerson.InventoryModule
 {
 
     public class PlayerInventory : InventoryBaseClass

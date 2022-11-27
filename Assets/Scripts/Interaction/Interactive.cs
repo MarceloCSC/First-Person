@@ -1,13 +1,13 @@
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Interaction
+namespace An01malia.FirstPerson.InteractionModule
 {
     public class Interactive : MonoBehaviour, IInteractive
     {
         #region Fields
 
-        [SerializeField] protected bool _isActivated = false;
-        [SerializeField] protected bool _isLocked = true;
+        [SerializeField] private bool _isLocked = true;
+        [SerializeField] protected bool IsActivated;
 
         #endregion
 
@@ -23,7 +23,7 @@ namespace An01malia.FirstPerson.Interaction
         {
             if (!_isLocked)
             {
-                _isActivated = !_isActivated;
+                IsActivated = !IsActivated;
             }
         }
 

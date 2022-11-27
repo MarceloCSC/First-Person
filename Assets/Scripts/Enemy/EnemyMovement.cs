@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-namespace An01malia.FirstPerson.Enemy
+namespace An01malia.FirstPerson.EnemyModule
 {
 
     [RequireComponent(typeof(NavMeshAgent))]

@@ -1,7 +1,7 @@
-using An01malia.FirstPerson.Player.States;
+using An01malia.FirstPerson.PlayerModule.States;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Player
+namespace An01malia.FirstPerson.PlayerModule
 {
     public class PlayerStateMachine : MonoBehaviour
     {
@@ -13,10 +13,10 @@ namespace An01malia.FirstPerson.Player
         private PlayerCrouchState _crouchState;
         private PlayerJumpState _jumpState;
         private PlayerFallState _fallState;
-        private PlayerClimbState _climbState;
+        private PlayerGrabLedgeState _grabLedgeState;
         private PlayerPushState _pushState;
-        private PlayerPickUpState _pickUpState;
-        private PlayerClimbUpLedgeState _climbUpLedgeState;
+        private PlayerClimbState _climbState;
+        private PlayerCarryState _carryState;
 
         #endregion
 
@@ -30,10 +30,10 @@ namespace An01malia.FirstPerson.Player
             TryGetComponent(out _crouchState);
             TryGetComponent(out _jumpState);
             TryGetComponent(out _fallState);
-            TryGetComponent(out _climbState);
+            TryGetComponent(out _grabLedgeState);
             TryGetComponent(out _pushState);
-            TryGetComponent(out _pickUpState);
-            TryGetComponent(out _climbUpLedgeState);
+            TryGetComponent(out _climbState);
+            TryGetComponent(out _carryState);
         }
 
         #endregion
@@ -70,9 +70,9 @@ namespace An01malia.FirstPerson.Player
             return _fallState;
         }
 
-        public PlayerBaseState Climb()
+        public PlayerBaseState GrabLedge()
         {
-            return _climbState;
+            return _grabLedgeState;
         }
 
         public PlayerBaseState Push()
@@ -80,14 +80,14 @@ namespace An01malia.FirstPerson.Player
             return _pushState;
         }
 
-        public PlayerBaseState PickUp()
+        public PlayerBaseState Climb()
         {
-            return _pickUpState;
+            return _climbState;
         }
 
-        public PlayerBaseState ClimbUpLedge()
+        public PlayerBaseState Carry()
         {
-            return _climbUpLedgeState;
+            return _carryState;
         }
 
         #endregion

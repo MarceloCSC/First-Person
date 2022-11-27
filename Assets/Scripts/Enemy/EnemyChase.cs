@@ -1,21 +1,21 @@
 ﻿using System.Collections;
+using An01malia.FirstPerson.Core.References;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Enemy
+namespace An01malia.FirstPerson.EnemyModule
 {
-
     public class EnemyChase : MonoBehaviour
     {
+        #region Fields
 
-        [SerializeField] float coroutineInterval = 0.25f;
+        [SerializeField] private float _coroutineInterval = 0.25f;
 
+        private EnemyController _enemy;
+        private EnemyMovement _movement;
 
-        #region Cached references
-        private EnemyController enemy;
-        private EnemyMovement movement;
-        private Transform player;
         #endregion
 
+        #region Unity Methods
 
         private void Awake()
         {
@@ -24,16 +24,25 @@ namespace An01malia.FirstPerson.Enemy
 
         private void OnEnable()
         {
-            enemy.OnStateChanged += HandleState;
+            _enemy.OnStateChanged += HandleState;
         }
+
+        private void OnDisable()
+        {
+            _enemy.OnStateChanged -= HandleState;
+        }
+
+        #endregion
+
+        #region Private Methods
 
         private IEnumerator ChasePlayer()
         {
             while (gameObject.activeSelf)
             {
-                movement.Destination = player.position;
+                _movement.Destination = Player.Transform.position;
 
-                yield return new WaitForSeconds(coroutineInterval);
+                yield return new WaitForSeconds(_coroutineInterval);
             }
         }
 
@@ -49,18 +58,12 @@ namespace An01malia.FirstPerson.Enemy
             }
         }
 
-        private void OnDisable()
-        {
-            enemy.OnStateChanged -= HandleState;
-        }
-
         private void SetReferences()
         {
-            enemy = GetComponent<EnemyController>();
-            movement = GetComponent<EnemyMovement>();
-            player = References.PlayerTransform;
+            _enemy = GetComponent<EnemyController>();
+            _movement = GetComponent<EnemyMovement>();
         }
 
+        #endregion
     }
-
 }

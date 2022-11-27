@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Interaction
+namespace An01malia.FirstPerson.InteractionModule
 {
     public class Mutable : Interactive
     {
@@ -40,13 +40,13 @@ namespace An01malia.FirstPerson.Interaction
 
         public override void StartInteraction()
         {
-            if (!_isLocked)
+            if (!IsLocked)
             {
-                _isActivated = !_isActivated;
+                IsActivated = !IsActivated;
 
                 if (_animator)
                 {
-                    _animator.SetBool("isActivated", _isActivated);
+                    _animator.SetBool("isActivated", IsActivated);
                 }
 
                 if (_waypoint)
@@ -62,9 +62,9 @@ namespace An01malia.FirstPerson.Interaction
 
         private void SetAnimation()
         {
-            string layer = _isActivated ? "Transformed" : "Original";
+            string layer = IsActivated ? "Transformed" : "Original";
 
-            _animator.SetBool("isActivated", _isActivated);
+            _animator.SetBool("isActivated", IsActivated);
             _animator.SetLayerWeight(_animator.GetLayerIndex(layer), 1.0f);
         }
 
@@ -75,7 +75,7 @@ namespace An01malia.FirstPerson.Interaction
                 StopCoroutine(_changingPosition);
             }
 
-            Vector3 destination = _isActivated ? _waypoint.position : _startingPosition;
+            Vector3 destination = IsActivated ? _waypoint.position : _startingPosition;
             _changingPosition = StartCoroutine(SetPosition(destination));
         }
 

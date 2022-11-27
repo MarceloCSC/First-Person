@@ -3,24 +3,27 @@ using UnityEngine;
 
 namespace An01malia.FirstPerson.Crafting
 {
-
     [CreateAssetMenu(fileName = "NewRecipeDatabase", menuName = "Crafting/New Recipe Database")]
     public class RecipeDatabase : ScriptableObject
     {
+        #region Fields
 
-        [SerializeField] GameObject recipeSlotsPrefab = null;
+        [SerializeField] private GameObject _recipeSlotsPrefab;
 
-        public Recipe[] allRecipes;
-        public List<Recipe> availableRecipes = new List<Recipe>();
+        public Recipe[] AllRecipes;
+        public List<Recipe> AvailableRecipes = new();
 
+        #endregion
+
+        #region Public Methods
 
         public void UpdateDatabase()
         {
-            foreach (Recipe recipe in allRecipes)
+            foreach (Recipe recipe in AllRecipes)
             {
-                if (recipe.HasBeenLearned && !availableRecipes.Contains(recipe))
+                if (recipe.HasBeenLearned && !AvailableRecipes.Contains(recipe))
                 {
-                    availableRecipes.Add(recipe);
+                    AvailableRecipes.Add(recipe);
                     CreateRecipe(recipe);
                 }
             }
@@ -28,7 +31,7 @@ namespace An01malia.FirstPerson.Crafting
 
         public void CreateRecipe(Recipe recipe)
         {
-            GameObject recipeSlots = Instantiate(recipeSlotsPrefab, CraftItems.RecipesGrid);
+            GameObject recipeSlots = Instantiate(_recipeSlotsPrefab, CraftItems.RecipesGrid);
 
             CraftingSlot[] slots = recipeSlots.GetComponentsInChildren<CraftingSlot>();
 
@@ -43,6 +46,6 @@ namespace An01malia.FirstPerson.Crafting
             }
         }
 
+        #endregion
     }
-
 }

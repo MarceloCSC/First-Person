@@ -1,7 +1,7 @@
-namespace An01malia.FirstPerson.Interaction
+namespace An01malia.FirstPerson.InteractionModule
 {
     public interface IInteractive
     {
-        public void StartInteraction();
+        void StartInteraction();
     }
 }

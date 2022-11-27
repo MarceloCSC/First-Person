@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Enemy
+namespace An01malia.FirstPerson.EnemyModule
 {
 
     public class EnemyAwareness : MonoBehaviour

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Enemy
+namespace An01malia.FirstPerson.EnemyModule
 {
 
     public enum EnemyState

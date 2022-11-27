@@ -1,28 +1,30 @@
-﻿using UnityEngine;
-using An01malia.FirstPerson.Enemy;
+﻿using An01malia.FirstPerson.EnemyModule;
+using An01malia.FirstPerson.Core.References;
+using UnityEngine;
+using An01malia.FirstPerson.Core;
 
 namespace An01malia.FirstPerson.Stealth
 {
-
     public class Noise : MonoBehaviour
     {
+        #region Fields
 
-        [SerializeField] float gizmosRadius = 1.0f;
-        [SerializeField] bool toggleGizmos = false;
+        [SerializeField] private float _gizmosRadius = 1.0f;
+        [SerializeField] private bool _toggleGizmos;
 
         [Header("Hearing Distance")]
-        [SerializeField] protected float defaultDistance = 10.0f;
+        [SerializeField] protected float DefaultDistance = 10.0f;
 
-        protected static readonly float maxNoise = 1.0f;
-        protected Vector3 position;
-        protected float hearingDistance;
+        protected static readonly float MaxNoise = 1.0f;
+        protected float HearingDistance;
+        protected Vector3 Position;
 
+        private LayerMask _enemyLayer;
+        private LayerMask _obstacleLayer;
 
-        #region Cached references
-        private LayerMask enemyLayer;
-        private LayerMask obstacleLayer;
         #endregion
 
+        #region Unity Methods
 
         private void Awake()
         {
@@ -31,66 +33,74 @@ namespace An01malia.FirstPerson.Stealth
 
         protected virtual void OnEnable()
         {
-            hearingDistance = defaultDistance;
+            HearingDistance = DefaultDistance;
             MakeNoise();
         }
 
+        private void OnDrawGizmos()
+        {
+            if (_toggleGizmos)
+            {
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireSphere(transform.position, _gizmosRadius);
+
+                HearingDistance = DefaultDistance;
+
+                Gizmos.color = Color.blue;
+                Gizmos.DrawWireSphere(transform.position, HearingDistance);
+            }
+        }
+
+        #endregion
+
+        #region Protected Methods
+
         protected void MakeNoise()
         {
-            position = transform.position;
-            Collider[] enemies = Physics.OverlapSphere(position, hearingDistance, enemyLayer);
+            Position = transform.position;
+            Collider[] enemies = Physics.OverlapSphere(Position, HearingDistance, _enemyLayer);
 
             foreach (Collider enemy in enemies)
             {
-                Vector3 direction = position.GetDirectionOf(enemy.transform.position, out float enemyDistance);
-                Ray ray = new Ray(position, direction);
+                Vector3 direction = Position.GetDirectionOf(enemy.transform.position, out float enemyDistance);
+                Ray ray = new Ray(Position, direction);
 
                 float noiseHeard = CalculateNoiseHeard(enemyDistance);
 
-                if (Physics.Raycast(ray, enemyDistance, obstacleLayer))
+                if (Physics.Raycast(ray, enemyDistance, _obstacleLayer))
                 {
-                    RaycastHit[] hits = Physics.RaycastAll(ray, enemyDistance, obstacleLayer);
+                    RaycastHit[] hits = Physics.RaycastAll(ray, enemyDistance, _obstacleLayer);
 
-                    noiseHeard -= hits.Length * maxNoise / 2;
+                    noiseHeard -= hits.Length * MaxNoise / 2;
                 }
 
                 if (enemy.GetComponentInChildren<EnemyHearing>() != null)
                 {
-                    enemy.GetComponentInChildren<EnemyHearing>().HearNoise(noiseHeard, position);
+                    enemy.GetComponentInChildren<EnemyHearing>().HearNoise(noiseHeard, Position);
                 }
             }
         }
 
+        #endregion
+
+        #region Private Methods
+
         private float CalculateNoiseHeard(float enemyDistance)
         {
-            float noiseHeard = maxNoise;
-            float multiplier = (hearingDistance - enemyDistance) / hearingDistance;
+            float noiseHeard = MaxNoise;
+            float multiplier = (HearingDistance - enemyDistance) / HearingDistance;
 
             noiseHeard *= multiplier;
 
             return noiseHeard;
         }
 
-        private void OnDrawGizmos()
-        {
-            if (toggleGizmos)
-            {
-                Gizmos.color = Color.cyan;
-                Gizmos.DrawWireSphere(transform.position, gizmosRadius);
-
-                hearingDistance = defaultDistance;
-
-                Gizmos.color = Color.blue;
-                Gizmos.DrawWireSphere(transform.position, hearingDistance);
-            }
-        }
-
         protected virtual void SetReferences()
         {
-            enemyLayer = LayerMask.GetMask(Layer.Enemy);
-            obstacleLayer = LayerMask.GetMask(Layer.Obstacle);
+            _enemyLayer = LayerMask.GetMask(Layer.Enemy);
+            _obstacleLayer = LayerMask.GetMask(Layer.Obstacle);
         }
 
+        #endregion
     }
-
 }

@@ -1,7 +1,9 @@
-using An01malia.FirstPerson.Interaction;
+using An01malia.FirstPerson.Core.References;
+using An01malia.FirstPerson.PlayerModule.States.Data;
+using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Player.States
+namespace An01malia.FirstPerson.PlayerModule.States
 {
     public class PlayerRunState : PlayerBaseState
     {
@@ -11,86 +13,87 @@ namespace An01malia.FirstPerson.Player.States
         [SerializeField] private float _acceleration = 2.0f;
         [SerializeField] private float _gravityPull = 10.0f;
 
-        private float _movementSpeed;
-        private Vector3 _movementVector;
-
         #endregion
 
         #region Overriden Methods
 
-        public override void EnterState()
+        public override void EnterState(PlayerActionDTO dto)
         {
-            _movementSpeed = _context.MovementSpeed;
+            StateData = new PlayerStateData(dto)
+            {
+                IsRunPressed = true
+            };
         }
 
-        public override void ExitState()
+        public override PlayerActionDTO ExitState()
         {
-            _context.MovementSpeed = _movementSpeed;
-            _context.Momentum = _characterController.velocity;
+            StateData.SetData(new MovementActionDTO(Controller.velocity));
+
+            return StateData.GetData();
         }
 
         public override void UpdateState()
         {
+            SetSpeed();
             HandleMovement();
             CheckSwitchState();
         }
 
         public override void CheckSwitchState()
         {
-            if (!_characterController.isGrounded)
+            if (!Controller.isGrounded)
             {
-                SwitchState(_stateMachine.Fall());
+                SwitchState(StateMachine.Fall());
+                return;
             }
-            else if (_inputManager.MovementInputValues.y == 0.0f && _inputManager.MovementInputValues.x == 0.0f)
+
+            if (HasNoInput())
             {
-                SwitchState(_stateMachine.Idle());
+                StateData.SetData(new RunActionDTO(false));
+                SwitchState(StateMachine.Idle());
             }
         }
 
-        public override bool TrySwitchState(ActionType action)
+        public override void TriggerSwitchState(ActionType action, ActionDTO dto = null)
         {
-            TrySwitchSubState(action);
+            base.TriggerSwitchState(action, dto);
 
-            if (action == ActionType.Jump)
+            switch (action)
             {
-                SwitchState(_stateMachine.Jump());
-                return true;
-            }
-            else if (action == ActionType.Run)
-            {
-                SwitchState(_stateMachine.Walk());
-                return true;
-            }
-            else if (action == ActionType.ClimbUpLedge)
-            {
-                SwitchState(_stateMachine.ClimbUpLedge());
-                return true;
-            }
-            else if (action == ActionType.Climb)
-            {
-                SwitchState(_stateMachine.Climb());
-                return true;
-            }
-            else if (action == ActionType.Push)
-            {
-                SwitchState(_stateMachine.Push());
-                return true;
-            }
-            else if (action == ActionType.PickUp)
-            {
-                SwitchSubState(_stateMachine.PickUp());
-                return true;
-            }
-            else if (action == ActionType.Interact)
-            {
-                if (_context.InteractiveItem.TryGetComponent(out IInteractive interactive))
-                {
-                    interactive.StartInteraction();
-                    return true;
-                }
-            }
+                case ActionType.Jump:
+                    SwitchState(StateMachine.Jump());
+                    break;
 
-            return false;
+                case ActionType.Run:
+                    SwitchState(StateMachine.Walk());
+                    break;
+
+                case ActionType.GrabLedge:
+                    SwitchState(StateMachine.GrabLedge());
+                    break;
+
+                case ActionType.Climb:
+                    StateData.SetData(dto);
+                    SwitchState(StateMachine.Climb());
+                    break;
+
+                case ActionType.Push:
+                    StateData.SetData(dto);
+                    SwitchState(StateMachine.Push());
+                    break;
+
+                case ActionType.Carry:
+                    StateData.SetData(dto);
+                    SwitchState(this, StateMachine.Carry());
+                    break;
+
+                case ActionType.Interact:
+                    (dto as InteractiveActionDTO).Interactive.StartInteraction();
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         #endregion
@@ -99,14 +102,27 @@ namespace An01malia.FirstPerson.Player.States
 
         private void HandleMovement()
         {
-            _movementVector = transform.forward * _inputManager.MovementInputValues.y + transform.right * _inputManager.MovementInputValues.x;
-            _movementVector.Normalize();
+            Vector3 movementVector = HandleInput();
 
-            _movementSpeed = Mathf.Lerp(_movementSpeed, _runSpeed, Time.fixedDeltaTime * _acceleration);
-            _movementVector = _movementVector * _movementSpeed + _gravityPull * Vector3.down;
+            movementVector = movementVector * StateData.Speed + _gravityPull * Vector3.down;
 
-            _characterController.Move(_movementVector * Time.fixedDeltaTime);
+            Controller.Move(movementVector * Time.fixedDeltaTime);
         }
+
+        private void SetSpeed()
+        {
+            StateData.Speed = Mathf.Lerp(StateData.Speed, _runSpeed, Time.fixedDeltaTime * _acceleration);
+        }
+
+        private Vector3 HandleInput()
+        {
+            Vector3 movementVector = Player.Transform.forward * Input.MovementInputValues.y +
+                                     Player.Transform.right * Input.MovementInputValues.x;
+
+            return movementVector.normalized;
+        }
+
+        private bool HasNoInput() => Input.MovementInputValues.y == 0.0f && Input.MovementInputValues.x == 0.0f;
 
         #endregion
     }

@@ -1,15 +1,18 @@
-﻿using UnityEngine;
-using An01malia.FirstPerson.Inventory;
-using An01malia.FirstPerson.Inspection;
+﻿using An01malia.FirstPerson.Inspection;
+using An01malia.FirstPerson.InventoryModule;
+using UnityEngine;
 
-namespace An01malia.FirstPerson.UI
+namespace An01malia.FirstPerson.UIModule
 {
-
     public class UIItemInteraction : MonoBehaviour
     {
+        #region Fields
 
-        [SerializeField] ItemDatabase itemDatabase = null;
+        [SerializeField] private ItemDatabase _itemDatabase;
 
+        #endregion
+
+        #region Public Methods
 
         public void ExamineItem()
         {
@@ -49,11 +52,11 @@ namespace An01malia.FirstPerson.UI
         {
             if (Slot.ItemSelected != null)
             {
-                itemDatabase.InstantiateItem(Slot.ItemSelected.Root.ID);
+                _itemDatabase.InstantiateItem(Slot.ItemSelected.Root.ID);
                 Slot.ItemSelected.Amount--;
             }
         }
 
+        #endregion
     }
-
 }

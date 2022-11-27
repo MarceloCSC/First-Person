@@ -1,8 +1,9 @@
-﻿using An01malia.FirstPerson.Inventory;
-using An01malia.FirstPerson.UI;
+﻿using An01malia.FirstPerson.Core.References;
+using An01malia.FirstPerson.InventoryModule;
+using An01malia.FirstPerson.UIModule;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Interaction
+namespace An01malia.FirstPerson.InteractionModule
 {
     [RequireComponent(typeof(Container))]
     public class StorageUnit : MonoBehaviour, IInteractive
@@ -22,7 +23,7 @@ namespace An01malia.FirstPerson.Interaction
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.gameObject == References.Player && Container.Panel.activeSelf)
+            if (other.transform == Player.Transform && Container.Panel.activeSelf)
             {
                 _container.IsOpen = false;
                 UIPanels.ToggleUIPanel(Container.Panel);

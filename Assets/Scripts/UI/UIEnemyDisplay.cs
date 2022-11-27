@@ -1,22 +1,23 @@
 ﻿using System.Text;
+using An01malia.FirstPerson.Core.References;
+using An01malia.FirstPerson.EnemyModule;
 using UnityEngine;
 using UnityEngine.UI;
-using An01malia.FirstPerson.Enemy;
 
-namespace An01malia.FirstPerson.UI
+namespace An01malia.FirstPerson.UIModule
 {
-
     public class UIEnemyDisplay : MonoBehaviour
     {
+        #region Fields
 
-        [SerializeField] Text enemyStateText = null;
-        [SerializeField] Text alertStateText = null;
+        [SerializeField] private Text _enemyStateText;
+        [SerializeField] private Text _alertStateText;
 
+        private EnemyController _enemy;
 
-        #region Cached references
-        private EnemyController enemy;
         #endregion
 
+        #region Unity Methods
 
         private void Awake()
         {
@@ -25,38 +26,42 @@ namespace An01malia.FirstPerson.UI
 
         private void OnEnable()
         {
-            enemy.OnStateChanged += UpdateEnemyState;
-            enemy.OnAlert += UpdateAlertState;
+            _enemy.OnStateChanged += UpdateEnemyState;
+            _enemy.OnAlert += UpdateAlertState;
         }
 
         private void LateUpdate()
         {
-            transform.forward = References.CameraTransform.forward;
+            transform.forward = Player.CameraTransform.forward;
         }
+
+        private void OnDisable()
+        {
+            _enemy.OnStateChanged -= UpdateEnemyState;
+            _enemy.OnAlert -= UpdateAlertState;
+        }
+
+        #endregion
+
+        #region Private Methods
 
         private void UpdateEnemyState(EnemyState newState)
         {
             StringBuilder stringBuilder = new StringBuilder();
-            enemyStateText.text = stringBuilder.Append(newState).ToString();
+            _enemyStateText.text = stringBuilder.Append(newState).ToString();
         }
 
         private void UpdateAlertState(AlertState newState)
         {
             StringBuilder stringBuilder = new StringBuilder();
-            alertStateText.text = stringBuilder.Append(newState).ToString();
-        }
-
-        private void OnDisable()
-        {
-            enemy.OnStateChanged -= UpdateEnemyState;
-            enemy.OnAlert -= UpdateAlertState;
+            _alertStateText.text = stringBuilder.Append(newState).ToString();
         }
 
         private void SetReferences()
         {
-            enemy = GetComponentInParent<EnemyController>();
+            _enemy = GetComponentInParent<EnemyController>();
         }
 
+        #endregion
     }
-
 }

@@ -2,7 +2,7 @@
 using UnityEngine;
 using An01malia.FirstPerson.Pathfinder;
 
-namespace An01malia.FirstPerson.Enemy
+namespace An01malia.FirstPerson.EnemyModule
 {
 
     public class EnemyPatrol : MonoBehaviour

@@ -1,18 +1,22 @@
 ﻿using An01malia.FirstPerson.Crafting;
 using An01malia.FirstPerson.Inspection;
-using An01malia.FirstPerson.Inventory;
+using An01malia.FirstPerson.InventoryModule;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.UI
+namespace An01malia.FirstPerson.UIModule
 {
     public class UIPanels : MonoBehaviour
     {
-        [SerializeField] private GameObject inventoryPanel = null;
-        [SerializeField] private GameObject containerPanel = null;
-        [SerializeField] private GameObject craftingPanel = null;
-        [SerializeField] private GameObject examinePanel = null;
+        #region Fields
 
-        private static GameObject[] panels;
+        [SerializeField] private GameObject _inventoryPanel;
+        [SerializeField] private GameObject _containerPanel;
+        [SerializeField] private GameObject _craftingPanel;
+        [SerializeField] private GameObject _inspectionPanel;
+
+        private static GameObject[] _panels;
+
+        #endregion
 
         #region Properties
 
@@ -20,18 +24,21 @@ namespace An01malia.FirstPerson.UI
         {
             get
             {
-                foreach (GameObject panel in panels)
+                foreach (GameObject panel in _panels)
                 {
                     if (panel.activeSelf)
                     {
                         return true;
                     }
                 }
+
                 return false;
             }
         }
 
         #endregion
+
+        #region Unity Methods
 
         private void Awake()
         {
@@ -43,27 +50,28 @@ namespace An01malia.FirstPerson.UI
             CloseAllPanels();
         }
 
+        #endregion
+
+        #region Public Methods
+
         public static void ToggleUIPanel(GameObject panel)
         {
-            if (!PlayerItemInspection.Panel.activeSelf/* && !PlayerMovement.IsJumping*/)
+            if (!PlayerItemInspection.Panel.activeSelf)
             {
                 panel.SetActive(!panel.activeSelf);
-                //PlayerController.Player.LockCursor(!IsOnScreen);
-                //PlayerController.Player.LockIntoPlace(IsOnScreen);
             }
         }
 
-        public static void ToggleExamineUI(bool isActive)
+        public static void ToggleInspectionUI(bool isActive)
         {
             CloseOpenPanels();
-            //PlayerController.Player.LockCursor(!isActive);
-            //PlayerController.Player.LockIntoPlace(isActive);
+
             PlayerItemInspection.Panel.SetActive(isActive);
         }
 
         public static void CloseOpenPanels()
         {
-            foreach (GameObject panel in panels)
+            foreach (GameObject panel in _panels)
             {
                 if (panel.activeSelf)
                 {
@@ -74,20 +82,26 @@ namespace An01malia.FirstPerson.UI
 
         public static void CloseAllPanels()
         {
-            foreach (GameObject panel in panels)
+            foreach (GameObject panel in _panels)
             {
                 panel.SetActive(false);
             }
         }
 
+        #endregion
+
+        #region Private Methods
+
         private void SetReferences()
         {
-            PlayerInventory.Panel = inventoryPanel;
-            Container.Panel = containerPanel;
-            CraftItems.Panel = craftingPanel;
-            PlayerItemInspection.Panel = examinePanel;
+            PlayerInventory.Panel = _inventoryPanel;
+            Container.Panel = _containerPanel;
+            CraftItems.Panel = _craftingPanel;
+            PlayerItemInspection.Panel = _inspectionPanel;
 
-            panels = new GameObject[] { PlayerInventory.Panel, Container.Panel, CraftItems.Panel, PlayerItemInspection.Panel };
+            _panels = new GameObject[] { PlayerInventory.Panel, Container.Panel, CraftItems.Panel, PlayerItemInspection.Panel };
         }
+
+        #endregion
     }
 }

@@ -1,40 +1,41 @@
 ﻿using System.Collections;
+using An01malia.FirstPerson.Core.References;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Enemy
+namespace An01malia.FirstPerson.EnemyModule
 {
-
     public class EnemyTracker : MonoBehaviour
     {
+        #region Fields
 
-        [SerializeField] float waitToStart = 0.5f;
-        [SerializeField] float marginToReach = 1.5f;
-        [SerializeField] float coroutineInterval = 0.1f;
+        [SerializeField] private float _waitToStart = 0.5f;
+        [SerializeField] private float _marginToReach = 1.5f;
+        [SerializeField] private float _coroutineInterval = 0.1f;
 
-        private Vector3 playerLastPosition;
-        private Vector3 playerAssumedPosition;
+        private Vector3 _playerLastPosition;
+        private Vector3 _playerAssumedPosition;
 
+        private EnemyController _enemy;
+        private EnemyMovement _movement;
+        private EnemyBehaviour _behaviour;
+
+        #endregion
 
         #region Properties
+
         public Vector3 PlayerAssumedPosition
         {
-            get => playerAssumedPosition;
+            get => _playerAssumedPosition;
             set
             {
-                playerAssumedPosition = value;
-                playerLastPosition = playerAssumedPosition;
+                _playerAssumedPosition = value;
+                _playerLastPosition = _playerAssumedPosition;
             }
         }
+
         #endregion
 
-
-        #region Cached references
-        private EnemyController enemy;
-        private EnemyMovement movement;
-        private EnemyBehaviour behaviour;
-        private Transform player;
-        #endregion
-
+        #region Unity Methods
 
         private void Awake()
         {
@@ -43,54 +44,58 @@ namespace An01malia.FirstPerson.Enemy
 
         private void OnEnable()
         {
-            enemy.OnStateChanged += HandleState;
+            _enemy.OnStateChanged += HandleState;
         }
+
+        private void OnDisable()
+        {
+            _enemy.OnStateChanged -= HandleState;
+        }
+
+        #endregion
+
+        #region Private Methods
 
         private IEnumerator TrackPlayer()
         {
-            yield return new WaitForSeconds(waitToStart);
+            yield return new WaitForSeconds(_waitToStart);
 
-            movement.Destination = playerLastPosition;
+            _movement.Destination = _playerLastPosition;
 
-            while (Vector3.Distance(transform.position, playerLastPosition) >= marginToReach)
+            while (Vector3.Distance(transform.position, _playerLastPosition) >= _marginToReach)
             {
-                yield return new WaitForSeconds(coroutineInterval);
+                yield return new WaitForSeconds(_coroutineInterval);
             }
 
-            behaviour.HasTrackedPlayer = true;
+            _behaviour.HasTrackedPlayer = true;
         }
 
         private void HandleState(EnemyState currentState)
         {
             StopAllCoroutines();
-            behaviour.HasTrackedPlayer = false;
+
+            _behaviour.HasTrackedPlayer = false;
 
             if (currentState == EnemyState.Tracking)
             {
-                if (playerAssumedPosition == Vector3.zero)
+                if (_playerAssumedPosition == Vector3.zero)
                 {
-                    playerLastPosition = player.position;
+                    _playerLastPosition = Player.Transform.position;
                 }
 
                 StartCoroutine(TrackPlayer());
             }
 
-            playerAssumedPosition = Vector3.zero;
-        }
-
-        private void OnDisable()
-        {
-            enemy.OnStateChanged -= HandleState;
+            _playerAssumedPosition = Vector3.zero;
         }
 
         private void SetReferences()
         {
-            enemy = GetComponent<EnemyController>();
-            movement = GetComponent<EnemyMovement>();
-            behaviour = GetComponent<EnemyBehaviour>();
-            player = References.PlayerTransform;
+            _enemy = GetComponent<EnemyController>();
+            _movement = GetComponent<EnemyMovement>();
+            _behaviour = GetComponent<EnemyBehaviour>();
         }
 
+        #endregion
     }
-
 }

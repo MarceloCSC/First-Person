@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace An01malia.FirstPerson.Inventory
+namespace An01malia.FirstPerson.InventoryModule
 {
 
     public class Slot : SlotBaseClass

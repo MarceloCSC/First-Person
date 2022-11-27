@@ -1,102 +1,90 @@
-using An01malia.FirstPerson.Player.States;
+using An01malia.FirstPerson.PlayerModule.States;
+using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Player
+namespace An01malia.FirstPerson.PlayerModule
 {
     public class PlayerController : MonoBehaviour
     {
         #region Fields
 
-        private bool _isInputEnabled;
-        private bool _isMovementEnabled;
-        private bool _isCameraEnabled;
-        private bool _isRunPressed;
-        private int _jumpsRemaining;
-        private float _movementSpeed;
-        private Vector3 _momentum;
-        private Transform _interactiveItem;
-        private PlayerBaseState _currentState;
-
-        private CharacterController _characterController;
         private PlayerStateMachine _stateMachine;
-        private PlayerInputManager _inputManager;
+        private PlayerInput _playerInput;
         private PlayerCamera _playerCamera;
-        private PlayerExamine _playerExamine;
+        private PlayerInteraction _interaction;
 
-        #endregion Fields
+        #endregion
 
         #region Properties
 
-        public bool IsRunPressed { get => _isRunPressed; set => _isRunPressed = value; }
-        public int JumpsRemaining { get => _jumpsRemaining; set => _jumpsRemaining = value; }
-        public float MovementSpeed { get => _movementSpeed; set => _movementSpeed = value; }
-        public Vector3 Momentum { get => _momentum; set => _momentum = value; }
-        public Transform InteractiveItem { get => _interactiveItem; set => _interactiveItem = value; }
-        public PlayerBaseState CurrentState { get => _currentState; set => _currentState = value; }
+        public bool IsInputEnabled { get; set; }
+        public bool IsMovementEnabled { get; set; }
+        public bool IsCameraEnabled { get; set; }
+        public PlayerBaseState CurrentState { get; private set; }
 
-        #endregion Properties
+        #endregion
 
         #region Unity Methods
 
         private void Awake()
         {
-            _characterController = GetComponent<CharacterController>();
-            _stateMachine = GetComponent<PlayerStateMachine>();
-            _inputManager = GetComponent<PlayerInputManager>();
-            _playerCamera = GetComponent<PlayerCamera>();
-            _playerExamine = GetComponent<PlayerExamine>();
+            SetReferences();
         }
 
         private void Start()
         {
-            _characterController.minMoveDistance = 0.0f;
-            _currentState = _stateMachine.Idle();
-            _currentState.EnterState();
-            _isInputEnabled = true;
-            _isMovementEnabled = true;
-            _isCameraEnabled = true;
+            CurrentState = _stateMachine.Idle();
+            CurrentState.EnterState(new PlayerActionDTO(0.0f, false, Vector3.zero));
+
+            IsInputEnabled = true;
+            IsMovementEnabled = true;
+            IsCameraEnabled = true;
         }
 
         private void Update()
         {
-            if (_isInputEnabled)
-            {
-                _inputManager.UpdateInput();
-            }
+            if (!IsInputEnabled) return;
+
+            _playerInput.UpdateInput();
         }
 
         private void FixedUpdate()
         {
-            if (_isMovementEnabled)
-            {
-                _currentState.UpdateStates();
-            }
-            _playerExamine.Examine();
+            _interaction.Examine();
+
+            if (!IsMovementEnabled) return;
+
+            CurrentState.UpdateStates();
         }
 
         private void LateUpdate()
         {
-            if (_isCameraEnabled)
-            {
-                _playerCamera.UpdateCamera();
-            }
+            if (!IsCameraEnabled) return;
+
+            _playerCamera.UpdateCamera();
         }
 
-        #endregion Unity Methods
+        #endregion
 
         #region Public Methods
 
-        public void LockIntoPlace(bool locked)
+        public void SetCurrentState(PlayerBaseState newState)
         {
-            _isMovementEnabled = locked;
-            _isCameraEnabled = locked;
+            CurrentState = newState;
         }
 
-        public void LockCursor(bool locked)
+        #endregion
+
+        #region Private Methods
+
+        private void SetReferences()
         {
-            Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
+            _stateMachine = GetComponentInChildren<PlayerStateMachine>();
+            _playerInput = GetComponent<PlayerInput>();
+            _playerCamera = GetComponent<PlayerCamera>();
+            _interaction = GetComponent<PlayerInteraction>();
         }
 
-        #endregion Static Methods
+        #endregion
     }
 }

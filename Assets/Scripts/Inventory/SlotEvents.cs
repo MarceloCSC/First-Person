@@ -1,21 +1,21 @@
-﻿using UnityEngine;
+﻿using An01malia.FirstPerson.Core.References;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace An01malia.FirstPerson.Inventory
+namespace An01malia.FirstPerson.InventoryModule
 {
-
     public class SlotEvents : Slot, IPointerDownHandler, IPointerClickHandler, ISelectHandler, IDeselectHandler, IDragHandler, IBeginDragHandler, IEndDragHandler, IDropHandler
     {
-
         private static Slot originalSlot;
 
         private bool beingDragged;
 
         #region Cached references
+
         private Tooltip tooltip;
         private IconToDrag iconToDrag;
-        #endregion
 
+        #endregion
 
         protected override void Awake()
         {
@@ -48,6 +48,7 @@ namespace An01malia.FirstPerson.Inventory
         }
 
         #region EventSystem Methods
+
         public void OnPointerDown(PointerEventData eventData)
         {
             if (Item != null && eventData.button == PointerEventData.InputButton.Right)
@@ -101,7 +102,6 @@ namespace An01malia.FirstPerson.Inventory
 
         public void OnDrag(PointerEventData eventData)
         {
-
         }
 
         public void OnEndDrag(PointerEventData eventData)
@@ -126,6 +126,7 @@ namespace An01malia.FirstPerson.Inventory
                 }
             }
         }
+
         #endregion
 
         private void OnDisable()
@@ -146,10 +147,8 @@ namespace An01malia.FirstPerson.Inventory
 
         private void SetReferences()
         {
-            tooltip = References.Tooltip.GetComponent<Tooltip>();
-            iconToDrag = References.IconToDrag.GetComponent<IconToDrag>();
+            tooltip = UI.Tooltip.GetComponent<Tooltip>();
+            iconToDrag = UI.IconToDrag.GetComponent<IconToDrag>();
         }
-
     }
-
 }

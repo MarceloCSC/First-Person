@@ -1,13 +1,13 @@
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Interaction
+namespace An01malia.FirstPerson.InteractionModule
 {
     public class Climbable : MonoBehaviour
     {
         #region Fields
 
         [SerializeField] private bool _canClimbUpwards = true;
-        [SerializeField] private bool _canClimbSideways = false;
+        [SerializeField] private bool _canClimbSideways;
 
         #endregion Fields
 

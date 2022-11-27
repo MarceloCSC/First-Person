@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace An01malia.FirstPerson.Inventory
+namespace An01malia.FirstPerson.InventoryModule
 {
 
     public enum ItemType

@@ -1,18 +1,20 @@
-﻿using UnityEngine;
-using An01malia.FirstPerson.Inventory;
+﻿using An01malia.FirstPerson.InventoryModule;
+using UnityEngine;
 
 namespace An01malia.FirstPerson.Crafting
 {
-
     public class CraftingSlot : SlotBaseClass
     {
+        #region Fields
 
-        private bool hasEnough;
+        private bool _hasEnough;
 
-        private Color unavailable = Color.grey;
+        private Color _unavailable = Color.grey;
 
+        #endregion
 
         #region Properties
+
         public Item Item
         {
             get => item;
@@ -34,16 +36,15 @@ namespace An01malia.FirstPerson.Crafting
 
         public bool HasEnough
         {
-            get => hasEnough;
+            get => _hasEnough;
             set
             {
-                hasEnough = value;
+                _hasEnough = value;
 
-                image.color = hasEnough == true ? defaultColor : unavailable;
+                image.color = _hasEnough == true ? defaultColor : _unavailable;
             }
         }
+
         #endregion
-
     }
-
 }

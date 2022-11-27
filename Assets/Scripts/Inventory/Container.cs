@@ -1,17 +1,16 @@
-﻿using UnityEngine;
+﻿using An01malia.FirstPerson.Core.References;
+using UnityEngine;
 
-namespace An01malia.FirstPerson.Inventory
+namespace An01malia.FirstPerson.InventoryModule
 {
-
     public class Container : InventoryBaseClass
     {
-
         public static GameObject Panel;
 
         private bool neverBeenOpened = true;
 
-
         #region Properties
+
         public bool IsOpen
         {
             get => isOpen;
@@ -28,12 +27,14 @@ namespace An01malia.FirstPerson.Inventory
                 StoreAndRestore();
             }
         }
+
         #endregion
 
         #region Cached references
-        private PlayerInventory inventory;
-        #endregion
 
+        private PlayerInventory inventory;
+
+        #endregion
 
         private void Start()
         {
@@ -41,6 +42,7 @@ namespace An01malia.FirstPerson.Inventory
         }
 
         #region On Click Event
+
         public void TransferAll()
         {
             foreach (Slot slot in slots)
@@ -51,14 +53,13 @@ namespace An01malia.FirstPerson.Inventory
                 }
             }
         }
+
         #endregion
 
         private void SetReferences()
         {
-            inventory = References.Player.GetComponent<PlayerInventory>();
+            inventory = Player.Transform.GetComponent<PlayerInventory>();
             slots = Panel.GetComponentsInChildren<Slot>();
         }
-
     }
-
 }

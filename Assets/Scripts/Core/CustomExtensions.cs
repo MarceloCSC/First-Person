@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-namespace An01malia.FirstPerson
+namespace An01malia.FirstPerson.Core
 {
-
     public static class CustomExtensions
     {
+        #region Public Methods
 
         public static Vector3 GetPositionOnScreen(this Vector3 position, Canvas canvas, RectTransform transform, float padding)
         {
@@ -81,6 +81,6 @@ namespace An01malia.FirstPerson
             transform.localRotation = Quaternion.RotateTowards(currentRotation, defaultRotation, rate * Time.deltaTime);
         }
 
+        #endregion
     }
-
 }

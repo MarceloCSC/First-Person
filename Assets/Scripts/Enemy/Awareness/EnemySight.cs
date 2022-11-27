@@ -1,34 +1,35 @@
-﻿using UnityEngine;
+﻿using An01malia.FirstPerson.Core;
+using An01malia.FirstPerson.Core.References;
+using UnityEngine;
 
-namespace An01malia.FirstPerson.Enemy
+namespace An01malia.FirstPerson.EnemyModule
 {
-
     [RequireComponent(typeof(EnemyAwareness))]
     public class EnemySight : MonoBehaviour
     {
+        #region Fields
 
         [Header("Awareness Radius")]
-        [SerializeField] float defaultRadius = 20.0f;
-        [SerializeField] float chaseRadius = 25.0f;
-        [SerializeField] float attackRadius = 2.5f;
+        [SerializeField] private float _defaultRadius = 20.0f;
+        [SerializeField] private float _chaseRadius = 25.0f;
+        [SerializeField] private float _attackRadius = 2.5f;
 
         [Header("FOV Cone")]
-        [SerializeField] float defaultAngle = 60.0f;
-        [SerializeField] float highAlertAngle = 120.0f;
+        [SerializeField] private float _defaultAngle = 60.0f;
+        [SerializeField] private float _highAlertAngle = 120.0f;
 
         [Space]
-        [SerializeField] bool toggleGizmos = false;
+        [SerializeField] private bool _toggleGizmos = false;
 
-        private float radius;
-        private float fovAngle;
+        private float _radius;
+        private float _fovAngle;
 
+        private EnemyController _enemy;
+        private EnemyBehaviour _behaviour;
 
-        #region Cached references
-        private EnemyController enemy;
-        private EnemyBehaviour behaviour;
-        private Transform player;
         #endregion
 
+        #region Unity Methods
 
         private void Awake()
         {
@@ -37,15 +38,50 @@ namespace An01malia.FirstPerson.Enemy
 
         private void OnEnable()
         {
-            enemy.OnAlert += ChangeSettings;
+            _enemy.OnAlert += ChangeSettings;
         }
+
+        private void OnDisable()
+        {
+            _enemy.OnAlert -= ChangeSettings;
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (_toggleGizmos && Application.isPlaying)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(transform.position, _radius);
+
+                Vector3 lineOfSightA = Quaternion.AngleAxis(_fovAngle, transform.up) * transform.forward * _radius;
+                Vector3 lineOfSightB = Quaternion.AngleAxis(-_fovAngle, transform.up) * transform.forward * _radius;
+
+                Gizmos.DrawRay(transform.position, lineOfSightA);
+                Gizmos.DrawRay(transform.position, lineOfSightB);
+
+                Vector3 direction = transform.position.GetDirectionOf(Player.Transform.position, out float playerDistance);
+                float playerAngle = Vector3.Angle(direction, transform.forward);
+
+                if (playerAngle < _fovAngle && playerDistance < _radius
+                    && Physics.Raycast(transform.position, direction.normalized, out RaycastHit hit))
+                {
+                    if (hit.transform == Player.Transform) { Gizmos.color = Color.green; }
+                    else { Gizmos.color = Color.red; }
+                    Gizmos.DrawRay(transform.position, direction.normalized * _radius);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Public Methods
 
         public bool LookForPlayer()
         {
-            Vector3 direction = transform.position.GetDirectionOf(player.position, out float playerDistance);
+            Vector3 direction = transform.position.GetDirectionOf(Player.Transform.position, out float playerDistance);
             float playerAngle = Vector3.Angle(direction, transform.forward);
 
-            if (playerAngle < fovAngle && playerDistance < radius)
+            if (playerAngle < _fovAngle && playerDistance < _radius)
             {
                 DetectRaycast(direction, playerDistance);
                 return true;
@@ -53,24 +89,28 @@ namespace An01malia.FirstPerson.Enemy
             else { return false; }
         }
 
+        #endregion
+
+        #region Private Methods
+
         private void DetectRaycast(Vector3 direction, float playerDistance)
         {
             if (Physics.Raycast(transform.position, direction.normalized, out RaycastHit hit))
             {
-                if (hit.transform == player)
+                if (hit.transform == Player.Transform)
                 {
-                    if (playerDistance > attackRadius)
+                    if (playerDistance > _attackRadius)
                     {
-                        behaviour.PlayerSpotted(true);
+                        _behaviour.PlayerSpotted(true);
                     }
                     else
                     {
-                        behaviour.PlayerSpotted(false);
+                        _behaviour.PlayerSpotted(false);
                     }
                 }
                 else
                 {
-                    behaviour.PlayerNotSpotted();
+                    _behaviour.PlayerNotSpotted();
                 }
             }
         }
@@ -79,54 +119,22 @@ namespace An01malia.FirstPerson.Enemy
         {
             if (alertState == AlertState.HighAlert)
             {
-                radius = chaseRadius;
-                fovAngle = highAlertAngle;
+                _radius = _chaseRadius;
+                _fovAngle = _highAlertAngle;
             }
             else if (alertState == AlertState.Vigilant)
             {
-                radius = defaultRadius;
-                fovAngle = defaultAngle;
+                _radius = _defaultRadius;
+                _fovAngle = _defaultAngle;
             }
-        }
-
-        private void OnDrawGizmos()
-        {
-            if (toggleGizmos && Application.isPlaying)
-            {
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawWireSphere(transform.position, radius);
-
-                Vector3 lineOfSightA = Quaternion.AngleAxis(fovAngle, transform.up) * transform.forward * radius;
-                Vector3 lineOfSightB = Quaternion.AngleAxis(-fovAngle, transform.up) * transform.forward * radius;
-
-                Gizmos.DrawRay(transform.position, lineOfSightA);
-                Gizmos.DrawRay(transform.position, lineOfSightB);
-
-                Vector3 direction = transform.position.GetDirectionOf(player.position, out float playerDistance);
-                float playerAngle = Vector3.Angle(direction, transform.forward);
-
-                if (playerAngle < fovAngle && playerDistance < radius
-                    && Physics.Raycast(transform.position, direction.normalized, out RaycastHit hit))
-                {
-                    if (hit.transform == player) { Gizmos.color = Color.green; }
-                    else { Gizmos.color = Color.red; }
-                    Gizmos.DrawRay(transform.position, direction.normalized * radius);
-                }
-            }
-        }
-
-        private void OnDisable()
-        {
-            enemy.OnAlert -= ChangeSettings;
         }
 
         private void SetReferences()
         {
-            enemy = GetComponentInParent<EnemyController>();
-            behaviour = GetComponentInParent<EnemyBehaviour>();
-            player = References.PlayerTransform;
+            _enemy = GetComponentInParent<EnemyController>();
+            _behaviour = GetComponentInParent<EnemyBehaviour>();
         }
 
+        #endregion
     }
-
 }

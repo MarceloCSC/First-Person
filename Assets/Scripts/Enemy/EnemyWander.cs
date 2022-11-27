@@ -1,7 +1,8 @@
 ﻿using System.Collections;
+using An01malia.FirstPerson.Core;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Enemy
+namespace An01malia.FirstPerson.EnemyModule
 {
 
     public class EnemyWander : MonoBehaviour

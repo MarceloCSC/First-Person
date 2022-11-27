@@ -1,8 +1,9 @@
-﻿using An01malia.FirstPerson.Crafting;
-using An01malia.FirstPerson.UI;
+﻿using An01malia.FirstPerson.Core.References;
+using An01malia.FirstPerson.Crafting;
+using An01malia.FirstPerson.UIModule;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Interaction
+namespace An01malia.FirstPerson.InteractionModule
 {
     [RequireComponent(typeof(CraftItems))]
     public class CraftingTable : MonoBehaviour, IInteractive
@@ -22,7 +23,7 @@ namespace An01malia.FirstPerson.Interaction
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.gameObject == References.Player && CraftItems.Panel.activeSelf)
+            if (other.transform == Player.Transform && CraftItems.Panel.activeSelf)
             {
                 UIPanels.ToggleUIPanel(CraftItems.Panel);
             }

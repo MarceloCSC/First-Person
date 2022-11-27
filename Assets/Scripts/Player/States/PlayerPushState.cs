@@ -1,8 +1,11 @@
+using An01malia.FirstPerson.Core.References;
+using An01malia.FirstPerson.InteractionModule;
+using An01malia.FirstPerson.PlayerModule.States.Data;
+using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using System.Collections;
-using An01malia.FirstPerson.Interaction;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Player.States
+namespace An01malia.FirstPerson.PlayerModule.States
 {
     public class PlayerPushState : PlayerBaseState
     {
@@ -15,176 +18,227 @@ namespace An01malia.FirstPerson.Player.States
         [SerializeField] private LayerMask _layerToPush;
         [SerializeField] private LayerMask _layersToCollide;
 
-        private bool _isPushing;
-        private bool _isZAxisAligned;
-        private bool _canPushForward;
-        private bool _canPushSideways;
-        private float _currentSpeed;
-        private float _movementSpeed;
-        private float _acceleration;
-        private Vector3 _movementVector;
-        private Vector3 _currentInputVector;
-        private Vector3 _inputVector;
-        private Vector3 _boxPosition;
-        private Vector3 _differenceToPlayer;
-        private Vector3 _facingDirection;
-        private Vector3 _colliderSize;
-        private Transform _boxTransform;
+        private PushStateData _data;
 
         #endregion
 
         #region Overriden Methods
 
-        public override void EnterState()
+        public override void EnterState(PlayerActionDTO dto)
         {
-            _boxTransform = _context.InteractiveItem;
-            _colliderSize = _boxTransform.GetComponent<BoxCollider>().size;
-            _currentSpeed = 0.0f;
-            _movementSpeed = _context.MovementSpeed != 0.0f ? _context.MovementSpeed : _approachSpeed;
+            StateData = new PushStateData(dto.Item.GetComponent<BoxCollider>().size, dto)
+            {
+                Speed = GetInitialSpeed(dto.Speed),
+            };
 
-            StartCoroutine(ApproachToPush());
+            _data = StateData as PushStateData;
+            _data.Coroutine = StartCoroutine(ApproachToPush());
         }
 
-        public override void ExitState()
+        public override PlayerActionDTO ExitState()
         {
-            _isPushing = false;
-            _boxTransform = null;
+            if (_data.Coroutine != null) StopCoroutine(_data.Coroutine);
+
+            StateData.SetData(new MovementActionDTO(Controller.velocity));
+
+            return StateData.GetData();
         }
 
         public override void UpdateState()
         {
-            if (_isPushing)
-            {
-                HandleInput();
-                HandleMovement();
-                CheckCollision();
-                CheckSwitchState();
-            }
+            if (!_data.IsPushing) return;
+
+            Vector3 inputVector = GetInput();
+            inputVector = HandleCollision(inputVector);
+
+            _data.CurrentSpeed = GetSpeed(inputVector);
+
+            HandleMovement(_data.CurrentSpeed, inputVector);
+
+            _data.PreviousInputVector = inputVector;
+
+            CheckSwitchState();
         }
 
         public override void CheckSwitchState()
         {
-            if (!_characterController.isGrounded)
-            {
-                SwitchState(_stateMachine.Fall());
-            }
+            if (Controller.isGrounded) return;
+
+            SwitchState(StateMachine.Fall());
         }
 
-        public override bool TrySwitchState(ActionType action)
+        public override void TriggerSwitchState(ActionType action, ActionDTO dto = null)
         {
-            TrySwitchSubState(action);
+            base.TriggerSwitchState(action, dto);
 
-            if (action == ActionType.Push)
+            switch (action)
             {
-                if (_context.InteractiveItem.gameObject == _boxTransform.gameObject)
-                {
-                    SwitchState(_stateMachine.Idle());
-                    return true;
-                }
-            }
-            else if (action == ActionType.None)
-            {
-                // Allow player to stop pushing when not looking at the object
-                SwitchState(_stateMachine.Idle());
-                return true;
-            }
+                case ActionType.Push when (dto as ItemActionDTO).Item == _data.Item:
+                    SwitchState(StateMachine.Idle());
+                    break;
 
-            return false;
+                case ActionType.Run:
+                    StateData.SetData(dto);
+                    break;
+
+                case ActionType.None:
+                    SwitchState(StateMachine.Idle());
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         #endregion
 
         #region Private Methods
 
-        private void HandleInput()
+        private Vector3 GetInput()
         {
-            if (_inputManager.MovementInputValues.y != 0.0f && (_isZAxisAligned && _canPushForward || !_isZAxisAligned && _canPushSideways))
+            Vector3 inputVector = Vector3.zero;
+
+            if (IsPushingSideways())
             {
-                _currentInputVector = _facingDirection * _inputManager.MovementInputValues.y;
-                _currentInputVector.Normalize();
+                inputVector = _data.FacingDirection * Input.MovementInputValues.y;
+                inputVector.Normalize();
             }
-            else if (_inputManager.MovementInputValues.x != 0.0f && (_isZAxisAligned && _canPushSideways || !_isZAxisAligned && _canPushForward))
+
+            if (IsPushingForward())
             {
-                _currentInputVector = Vector3.Cross(Vector3.up, _facingDirection) * _inputManager.MovementInputValues.x;
-                _currentInputVector.Normalize();
+                inputVector = Vector3.Cross(Vector3.up, _data.FacingDirection) * Input.MovementInputValues.x;
+                inputVector.Normalize();
             }
-            else
-            {
-                _currentInputVector = Vector3.zero;
-            }
+
+            return inputVector;
         }
 
-        private void HandleMovement()
+        private void HandleMovement(float speed, Vector3 inputVector)
         {
-            _currentSpeed = SetSpeed();
-            _inputVector = _currentInputVector;
+            Vector3 movementVector = inputVector * speed + _gravityPull * Vector3.down;
 
-            _movementVector = _inputVector * _currentSpeed + _gravityPull * Vector3.down;
+            Controller.Move(movementVector * Time.fixedDeltaTime);
 
-            _characterController.Move(_movementVector * Time.fixedDeltaTime);
-
-            _boxPosition = transform.position + _differenceToPlayer;
-            _boxPosition.y = _boxTransform.position.y;
-            _boxTransform.position = _boxPosition;
+            _data.Item.position = GetItemPosition();
         }
 
-        private void CheckCollision()
+        private Vector3 HandleCollision(Vector3 inputVector)
         {
-            if (Physics.BoxCast(_boxTransform.localPosition, _colliderSize / 2, _inputVector, out RaycastHit hit, _boxTransform.localRotation, _distanceToCollision, _layersToCollide))
+            if (IsColliding(inputVector, out RaycastHit hit) && IsPushingAgainstObstacle(inputVector, hit))
             {
-                if ((_inputVector.x != 0 && Mathf.Sign(_inputVector.x) != Mathf.Sign(hit.normal.x)) ||
-                    (_inputVector.z != 0 && Mathf.Sign(_inputVector.z) != Mathf.Sign(hit.normal.z)))
-                {
-                    _inputVector = Vector3.zero;
-                }
+                return Vector3.zero;
             }
+
+            return inputVector;
         }
 
-        private float SetSpeed()
+        private float GetSpeed(Vector3 inputVector)
         {
-            if (_currentInputVector != _inputVector || _currentInputVector == Vector3.zero)
-            {
-                return 0.0f;
-            }
-            else
-            {
-                return Mathf.Lerp(_currentSpeed, _movementSpeed, Time.fixedDeltaTime * _acceleration);
-            }
+            if (inputVector != _data.PreviousInputVector || inputVector == Vector3.zero) return 0.0f;
+
+            return Mathf.Lerp(_data.CurrentSpeed, _data.Speed, Time.fixedDeltaTime * _data.Acceleration);
         }
+
+        private float GetInitialSpeed(float speed) => speed != 0.0f ? speed : _approachSpeed;
+
+        private bool IsPushingForward()
+        {
+            return Input.MovementInputValues.x != 0.0f && ((_data.IsZAxisAligned && _data.CanPushSideways) ||
+                                                           (!_data.IsZAxisAligned && _data.CanPushForward));
+        }
+
+        private bool IsPushingSideways()
+        {
+            return Input.MovementInputValues.y != 0.0f && ((_data.IsZAxisAligned && _data.CanPushForward) ||
+                                                           (!_data.IsZAxisAligned && _data.CanPushSideways));
+        }
+
+        private bool IsColliding(Vector3 inputVector, out RaycastHit hit)
+        {
+            return Physics.BoxCast(_data.Item.localPosition, _data.ColliderSize / 2, inputVector, out hit,
+                                   _data.Item.localRotation, _distanceToCollision, _layersToCollide);
+        }
+
+        private static bool IsPushingAgainstObstacle(Vector3 inputVector, RaycastHit hit)
+        {
+            return (inputVector.x != 0 && Mathf.Sign(inputVector.x) != Mathf.Sign(hit.normal.x)) ||
+                   (inputVector.z != 0 && Mathf.Sign(inputVector.z) != Mathf.Sign(hit.normal.z));
+        }
+
+        private Vector3 GetItemPosition()
+        {
+            Vector3 position = Player.Transform.position + _data.DifferenceToPlayer;
+            position.y = _data.Item.position.y;
+
+            return position;
+        }
+
+        #region Coroutine
 
         private IEnumerator ApproachToPush()
         {
-            if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, Vector3.Distance(transform.position, _boxTransform.position), _layerToPush))
+            if (IsRaycastHitting(out RaycastHit hit))
             {
-                _facingDirection = -hit.normal;
-                _facingDirection.y = 0.0f;
+                _data.FacingDirection = new Vector3(-hit.normal.x, 0.0f, -hit.normal.z);
 
-                Vector3 targetPosition = hit.collider.ClosestPoint(transform.position) + hit.normal * (transform.localScale.z / 2 + _distanceToBox);
-                targetPosition.y = transform.position.y;
+                Vector3 targetPosition = GetTargetPosition(hit);
 
-                while (Vector3.Distance(transform.position, targetPosition) >= 0.1f)
+                while (Vector3.Distance(Player.Transform.position, targetPosition) >= 0.1f)
                 {
-                    transform.position = Vector3.MoveTowards(transform.position, targetPosition, _movementSpeed * Time.fixedDeltaTime);
+                    MovePlayerTowards(targetPosition);
 
                     yield return new WaitForFixedUpdate();
                 }
 
-                _differenceToPlayer = _boxTransform.position - transform.position;
+                SetInitialData();
 
-                if (_boxTransform.TryGetComponent(out Pushable pushableBox))
-                {
-                    _isZAxisAligned = _boxTransform.forward == _facingDirection || _boxTransform.forward == -_facingDirection;
-                    _canPushForward = pushableBox.CanMoveForward;
-                    _canPushSideways = pushableBox.CanMoveSideways;
-                    _movementSpeed = pushableBox.MovementSpeed;
-                    _acceleration = pushableBox.Acceleration;
-                }
-
-                _isPushing = true;
+                _data.IsPushing = true;
             }
+
+            _data.Coroutine = null;
 
             yield return null;
         }
+
+        private void MovePlayerTowards(Vector3 targetPosition)
+        {
+            Player.Transform.position = Vector3.MoveTowards(Player.Transform.position,
+                                                            targetPosition,
+                                                            _data.Speed * Time.fixedDeltaTime);
+        }
+
+        private Vector3 GetTargetPosition(RaycastHit hit)
+        {
+            Vector3 targetPosition = hit.collider.ClosestPoint(Player.Transform.position) +
+                                     hit.normal * (Player.Transform.localScale.z / 2 + _distanceToBox);
+
+            targetPosition.y = Player.Transform.position.y;
+
+            return targetPosition;
+        }
+
+        private bool IsRaycastHitting(out RaycastHit hit)
+        {
+            return Physics.Raycast(Player.Transform.position, Player.Transform.forward, out hit,
+                                   Vector3.Distance(Player.Transform.position, _data.Item.position), _layerToPush);
+        }
+
+        private void SetInitialData()
+        {
+            _data.DifferenceToPlayer = _data.Item.position - Player.Transform.position;
+
+            if (_data.Item.TryGetComponent(out Pushable pushable))
+            {
+                _data.Acceleration = pushable.Acceleration;
+                _data.Speed = pushable.MovementSpeed;
+                _data.CanPushForward = pushable.CanMoveForward;
+                _data.CanPushSideways = pushable.CanMoveSideways;
+                _data.IsZAxisAligned = _data.Item.forward == _data.FacingDirection ||
+                                       _data.Item.forward == -_data.FacingDirection;
+            }
+        }
+
+        #endregion
 
         #endregion
     }

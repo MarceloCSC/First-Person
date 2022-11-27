@@ -1,12 +1,14 @@
 ﻿using System.Collections;
-using An01malia.FirstPerson.Player;
+using An01malia.FirstPerson.PlayerModule;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.Stealth
 {
     public class PlayerFootsteps : Noise
     {
-        [SerializeField] private float runningDistance = 5.0f;
+        #region Fields
+
+        [SerializeField] private float _runningDistance = 5.0f;
 
         [Header("Footsteps Interval")]
         [SerializeField] private float _defaultInterval = 0.5f;
@@ -17,12 +19,11 @@ namespace An01malia.FirstPerson.Stealth
 
         private Coroutine _footsteps;
 
-        #region Cached references
-
-        private PlayerController _player;
         private CharacterController _character;
 
-        #endregion Cached references
+        #endregion
+
+        #region Unity Methods
 
         protected override void OnEnable()
         {
@@ -30,9 +31,23 @@ namespace An01malia.FirstPerson.Stealth
 
         private void Start()
         {
-            hearingDistance = defaultDistance;
+            HearingDistance = DefaultDistance;
             StartCoroutine(HandleFootsteps());
         }
+
+        #endregion
+
+        #region Protected Methods
+
+        protected override void SetReferences()
+        {
+            base.SetReferences();
+            _character = GetComponentInParent<CharacterController>();
+        }
+
+        #endregion
+
+        #region Private Methods
 
         private IEnumerator HandleFootsteps()
         {
@@ -62,11 +77,6 @@ namespace An01malia.FirstPerson.Stealth
             }
         }
 
-        protected override void SetReferences()
-        {
-            base.SetReferences();
-            _player = GetComponentInParent<PlayerController>();
-            _character = GetComponentInParent<CharacterController>();
-        }
+        #endregion
     }
 }

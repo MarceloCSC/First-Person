@@ -1,12 +1,13 @@
+using An01malia.FirstPerson.Core;
+using An01malia.FirstPerson.Core.References;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Player
+namespace An01malia.FirstPerson.PlayerModule
 {
     public class PlayerCamera : MonoBehaviour
     {
         #region Fields
 
-        [SerializeField] private Transform _cameraTransform;
         [SerializeField] private float _mouseSensitivity = 15.0f;
         [SerializeField] private float _maxVerticalAngle = 90.0f;
         [SerializeField] private float _minVerticalAngle = -75.0f;
@@ -14,16 +15,8 @@ namespace An01malia.FirstPerson.Player
         private float _mouseX;
         private float _mouseY;
         private float _xAxisRotation;
-        private Vector3 _cameraPosition;
 
-        private PlayerInputManager _inputManager;
-
-        #endregion
-
-        #region Properties
-
-        public Transform CameraTransform => _cameraTransform;
-        public Vector3 CameraPosition => _cameraPosition;
+        private PlayerInput _playerInput;
 
         #endregion
 
@@ -31,14 +24,7 @@ namespace An01malia.FirstPerson.Player
 
         private void Awake()
         {
-            _inputManager = GetComponent<PlayerInputManager>();
-            _cameraPosition = _cameraTransform.localPosition;
-        }
-
-        private void Start()
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            _playerInput = GetComponent<PlayerInput>();
         }
 
         #endregion
@@ -47,11 +33,11 @@ namespace An01malia.FirstPerson.Player
 
         public void UpdateCamera()
         {
-            _mouseX = _inputManager.ViewInputValues.x * _mouseSensitivity * Time.deltaTime;
-            _mouseY = _inputManager.ViewInputValues.y * _mouseSensitivity * Time.deltaTime;
+            _mouseX = _playerInput.ViewInputValues.x * _mouseSensitivity * Time.deltaTime;
+            _mouseY = _playerInput.ViewInputValues.y * _mouseSensitivity * Time.deltaTime;
 
-            _cameraTransform.Rotate(Vector3.left * _mouseY);
-            transform.Rotate(Vector3.up * _mouseX);
+            Player.CameraTransform.Rotate(Vector3.left * _mouseY);
+            Player.Transform.Rotate(Vector3.up * _mouseX);
 
             ClampVerticalAngle();
         }
@@ -68,25 +54,14 @@ namespace An01malia.FirstPerson.Player
             {
                 _xAxisRotation = _maxVerticalAngle;
                 _mouseY = 0.0f;
-                _cameraTransform.eulerAngles = ClampRotation(-_maxVerticalAngle);
+                Player.CameraTransform.ClampRotation(-_maxVerticalAngle);
             }
             else if (_xAxisRotation < _minVerticalAngle)
             {
                 _xAxisRotation = _minVerticalAngle;
                 _mouseY = 0.0f;
-                _cameraTransform.eulerAngles = ClampRotation(-_minVerticalAngle);
+                Player.CameraTransform.ClampRotation(-_minVerticalAngle);
             }
-        }
-
-        private Vector3 ClampRotation(float xValue = 0, float yValue = 0, float zValue = 0)
-        {
-            Vector3 eulerRotation = _cameraTransform.eulerAngles;
-
-            eulerRotation.x = xValue == 0 ? _cameraTransform.eulerAngles.x : xValue;
-            eulerRotation.y = yValue == 0 ? _cameraTransform.eulerAngles.y : yValue;
-            eulerRotation.z = zValue == 0 ? _cameraTransform.eulerAngles.z : zValue;
-
-            return eulerRotation;
         }
 
         #endregion

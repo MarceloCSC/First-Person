@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Interaction
+namespace An01malia.FirstPerson.InteractionModule
 {
     public class Pushable : MonoBehaviour
     {

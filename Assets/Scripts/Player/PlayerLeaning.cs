@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using An01malia.FirstPerson.UI;
+using An01malia.FirstPerson.UIModule;
 
-namespace An01malia.FirstPerson.Player
+namespace An01malia.FirstPerson.PlayerModule
 {
 
     //    public class PlayerLeaning : PlayerCamera

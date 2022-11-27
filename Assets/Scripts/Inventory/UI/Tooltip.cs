@@ -1,9 +1,10 @@
-﻿using An01malia.FirstPerson.UI;
+﻿using An01malia.FirstPerson.Core;
+using An01malia.FirstPerson.PlayerModule;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace An01malia.FirstPerson.Inventory
+namespace An01malia.FirstPerson.InventoryModule
 {
     public class Tooltip : MonoBehaviour, IPointerExitHandler
     {
@@ -17,7 +18,7 @@ namespace An01malia.FirstPerson.Inventory
 
         private Button[] buttons;
 
-        private UIInputManager _inputManager;
+        private PlayerInput _playerInput;
 
         private void Awake()
         {
@@ -27,7 +28,7 @@ namespace An01malia.FirstPerson.Inventory
 
         public void ShowTooltip(Item item)
         {
-            Vector3 cursorPosition = _inputManager.CursorInputValues;
+            Vector3 cursorPosition = _playerInput.CursorInputValues;
             transform.position = cursorPosition.GetPositionOnScreen(canvas, rectTransform, padding);
             RestoreButtons();
             GetItemType(item);
@@ -93,7 +94,7 @@ namespace An01malia.FirstPerson.Inventory
             buttons = new Button[] { examineButton, useButton, equipButton, dropButton };
 
             // MUDAR!!
-            _inputManager = FindObjectOfType<UIInputManager>();
+            _playerInput = FindObjectOfType<PlayerInput>();
         }
     }
 }

@@ -1,20 +1,20 @@
 using System.Collections;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Interaction
+namespace An01malia.FirstPerson.InteractionModule
 {
     public class Openable : MonoBehaviour, IInteractive
     {
         #region Fields
 
-        [SerializeField] private bool _isOpen = false;
-        [SerializeField] private bool _isLocked = false;
+        [SerializeField] private bool _isOpen;
+        [SerializeField] private bool _isLocked;
 
         [Header("Automatic Doors")]
-        [SerializeField] private bool _isOpenedByTrigger = false;
+        [SerializeField] private bool _isOpenedByTrigger;
 
-        [SerializeField] private bool _hasTimer = false;
-        [SerializeField] private bool _staysOpen = false;
+        [SerializeField] private bool _hasTimer;
+        [SerializeField] private bool _staysOpen;
         [SerializeField] private float _timer = 0.0f;
 
         private float _timeLeft;

@@ -1,31 +1,36 @@
-﻿using UnityEngine;
-using An01malia.FirstPerson.Inventory;
+﻿using An01malia.FirstPerson.Core.References;
+using An01malia.FirstPerson.InventoryModule;
+using UnityEngine;
 
 namespace An01malia.FirstPerson.Crafting
 {
-
     public class CraftItems : MonoBehaviour
     {
+        #region Fields
 
-        [SerializeField] RecipeDatabase recipeDatabase = null;
+        [SerializeField] private RecipeDatabase _recipeDatabase;
 
         public static GameObject Panel;
         public static Transform RecipesGrid;
 
+        private PlayerInventory _playerInventory;
 
-        #region Cached references
-        private PlayerInventory playerInventory;
         #endregion
 
+        #region Unity Methods
 
         private void Start()
         {
             SetReferences();
         }
 
+        #endregion
+
+        #region Public Methods
+
         public void CheckRecipes()
         {
-            recipeDatabase.UpdateDatabase();
+            _recipeDatabase.UpdateDatabase();
         }
 
         public void Craft(Recipe recipe)
@@ -34,10 +39,10 @@ namespace An01malia.FirstPerson.Crafting
             {
                 foreach (Item ingredient in recipe.Ingredients)
                 {
-                    playerInventory.RemoveItem(ingredient);
+                    _playerInventory.RemoveItem(ingredient);
                 }
 
-                playerInventory.AddItems(recipe.CraftedItem());
+                _playerInventory.AddItems(recipe.CraftedItem());
             }
             else
             {
@@ -45,11 +50,15 @@ namespace An01malia.FirstPerson.Crafting
             }
         }
 
+        #endregion
+
+        #region Private Methods
+
         private bool HasIngredients(Recipe recipe)
         {
             foreach (Item ingredient in recipe.Ingredients)
             {
-                if (playerInventory.CountItems(ingredient) < ingredient.Amount)
+                if (_playerInventory.CountItems(ingredient) < ingredient.Amount)
                 {
                     return false;
                 }
@@ -61,9 +70,9 @@ namespace An01malia.FirstPerson.Crafting
         private void SetReferences()
         {
             RecipesGrid = Panel.transform.GetChild(0);
-            playerInventory = References.Player.GetComponent<PlayerInventory>();
+            _playerInventory = Player.Transform.GetComponent<PlayerInventory>();
         }
 
+        #endregion
     }
-
 }

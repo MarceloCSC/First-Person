@@ -1,4 +1,4 @@
-﻿namespace An01malia.FirstPerson.Inventory
+﻿namespace An01malia.FirstPerson.InventoryModule
 {
 
     public interface IContainer

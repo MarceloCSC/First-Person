@@ -1,7 +1,10 @@
-using An01malia.FirstPerson.Interaction;
+using An01malia.FirstPerson.InventoryModule;
+using An01malia.FirstPerson.PlayerModule.States.Data;
+using An01malia.FirstPerson.PlayerModule.States.DTOs;
+using An01malia.FirstPerson.UIModule;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Player.States
+namespace An01malia.FirstPerson.PlayerModule.States
 {
     public class PlayerIdleState : PlayerBaseState
     {
@@ -9,22 +12,16 @@ namespace An01malia.FirstPerson.Player.States
 
         [SerializeField] private float _gravityPull = 10.0f;
 
-        private Vector3 _gravityVector;
-
         #endregion
 
         #region Overriden Methods
 
-        public override void EnterState()
+        public override void EnterState(PlayerActionDTO dto)
         {
-            _context.MovementSpeed = 0.0f;
-            _context.Momentum = Vector3.zero;
-            _context.JumpsRemaining = 1;
+            StateData = new PlayerStateData(dto);
         }
 
-        public override void ExitState()
-        {
-        }
+        public override PlayerActionDTO ExitState() => StateData.GetData();
 
         public override void UpdateState()
         {
@@ -34,67 +31,71 @@ namespace An01malia.FirstPerson.Player.States
 
         public override void CheckSwitchState()
         {
-            if (!_characterController.isGrounded)
+            if (!Controller.isGrounded)
             {
-                SwitchState(_stateMachine.Fall());
+                SwitchState(StateMachine.Fall());
+                return;
             }
-            if (_inputManager.MovementInputValues.y != 0.0f || _inputManager.MovementInputValues.x != 0.0f)
+
+            if (HasNoInput()) return;
+
+            if (StateData.IsRunPressed)
             {
-                if (_context.IsRunPressed)
-                {
-                    SwitchState(_stateMachine.Run());
-                }
-                else
-                {
-                    SwitchState(_stateMachine.Walk());
-                }
+                SwitchState(StateMachine.Run());
+                return;
             }
+
+            SwitchState(StateMachine.Walk());
         }
 
-        public override bool TrySwitchState(ActionType action)
+        public override void TriggerSwitchState(ActionType action, ActionDTO dto = null)
         {
-            TrySwitchSubState(action);
+            base.TriggerSwitchState(action, dto);
 
-            if (action == ActionType.Jump)
+            switch (action)
             {
-                SwitchState(_stateMachine.Jump());
-                return true;
-            }
-            else if (action == ActionType.ClimbUpLedge)
-            {
-                SwitchState(_stateMachine.ClimbUpLedge());
-                return true;
-            }
-            else if (action == ActionType.Crouch)
-            {
-                SwitchState(_stateMachine.Crouch());
-                return true;
-            }
-            else if (action == ActionType.Climb)
-            {
-                SwitchState(_stateMachine.Climb());
-                return true;
-            }
-            else if (action == ActionType.Push)
-            {
-                SwitchState(_stateMachine.Push());
-                return true;
-            }
-            else if (action == ActionType.PickUp)
-            {
-                SwitchSubState(_stateMachine.PickUp());
-                return true;
-            }
-            else if (action == ActionType.Interact)
-            {
-                if (_context.InteractiveItem.TryGetComponent(out IInteractive interactive))
-                {
-                    interactive.StartInteraction();
-                    return true;
-                }
-            }
+                case ActionType.Jump:
+                    SwitchState(StateMachine.Jump());
+                    break;
 
-            return false;
+                case ActionType.Run:
+                    StateData.SetData(dto);
+                    break;
+
+                case ActionType.Crouch:
+                    SwitchState(StateMachine.Crouch());
+                    break;
+
+                case ActionType.GrabLedge:
+                    SwitchState(StateMachine.GrabLedge());
+                    break;
+
+                case ActionType.Climb:
+                    StateData.SetData(dto);
+                    SwitchState(StateMachine.Climb());
+                    break;
+
+                case ActionType.Push:
+                    StateData.SetData(dto);
+                    SwitchState(StateMachine.Push());
+                    break;
+
+                case ActionType.Carry:
+                    StateData.SetData(dto);
+                    SwitchState(this, StateMachine.Carry());
+                    break;
+
+                case ActionType.Interact:
+                    (dto as InteractiveActionDTO).Interactive.StartInteraction();
+                    break;
+
+                case ActionType.Inventory:
+                    UIPanels.ToggleUIPanel(PlayerInventory.Panel);
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         #endregion
@@ -103,10 +104,12 @@ namespace An01malia.FirstPerson.Player.States
 
         private void HandleGravity()
         {
-            _gravityVector = _gravityPull * Vector3.down;
+            Vector3 gravityVector = _gravityPull * Vector3.down;
 
-            _characterController.Move(_gravityVector * Time.fixedDeltaTime);
+            Controller.Move(gravityVector * Time.fixedDeltaTime);
         }
+
+        private bool HasNoInput() => Input.MovementInputValues.y == 0.0f && Input.MovementInputValues.x == 0.0f;
 
         #endregion
     }

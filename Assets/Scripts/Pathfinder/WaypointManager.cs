@@ -2,20 +2,23 @@
 
 namespace An01malia.FirstPerson.Pathfinder
 {
-
     public class WaypointManager : MonoBehaviour
     {
+        #region Fields
 
-        [SerializeField] bool toggleAllGizmos = false;
+        [SerializeField] private bool _toggleAllGizmos;
 
         public static Waypoint[] AllWaypoints;
 
+        #endregion
+
+        #region Unity Methods
 
         private void OnValidate()
         {
             foreach (Waypoint waypoint in FindObjectsOfType<Waypoint>())
             {
-                waypoint.ToggleGizmos = toggleAllGizmos;
+                waypoint.ToggleGizmos = _toggleAllGizmos;
             }
         }
 
@@ -24,6 +27,6 @@ namespace An01malia.FirstPerson.Pathfinder
             AllWaypoints = FindObjectsOfType<Waypoint>();
         }
 
+        #endregion
     }
-
 }

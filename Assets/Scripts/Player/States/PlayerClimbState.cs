@@ -1,8 +1,11 @@
+using An01malia.FirstPerson.Core.References;
+using An01malia.FirstPerson.InteractionModule;
+using An01malia.FirstPerson.PlayerModule.States.Data;
+using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using System.Collections;
-using An01malia.FirstPerson.Interaction;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Player.States
+namespace An01malia.FirstPerson.PlayerModule.States
 {
     public class PlayerClimbState : PlayerBaseState
     {
@@ -13,67 +16,75 @@ namespace An01malia.FirstPerson.Player.States
         [SerializeField] private float _rayLength = 1.0f;
         [SerializeField] private LayerMask _layerToClimb;
 
-        private bool _isClimbing;
-        private bool _canClimbUpwards;
-        private bool _canClimbSideways;
-        private float _movementSpeed;
-        private Vector3 _surfaceDirection;
-        private Vector3 _surfaceRightAxis;
-        private Vector3 _movementVector;
+        private ClimbStateData _data;
 
         #endregion
 
         #region Overriden Methods
 
-        public override void EnterState()
+        public override void EnterState(PlayerActionDTO dto)
         {
-            _isClimbing = false;
-            _movementSpeed = _context.MovementSpeed != 0.0f ? _context.MovementSpeed : _approachSpeed;
+            StateData = new ClimbStateData(dto.Item.position, dto)
+            {
+                Speed = GetInitialSpeed(dto.Speed),
+            };
 
-            StartCoroutine(ApproachToClimb());
+            _data = StateData as ClimbStateData;
+            _data.Coroutine = StartCoroutine(ApproachToClimb());
         }
 
-        public override void ExitState()
+        public override PlayerActionDTO ExitState()
         {
+            if (_data.Coroutine != null) StopCoroutine(_data.Coroutine);
+
+            StateData.SetData(new MovementActionDTO(Controller.velocity));
+
+            return StateData.GetData();
         }
 
         public override void UpdateState()
         {
-            if (_isClimbing)
-            {
-                HandleMovement();
-                CheckSwitchState();
-            }
+            if (!_data.IsClimbing) return;
+
+            HandleMovement();
+            CheckSwitchState();
         }
 
         public override void CheckSwitchState()
         {
-            if (_characterController.isGrounded)
+            if (Controller.isGrounded)
             {
-                SwitchState(_stateMachine.Idle());
+                SwitchState(StateMachine.Idle());
+                return;
             }
-            else if (!Physics.Raycast(transform.position + Vector3.down * _characterController.height / 2, _surfaceDirection, _rayLength, _layerToClimb))
+
+            if (HasNoSurfaceToClimb())
             {
-                SwitchState(_stateMachine.Fall());
+                SwitchState(StateMachine.Fall());
             }
         }
 
-        public override bool TrySwitchState(ActionType action)
+        public override void TriggerSwitchState(ActionType action, ActionDTO dto = null)
         {
-            TrySwitchSubState(action);
+            base.TriggerSwitchState(action, dto);
 
-            if (action == ActionType.Climb)
+            switch (action)
             {
-                SwitchState(_stateMachine.Fall());
-                return true;
-            }
-            else if (action == ActionType.ClimbUpLedge)
-            {
-                SwitchState(_stateMachine.ClimbUpLedge());
-                return true;
-            }
+                case ActionType.Climb:
+                    SwitchState(StateMachine.Fall());
+                    break;
 
-            return false;
+                case ActionType.GrabLedge:
+                    SwitchState(StateMachine.GrabLedge());
+                    break;
+
+                case ActionType.Run:
+                    StateData.SetData(dto);
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         #endregion
@@ -82,50 +93,101 @@ namespace An01malia.FirstPerson.Player.States
 
         private void HandleMovement()
         {
-            _movementVector = transform.up * _inputManager.MovementInputValues.y + _surfaceRightAxis * _inputManager.MovementInputValues.x;
-            _movementVector.Normalize();
+            Vector3 movementVector = HandleInput();
+            movementVector = RestrainMovement(movementVector);
 
-            if (!_canClimbUpwards)
-            {
-                _movementVector.y = 0.0f;
-            }
-            else if (!_canClimbSideways)
-            {
-                _movementVector.x = 0.0f;
-                _movementVector.z = 0.0f;
-            }
-
-            _characterController.Move(_movementVector * _climbSpeed * Time.fixedDeltaTime);
+            Controller.Move(_climbSpeed * Time.fixedDeltaTime * movementVector);
         }
+
+        private Vector3 HandleInput()
+        {
+            Vector3 movementVector = Player.Transform.up * Input.MovementInputValues.y +
+                                     _data.SurfaceRightAxis * Input.MovementInputValues.x;
+
+            return movementVector.normalized;
+        }
+
+        private Vector3 RestrainMovement(Vector3 movementVector)
+        {
+            if (!_data.CanClimbUpwards)
+            {
+                movementVector.y = 0.0f;
+            }
+            else if (!_data.CanClimbSideways)
+            {
+                movementVector.x = 0.0f;
+                movementVector.z = 0.0f;
+            }
+
+            return movementVector;
+        }
+
+        private float GetInitialSpeed(float speed) => speed != 0.0f ? speed : _approachSpeed;
+
+        private bool HasNoSurfaceToClimb() => !Physics.Raycast(Player.Transform.position + (Vector3.down * Controller.height / 2),
+                                                               _data.SurfaceDirection,
+                                                               _rayLength,
+                                                               _layerToClimb);
+
+        #region Coroutine
 
         private IEnumerator ApproachToClimb()
         {
-            if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, Vector3.Distance(transform.position, _context.InteractiveItem.position), _layerToClimb))
+            if (IsRaycastHitting(out RaycastHit hit))
             {
-                Vector3 targetPosition = hit.point + hit.normal * transform.localScale.z / 2;
-                targetPosition.y = transform.position.y;
+                Vector3 targetPosition = GetTargetPosition(hit);
 
-                _surfaceDirection = Vector3.Normalize(hit.point - transform.position);
-                _surfaceRightAxis = Vector3.Normalize(Vector3.Cross(hit.normal, Vector3.up));
+                SetInitialData(hit);
 
-                if (hit.transform.TryGetComponent(out Climbable climbable))
+                while (Vector3.Distance(Player.Transform.position, targetPosition) >= 0.1f)
                 {
-                    _canClimbUpwards = climbable.CanClimbUpwards;
-                    _canClimbSideways = climbable.CanClimbSideways;
-                }
-
-                while (Vector3.Distance(transform.position, targetPosition) >= 0.1f)
-                {
-                    transform.position = Vector3.MoveTowards(transform.position, targetPosition, _movementSpeed * Time.fixedDeltaTime);
+                    MovePlayerTowards(targetPosition);
 
                     yield return new WaitForFixedUpdate();
                 }
 
-                _isClimbing = true;
+                _data.IsClimbing = true;
             }
+
+            _data.Coroutine = null;
 
             yield return null;
         }
+
+        private void MovePlayerTowards(Vector3 targetPosition)
+        {
+            Player.Transform.position = Vector3.MoveTowards(Player.Transform.position,
+                                                            targetPosition,
+                                                            _data.Speed * Time.fixedDeltaTime);
+        }
+
+        private static Vector3 GetTargetPosition(RaycastHit hit)
+        {
+            Vector3 targetPosition = hit.point + hit.normal * Player.Transform.localScale.z / 2;
+            targetPosition.y = Player.Transform.position.y;
+
+            return targetPosition;
+        }
+
+        private bool IsRaycastHitting(out RaycastHit hit)
+        {
+            return Physics.Raycast(Player.Transform.position, Player.Transform.forward, out hit,
+                                   Vector3.Distance(Player.Transform.position, _data.SurfacePosition), _layerToClimb);
+        }
+
+        private void SetInitialData(RaycastHit hit)
+        {
+            _data.SurfaceDirection = Vector3.Normalize(hit.point - Player.Transform.position);
+            _data.SurfaceRightAxis = Vector3.Normalize(Vector3.Cross(hit.normal, Vector3.up));
+
+            if (hit.transform.TryGetComponent(out Climbable climbable))
+            {
+                _data.CanClimbUpwards = climbable.CanClimbUpwards;
+                _data.CanClimbSideways = climbable.CanClimbSideways;
+            }
+        }
+
+        #endregion
 
         #endregion
     }

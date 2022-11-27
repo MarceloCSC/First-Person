@@ -1,19 +1,27 @@
+using An01malia.FirstPerson.PlayerModule.States.Data;
+using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Player.States
+namespace An01malia.FirstPerson.PlayerModule.States
 {
     public abstract class PlayerBaseState : MonoBehaviour
     {
         #region Fields
 
-        private PlayerBaseState _currentSuperState;
-        private PlayerBaseState _currentSubState;
+        protected PlayerBaseState SuperState;
+        protected PlayerBaseState SubState;
 
-        protected CharacterController _characterController;
-        protected PlayerController _context;
-        protected PlayerStateMachine _stateMachine;
-        protected PlayerInputManager _inputManager;
-        protected PlayerCamera _camera;
+        protected CharacterController Controller;
+        protected PlayerStateMachine StateMachine;
+        protected PlayerInput Input;
+
+        private PlayerController _context;
+
+        #endregion
+
+        #region Properties
+
+        protected PlayerStateData StateData { get; set; }
 
         #endregion
 
@@ -21,26 +29,20 @@ namespace An01malia.FirstPerson.Player.States
 
         private void Awake()
         {
-            _characterController = GetComponent<CharacterController>();
-            _context = GetComponent<PlayerController>();
-            _stateMachine = GetComponent<PlayerStateMachine>();
-            _inputManager = GetComponent<PlayerInputManager>();
-            _camera = GetComponent<PlayerCamera>();
+            SetReferences();
         }
 
         #endregion
 
         #region Abstract Methods
 
-        public abstract void EnterState();
+        public abstract void EnterState(PlayerActionDTO dto = null);
 
         public abstract void UpdateState();
 
-        public abstract void ExitState();
+        public abstract PlayerActionDTO ExitState();
 
         public abstract void CheckSwitchState();
-
-        public abstract bool TrySwitchState(ActionType action);
 
         #endregion
 
@@ -50,10 +52,22 @@ namespace An01malia.FirstPerson.Player.States
         {
             UpdateState();
 
-            if (_currentSubState)
-            {
-                _currentSubState.UpdateStates();
-            }
+            if (!SubState) return;
+
+            SubState.UpdateStates();
+        }
+
+        public virtual void TriggerSwitchState(ActionType action, ActionDTO dto = null)
+        {
+            if (!SubState) return;
+
+            SubState.TriggerSwitchState(action, dto);
+        }
+
+        public void RemoveSubState()
+        {
+            SubState.SuperState = null;
+            SwitchState(this, null);
         }
 
         #endregion
@@ -62,70 +76,62 @@ namespace An01malia.FirstPerson.Player.States
 
         protected void SwitchState(PlayerBaseState newState)
         {
-            ExitState();
+            if (newState == _context.CurrentState) return;
 
-            newState.EnterState();
-
-            _context.CurrentState = newState;
-
-            if (_currentSubState)
+            if (SubState)
             {
-                _context.CurrentState.SetSubState(_currentSubState);
-                _currentSubState = null;
+                newState.SetSubState(SubState);
+                SubState = null;
             }
+
+            var actionDto = ExitState();
+
+            newState.EnterState(actionDto);
+
+            _context.SetCurrentState(newState);
         }
 
-        protected void SwitchSubState(PlayerBaseState newSubState)
+        protected void SwitchState(PlayerBaseState newState, PlayerBaseState newSubState)
         {
-            if (_currentSubState)
-            {
-                _currentSubState.ExitState();
-            }
-
+            SwitchState(newState);
             SetSubState(newSubState);
-
-            _currentSubState.EnterState();
-        }
-
-        protected bool TrySwitchSubState(ActionType action)
-        {
-            if (_currentSubState)
-            {
-                _currentSubState.TrySwitchState(action);
-                return true;
-            }
-
-            return false;
-        }
-
-        protected void RemoveSubState()
-        {
-            if (_currentSuperState)
-            {
-                _currentSuperState.RemoveSubState();
-                _currentSuperState = null;
-            }
-            else
-            {
-                _currentSubState.ExitState();
-                _currentSubState = null;
-            }
         }
 
         #endregion
 
         #region Private Methods
 
-        private void SetSuperState(PlayerBaseState newSuperState)
+        protected void SetSubState(PlayerBaseState newSubState)
         {
-            _currentSuperState = newSuperState;
+            if (SubState && SubState != newSubState)
+            {
+                SubState.ExitState();
+                SubState.SuperState = null;
+            }
+
+            SubState = newSubState;
+
+            if (!newSubState) return;
+
+            if (!SubState.SuperState)
+            {
+                SubState.EnterState(StateData.GetData());
+            }
+
+            SubState.SetSuperState(this);
         }
 
-        private void SetSubState(PlayerBaseState newSubState)
+        protected void SetSuperState(PlayerBaseState newSuperState)
         {
-            _currentSubState = newSubState;
+            SuperState = newSuperState;
+        }
 
-            newSubState.SetSuperState(this);
+        private void SetReferences()
+        {
+            Controller = GetComponentInParent<CharacterController>();
+            StateMachine = GetComponent<PlayerStateMachine>();
+            Input = GetComponentInParent<PlayerInput>();
+            _context = GetComponentInParent<PlayerController>();
         }
 
         #endregion

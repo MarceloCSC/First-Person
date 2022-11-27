@@ -1,39 +1,40 @@
-﻿using UnityEngine;
-using An01malia.FirstPerson.Inventory;
-using An01malia.FirstPerson.Crafting;
+﻿using An01malia.FirstPerson.Crafting;
+using An01malia.FirstPerson.InventoryModule;
+using UnityEngine;
 
-namespace An01malia.FirstPerson.UI
+namespace An01malia.FirstPerson.UIModule
 {
-
     public class UIPanelButtons : MonoBehaviour
     {
+        #region Fields
 
-        #region Cached references
-        private Container container;
-        private CraftItems crafting;
+        private Container _container;
+        private CraftItems _crafting;
+
         #endregion
 
+        #region Public Methods
 
         public void HandleTransfer()
         {
-            if (container == null)
+            if (_container == null)
             {
-                container = FindObjectOfType<Container>();
+                _container = FindObjectOfType<Container>();
             }
 
-            container.TransferAll();
+            _container.TransferAll();
         }
 
         public void HandleCrafting()
         {
-            if (crafting == null)
+            if (_crafting == null)
             {
-                crafting = FindObjectOfType<CraftItems>();
+                _crafting = FindObjectOfType<CraftItems>();
             }
 
             //
         }
 
+        #endregion
     }
-
 }

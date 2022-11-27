@@ -1,16 +1,22 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace An01malia.FirstPerson.UI
+namespace An01malia.FirstPerson.UIModule
 {
     public class UIInteraction : MonoBehaviour
     {
-        [SerializeField] private Text interactionDisplay = null;
+        #region Fields
+
+        [SerializeField] private Text _interactionDisplay;
 
         [Header("Verbs to Display")]
-        [SerializeField] private string open = "Open ";
-        [SerializeField] private string pickUp = "Pick up ";
-        [SerializeField] private string use = "Use ";
+        [SerializeField] private string _open = "Open ";
+        [SerializeField] private string _pickUp = "Pick up ";
+        [SerializeField] private string _use = "Use ";
+
+        #endregion
+
+        #region Unity Methods
 
         private void Awake()
         {
@@ -22,19 +28,25 @@ namespace An01malia.FirstPerson.UI
         //    playerInteraction.OnRayCast += DisplayObject;
         //}
 
-        private void DisplayObject(bool isInteractable)
-        {
-            interactionDisplay.enabled = isInteractable;
-        }
-
         //private void OnDisable()
         //{
         //    playerInteraction.OnRayCast -= DisplayObject;
         //}
 
+        #endregion
+
+        #region Private Methods
+
+        private void DisplayObject(bool isInteractable)
+        {
+            _interactionDisplay.enabled = isInteractable;
+        }
+
         private void SetReferences()
         {
             //playerInteraction = References.Player.GetComponent<PlayerInteraction>();
         }
+
+        #endregion
     }
 }

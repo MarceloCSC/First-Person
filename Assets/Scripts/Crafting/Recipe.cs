@@ -1,38 +1,44 @@
-﻿using UnityEngine;
-using An01malia.FirstPerson.Inventory;
+﻿using An01malia.FirstPerson.InventoryModule;
+using UnityEngine;
 
 namespace An01malia.FirstPerson.Crafting
 {
-
     [CreateAssetMenu(fileName = "NewRecipe", menuName = "Crafting/New Recipe")]
     public class Recipe : ScriptableObject
     {
+        #region Fields
 
-        [SerializeField] Item itemToCraft = null;
-        [SerializeField] Item[] ingredients = new Item[4];
+        [SerializeField] private Item _itemToCraft;
+        [SerializeField] private Item[] _ingredients = new Item[4];
+
         [Space]
-        [SerializeField] bool isAvailable = false;
+        [SerializeField] private bool _isAvailable;
 
-
-        #region Properties
-        public Item ItemToCraft => itemToCraft;
-        public Item[] Ingredients => ingredients;
-        public bool HasBeenLearned
-        {
-            get => isAvailable;
-            set
-            {
-                isAvailable = value;
-            }
-        }
         #endregion
 
+        #region Properties
+
+        public Item ItemToCraft => _itemToCraft;
+        public Item[] Ingredients => _ingredients;
+
+        public bool HasBeenLearned
+        {
+            get => _isAvailable;
+            set
+            {
+                _isAvailable = value;
+            }
+        }
+
+        #endregion
+
+        #region Public Methods
 
         public Item CraftedItem()
         {
-            return new Item(itemToCraft.Root, itemToCraft.Amount);
+            return new Item(_itemToCraft.Root, _itemToCraft.Amount);
         }
 
+        #endregion
     }
-
 }

@@ -1,8 +1,10 @@
+using An01malia.FirstPerson.Core.References;
+using An01malia.FirstPerson.PlayerModule.States.Data;
+using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using System.Collections;
-using An01malia.FirstPerson.Interaction;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.Player.States
+namespace An01malia.FirstPerson.PlayerModule.States
 {
     public class PlayerCrouchState : PlayerBaseState
     {
@@ -10,46 +12,35 @@ namespace An01malia.FirstPerson.Player.States
 
         [SerializeField] private float _walkSpeed = 5.0f;
         [SerializeField] private float _gravityPull = 10.0f;
-        [SerializeField] private float _crouchingHeight = 0.6f;
-        [SerializeField] private float _cameraHeight = 0.5f;
+        [SerializeField] private float _crouchingHeight = 1.0f;
         [SerializeField] private float _distanceToCeiling = 1.0f;
-        [SerializeField] private float _smoothTime = 0.1f;
+        [SerializeField] private float _interpolationRatio = 0.2f;
+        [SerializeField] private float _smoothTime = 0.12f;
 
-        private bool _skipTransition;
-        private float _standingHeight;
-        private Vector3 _movementVector;
-        private Coroutine _crouchCoroutine;
+        private CrouchStateData _data;
 
         #endregion
 
         #region Overriden Methods
 
-        public override void EnterState()
+        public override void EnterState(PlayerActionDTO dto)
         {
-            _standingHeight = _characterController.height;
-            _skipTransition = false;
+            StateData = new CrouchStateData(Controller.height, Player.SightPosition, dto)
+            {
+                Speed = _walkSpeed,
+            };
 
-            if (_crouchCoroutine != null) StopCoroutine(_crouchCoroutine);
-
-            _crouchCoroutine = StartCoroutine(TranslateHeight(_crouchingHeight, _cameraHeight));
+            _data = StateData as CrouchStateData;
+            _data.Coroutine = StartCoroutine(TranslateHeight(_crouchingHeight,
+                                                             GetTargetCenter(),
+                                                             new Vector3(0.0f, _crouchingHeight)));
         }
 
-        public override void ExitState()
+        public override PlayerActionDTO ExitState()
         {
-            _context.MovementSpeed = _walkSpeed;
-            _context.Momentum = _characterController.velocity;
+            StateData.SetData(new MovementActionDTO(Controller.velocity));
 
-            if (_crouchCoroutine != null) StopCoroutine(_crouchCoroutine);
-
-            if (_skipTransition)
-            {
-                _characterController.height = _standingHeight;
-                _camera.CameraTransform.localPosition = _camera.CameraPosition;
-            }
-            else
-            {
-                _crouchCoroutine = StartCoroutine(TranslateHeight(_standingHeight, _camera.CameraPosition.y));
-            }
+            return StateData.GetData();
         }
 
         public override void UpdateState()
@@ -60,63 +51,59 @@ namespace An01malia.FirstPerson.Player.States
 
         public override void CheckSwitchState()
         {
-            if (!_characterController.isGrounded)
-            {
-                _skipTransition = true;
-                SwitchState(_stateMachine.Fall());
-            }
+            if (Controller.isGrounded) return;
+
+            StandUp(StateMachine.Fall(), true);
         }
 
-        public override bool TrySwitchState(ActionType action)
+        public override void TriggerSwitchState(ActionType action, ActionDTO dto = null)
         {
-            TrySwitchSubState(action);
+            base.TriggerSwitchState(action, dto);
 
-            if (action == ActionType.Jump && CanStandUp())
+            switch (action)
             {
-                _skipTransition = true;
-                SwitchState(_stateMachine.Jump());
-                return true;
-            }
-            else if (action == ActionType.Run && CanStandUp())
-            {
-                SwitchState(_stateMachine.Run());
-                return true;
-            }
-            else if (action == ActionType.Crouch && CanStandUp())
-            {
-                SwitchState(_stateMachine.Idle());
-                return true;
-            }
-            else if (action == ActionType.Climb && CanStandUp())
-            {
-                SwitchState(_stateMachine.Climb());
-                return true;
-            }
-            else if (action == ActionType.Push && CanStandUp())
-            {
-                SwitchState(_stateMachine.Push());
-                return true;
-            }
-            else if (action == ActionType.ClimbUpLedge && CanStandUp())
-            {
-                SwitchState(_stateMachine.ClimbUpLedge());
-                return true;
-            }
-            else if (action == ActionType.PickUp)
-            {
-                SwitchSubState(_stateMachine.PickUp());
-                return true;
-            }
-            else if (action == ActionType.Interact)
-            {
-                if (_context.InteractiveItem.TryGetComponent(out IInteractive interactive))
-                {
-                    interactive.StartInteraction();
-                    return true;
-                }
-            }
+                case ActionType.Jump when CanStandUp():
+                    StandUp(StateMachine.Idle());
+                    break;
 
-            return false;
+                case ActionType.Run when CanStandUp() && (dto as RunActionDTO).IsRunPressed:
+                    StandUp(StateMachine.Run());
+                    break;
+
+                case ActionType.Run:
+                    StateData.SetData(dto);
+                    break;
+
+                case ActionType.Crouch when CanStandUp():
+                    StandUp(StateMachine.Idle());
+                    break;
+
+                case ActionType.GrabLedge when CanStandUp():
+                    StandUp(StateMachine.GrabLedge());
+                    break;
+
+                case ActionType.Climb when CanStandUp():
+                    StateData.SetData(dto);
+                    StandUp(StateMachine.Climb());
+                    break;
+
+                case ActionType.Push when CanStandUp():
+                    StateData.SetData(dto);
+                    StandUp(StateMachine.Push());
+                    break;
+
+                case ActionType.Carry:
+                    StateData.SetData(dto);
+                    SwitchState(this, StateMachine.Carry());
+                    break;
+
+                case ActionType.Interact:
+                    (dto as InteractiveActionDTO).Interactive.StartInteraction();
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         #endregion
@@ -125,37 +112,100 @@ namespace An01malia.FirstPerson.Player.States
 
         private void HandleMovement()
         {
-            _movementVector = transform.forward * _inputManager.MovementInputValues.y + transform.right * _inputManager.MovementInputValues.x;
-            _movementVector.Normalize();
+            Vector3 movementVector = HandleInput();
 
-            _movementVector = _movementVector * _walkSpeed + _gravityPull * Vector3.down;
+            movementVector = movementVector * _walkSpeed + _gravityPull * Vector3.down;
 
-            _characterController.Move(_movementVector * Time.fixedDeltaTime);
+            Controller.Move(movementVector * Time.fixedDeltaTime);
         }
 
-        private IEnumerator TranslateHeight(float targetHeight, float targetYPosition)
+        private Vector3 HandleInput()
         {
-            float velocity = 0.0f;
-            Vector3 velocityVector = Vector3.zero;
-            Vector3 targetPosition = new Vector3(0.0f, targetYPosition, 0.0f);
+            Vector3 movementVector = Player.Transform.forward * Input.MovementInputValues.y +
+                                     Player.Transform.right * Input.MovementInputValues.x;
 
-            while (Mathf.Abs(_camera.CameraTransform.localPosition.y - targetYPosition) >= 0.01f &&
-                    Mathf.Abs(_characterController.height - targetHeight) >= 0.01f)
+            return movementVector.normalized;
+        }
+
+        private bool CanStandUp() => !Physics.Raycast(Player.Transform.position, Player.Transform.up, _distanceToCeiling);
+
+        private void StandUp(PlayerBaseState newState, bool skipTransition = false)
+        {
+            if (_data.Coroutine != null) StopCoroutine(_data.Coroutine);
+
+            if (skipTransition)
             {
-                _characterController.height = Mathf.SmoothDamp(_characterController.height, targetHeight, ref velocity, _smoothTime);
-                _camera.CameraTransform.localPosition = Vector3.SmoothDamp(_camera.CameraTransform.localPosition, targetPosition, ref velocityVector, _smoothTime);
+                SetFinalPosition(_data.StandingHeight, Vector3.zero, _data.InitialPosition);
+                SwitchState(newState);
+
+                return;
+            }
+
+            _data.Coroutine = StartCoroutine(TranslateHeight(_data.StandingHeight,
+                                                             Vector3.zero,
+                                                             _data.InitialPosition,
+                                                             newState));
+        }
+
+        private Vector3 GetTargetCenter() => -new Vector3(0.0f, 1 - _crouchingHeight / Controller.height, 0.0f);
+
+        private void SetFinalPosition(float targetHeight, Vector3 targetCenter, Vector3 targetPosition)
+        {
+            Controller.height = targetHeight;
+            Controller.center = targetCenter;
+            Player.Sight.localPosition = targetPosition;
+        }
+
+        #region Coroutine
+
+        private IEnumerator TranslateHeight(float targetHeight, Vector3 targetCenter, Vector3 targetPosition)
+        {
+            Vector3 velocityVector = Vector3.zero;
+
+            while (IsFarFromTarget(targetHeight, targetPosition.y))
+            {
+                Controller.height = Mathf.LerpUnclamped(Controller.height, targetHeight, _interpolationRatio);
+                Controller.center = Vector3.LerpUnclamped(Controller.center, targetCenter, _interpolationRatio);
+
+                velocityVector = MoveCameraTowards(targetPosition, velocityVector);
 
                 yield return new WaitForFixedUpdate();
             }
 
-            _characterController.height = targetHeight;
-            _camera.CameraTransform.localPosition = targetPosition;
-            _crouchCoroutine = null;
+            SetFinalPosition(targetHeight, targetCenter, targetPosition);
+
+            _data.Coroutine = null;
 
             yield return null;
         }
 
-        private bool CanStandUp() => !Physics.Raycast(transform.position, transform.up, _distanceToCeiling);
+        private IEnumerator TranslateHeight(float targetHeight,
+                                            Vector3 targetCenter,
+                                            Vector3 targetPosition,
+                                            PlayerBaseState newState)
+        {
+            yield return TranslateHeight(targetHeight, targetCenter, targetPosition);
+
+            SwitchState(newState);
+        }
+
+        private bool IsFarFromTarget(float targetHeight, float targetYPosition)
+        {
+            return Mathf.Abs(Player.Sight.position.y - targetYPosition) >= 0.01f &&
+                   Mathf.Abs(Controller.height - targetHeight) >= 0.01f;
+        }
+
+        private Vector3 MoveCameraTowards(Vector3 targetPosition, Vector3 velocityVector)
+        {
+            Player.Sight.localPosition = Vector3.SmoothDamp(Player.Sight.localPosition,
+                                                            targetPosition,
+                                                            ref velocityVector,
+                                                            _smoothTime);
+
+            return velocityVector;
+        }
+
+        #endregion
 
         #endregion
     }
