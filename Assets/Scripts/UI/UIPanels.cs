@@ -26,10 +26,7 @@ namespace An01malia.FirstPerson.UIModule
             {
                 foreach (GameObject panel in _panels)
                 {
-                    if (panel.activeSelf)
-                    {
-                        return true;
-                    }
+                    if (panel.activeSelf) return true;
                 }
 
                 return false;
@@ -59,6 +56,9 @@ namespace An01malia.FirstPerson.UIModule
             if (!PlayerItemInspection.Panel.activeSelf)
             {
                 panel.SetActive(!panel.activeSelf);
+
+                Cursor.lockState = panel.activeSelf ? CursorLockMode.None : CursorLockMode.Locked;
+                Cursor.visible = panel.activeSelf;
             }
         }
 

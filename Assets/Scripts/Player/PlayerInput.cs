@@ -1,3 +1,4 @@
+using An01malia.FirstPerson.Core;
 using An01malia.FirstPerson.Core.References;
 using An01malia.FirstPerson.InteractionModule;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
@@ -12,11 +13,11 @@ namespace An01malia.FirstPerson.PlayerModule
         Run,
         Crouch,
         Jump,
-        Climb,
         Push,
+        Climb,
         Carry,
-        GrabLedge,
         Interact,
+        GrabLedge,
         Inventory
     }
 
@@ -52,7 +53,8 @@ namespace An01malia.FirstPerson.PlayerModule
 
         private void OnEnable()
         {
-            SubscribeToInputs();
+            EnableInputActions();
+            SubscribeEvents();
         }
 
         private void Start()
@@ -63,7 +65,8 @@ namespace An01malia.FirstPerson.PlayerModule
 
         private void OnDisable()
         {
-            UnsubscribeToInputs();
+            UnsubscribeEvents();
+            DisableInputActions();
         }
 
         #endregion
@@ -78,6 +81,8 @@ namespace An01malia.FirstPerson.PlayerModule
         }
 
         #endregion
+
+        #region Private Methods
 
         #region Input Actions
 
@@ -140,9 +145,73 @@ namespace An01malia.FirstPerson.PlayerModule
             _context.CurrentState.TriggerSwitchState(ActionType.Inventory);
         }
 
+        private void OnPausePressed(InputAction.CallbackContext callback)
+        {
+            GameStateManager.Instance.ChangeState(GameState.Paused);
+        }
+
         #endregion
 
-        #region Private Methods
+        private void OnGameStateChanged(GameState gameState)
+        {
+            switch (gameState)
+            {
+                case GameState.Inventory:
+                    if (_actions.Player.enabled) _actions.Player.Disable();
+                    break;
+
+                case GameState.Paused:
+                    DisableInputActions();
+                    break;
+
+                case GameState.Gameplay:
+                    EnableInputActions();
+                    break;
+            }
+        }
+
+        private void EnableInputActions()
+        {
+            if (!_actions.Game.enabled) _actions.Game.Enable();
+            if (!_actions.Player.enabled) _actions.Player.Enable();
+            if (!_actions.Inspection.enabled) _actions.Inspection.Enable();
+            if (!_actions.UI.enabled) _actions.UI.Enable();
+        }
+
+        private void DisableInputActions()
+        {
+            if (_actions.Player.enabled) _actions.Player.Disable();
+            if (_actions.Inspection.enabled) _actions.Inspection.Disable();
+            if (_actions.UI.enabled) _actions.UI.Disable();
+        }
+
+        private void SubscribeEvents()
+        {
+            _actions.Game.Pause.performed += OnPausePressed;
+            _actions.Player.Jump.performed += OnJumpPressed;
+            _actions.Player.Run.performed += OnRunPressed;
+            _actions.Player.Run.canceled += OnRunPressed;
+            _actions.Player.Crouch.performed += OnCrouchPressed;
+            _actions.Player.Interact.performed += OnInteractionPressed;
+            _actions.UI.Inventory.performed += OnInventoryPressed;
+            GameStateManager.Instance.OnGameStateChanged += OnGameStateChanged;
+        }
+
+        private void UnsubscribeEvents()
+        {
+            _actions.Game.Pause.performed -= OnPausePressed;
+            _actions.Player.Jump.performed -= OnJumpPressed;
+            _actions.Player.Run.performed -= OnRunPressed;
+            _actions.Player.Run.canceled -= OnRunPressed;
+            _actions.Player.Crouch.performed -= OnCrouchPressed;
+            _actions.Player.Interact.performed -= OnInteractionPressed;
+            _actions.UI.Inventory.performed -= OnInventoryPressed;
+
+            if (GameStateManager.Instance != null)
+            {
+                GameStateManager.Instance.OnGameStateChanged -= OnGameStateChanged;
+            }
+        }
 
         private void SetReferences()
         {
@@ -150,36 +219,6 @@ namespace An01malia.FirstPerson.PlayerModule
             _context = GetComponent<PlayerController>();
             _interaction = GetComponent<PlayerInteraction>();
             _surroundings = GetComponent<PlayerSurroundings>();
-        }
-
-        private void SubscribeToInputs()
-        {
-            _actions.Player.Enable();
-            _actions.Player.Jump.performed += OnJumpPressed;
-            _actions.Player.Run.performed += OnRunPressed;
-            _actions.Player.Run.canceled += OnRunPressed;
-            _actions.Player.Crouch.performed += OnCrouchPressed;
-            _actions.Player.Interact.performed += OnInteractionPressed;
-
-            _actions.UI.Enable();
-            _actions.UI.Inventory.performed += OnInventoryPressed;
-
-            _actions.Inspection.Enable();
-        }
-
-        private void UnsubscribeToInputs()
-        {
-            _actions.Player.Disable();
-            _actions.Player.Jump.performed -= OnJumpPressed;
-            _actions.Player.Run.performed -= OnRunPressed;
-            _actions.Player.Run.canceled -= OnRunPressed;
-            _actions.Player.Crouch.performed -= OnCrouchPressed;
-            _actions.Player.Interact.performed -= OnInteractionPressed;
-
-            _actions.UI.Disable();
-            _actions.UI.Inventory.performed -= OnInventoryPressed;
-
-            _actions.Inspection.Disable();
         }
 
         #endregion

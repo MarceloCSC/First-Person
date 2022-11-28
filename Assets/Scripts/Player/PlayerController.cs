@@ -1,3 +1,4 @@
+using An01malia.FirstPerson.Core;
 using An01malia.FirstPerson.PlayerModule.States;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using UnityEngine;
@@ -29,6 +30,11 @@ namespace An01malia.FirstPerson.PlayerModule
         private void Awake()
         {
             SetReferences();
+        }
+
+        private void OnEnable()
+        {
+            GameStateManager.Instance.OnGameStateChanged += OnGameStateChanged;
         }
 
         private void Start()
@@ -64,6 +70,14 @@ namespace An01malia.FirstPerson.PlayerModule
             _playerCamera.UpdateCamera();
         }
 
+        private void OnDisable()
+        {
+            if (GameStateManager.Instance != null)
+            {
+                GameStateManager.Instance.OnGameStateChanged -= OnGameStateChanged;
+            }
+        }
+
         #endregion
 
         #region Public Methods
@@ -76,6 +90,12 @@ namespace An01malia.FirstPerson.PlayerModule
         #endregion
 
         #region Private Methods
+
+        private void OnGameStateChanged(GameState gameState)
+        {
+            IsCameraEnabled = gameState == GameState.Gameplay;
+            IsMovementEnabled = gameState == GameState.Gameplay;
+        }
 
         private void SetReferences()
         {

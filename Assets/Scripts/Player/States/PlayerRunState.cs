@@ -1,6 +1,9 @@
+using An01malia.FirstPerson.Core;
 using An01malia.FirstPerson.Core.References;
+using An01malia.FirstPerson.InventoryModule;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
+using An01malia.FirstPerson.UIModule;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.PlayerModule.States
@@ -89,6 +92,11 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
                 case ActionType.Interact:
                     (dto as InteractiveActionDTO).Interactive.StartInteraction();
+                    break;
+
+                case ActionType.Inventory:
+                    GameStateManager.Instance.ChangeState(GameState.Inventory);
+                    UIPanels.ToggleUIPanel(PlayerInventory.Panel);
                     break;
 
                 default:

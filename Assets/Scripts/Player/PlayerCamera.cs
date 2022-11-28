@@ -24,7 +24,7 @@ namespace An01malia.FirstPerson.PlayerModule
 
         private void Awake()
         {
-            _playerInput = GetComponent<PlayerInput>();
+            SetReferences();
         }
 
         #endregion
@@ -62,6 +62,11 @@ namespace An01malia.FirstPerson.PlayerModule
                 _mouseY = 0.0f;
                 Player.CameraTransform.ClampRotation(-_minVerticalAngle);
             }
+        }
+
+        private void SetReferences()
+        {
+            _playerInput = GetComponent<PlayerInput>();
         }
 
         #endregion

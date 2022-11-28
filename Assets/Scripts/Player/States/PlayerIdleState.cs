@@ -1,3 +1,4 @@
+using An01malia.FirstPerson.Core;
 using An01malia.FirstPerson.InventoryModule;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
@@ -90,6 +91,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     break;
 
                 case ActionType.Inventory:
+                    GameStateManager.Instance.ChangeState(GameState.Inventory);
                     UIPanels.ToggleUIPanel(PlayerInventory.Panel);
                     break;
 
