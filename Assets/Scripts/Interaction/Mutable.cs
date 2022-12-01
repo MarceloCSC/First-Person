@@ -22,15 +22,13 @@ namespace An01malia.FirstPerson.InteractionModule
 
         private void Awake()
         {
-            if (TryGetComponent(out Animator animator))
-            {
-                _animator = animator;
-            }
+            SetReferences();
         }
 
         private void Start()
         {
             if (_animator) SetAnimation();
+
             _startingPosition = transform.position;
         }
 
@@ -40,20 +38,13 @@ namespace An01malia.FirstPerson.InteractionModule
 
         public override void StartInteraction()
         {
-            if (!IsLocked)
-            {
-                IsActivated = !IsActivated;
+            if (!CanInteract) return;
 
-                if (_animator)
-                {
-                    _animator.SetBool("isActivated", IsActivated);
-                }
+            IsActivated = !IsActivated;
 
-                if (_waypoint)
-                {
-                    PrepareCoroutine();
-                }
-            }
+            if (_animator) _animator.SetBool("isActivated", IsActivated);
+
+            if (_waypoint) PrepareCoroutine();
         }
 
         #endregion
@@ -70,12 +61,10 @@ namespace An01malia.FirstPerson.InteractionModule
 
         private void PrepareCoroutine()
         {
-            if (_changingPosition != null)
-            {
-                StopCoroutine(_changingPosition);
-            }
+            if (_changingPosition != null) StopCoroutine(_changingPosition);
 
             Vector3 destination = IsActivated ? _waypoint.position : _startingPosition;
+
             _changingPosition = StartCoroutine(SetPosition(destination));
         }
 
@@ -84,10 +73,16 @@ namespace An01malia.FirstPerson.InteractionModule
             while (Vector3.Distance(transform.position, destination) > 0.1f)
             {
                 transform.position = Vector3.MoveTowards(transform.position, destination, _movementSpeed * Time.fixedDeltaTime);
+
                 yield return new WaitForFixedUpdate();
             }
 
             yield return null;
+        }
+
+        private void SetReferences()
+        {
+            _animator = GetComponent<Animator>();
         }
 
         #endregion

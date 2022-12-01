@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace An01malia.FirstPerson.UIModule
 {
-    public class UIItemInteraction : MonoBehaviour
+    public class UIInventoryButtons : MonoBehaviour
     {
         #region Fields
 
-        [SerializeField] private ItemDatabase _itemDatabase;
+        private Container _container;
 
         #endregion
 
@@ -18,17 +18,17 @@ namespace An01malia.FirstPerson.UIModule
         {
             if (Slot.ItemSelected != null)
             {
-                if (ItemPooler.Instance.itemsToExamine.TryGetValue(Slot.ItemSelected.Root.ID, out GameObject item))
+                if (ItemPooler.Instance.ItemsToExamine.TryGetValue(Slot.ItemSelected.Root.ID, out GameObject item))
                 {
-                    PlayerItemInspection.ItemToExamine = item;
-                    PlayerItemInspection.StartExamine(true);
+                    PlayerInspection.ItemToExamine = item;
+                    PlayerInspection.StartExamine(true);
                 }
             }
         }
 
         public void StopExamine()
         {
-            PlayerItemInspection.StartExamine(false);
+            PlayerInspection.StartExamine(false);
         }
 
         public void UseItem()
@@ -52,9 +52,19 @@ namespace An01malia.FirstPerson.UIModule
         {
             if (Slot.ItemSelected != null)
             {
-                _itemDatabase.InstantiateItem(Slot.ItemSelected.Root.ID);
+                ItemPooler.Instance.ItemDatabase.InstantiateItem(Slot.ItemSelected.Root.ID);
                 Slot.ItemSelected.Amount--;
             }
+        }
+
+        public void HandleTransfer()
+        {
+            if (_container == null)
+            {
+                _container = FindObjectOfType<Container>();
+            }
+
+            _container.TransferAll();
         }
 
         #endregion

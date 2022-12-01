@@ -17,6 +17,8 @@ namespace An01malia.FirstPerson.PlayerModule
         private PlayerPushState _pushState;
         private PlayerClimbState _climbState;
         private PlayerCarryState _carryState;
+        private PlayerInventoryState _inventoryState;
+        private PlayerInspectState _inspectState;
 
         #endregion
 
@@ -34,6 +36,8 @@ namespace An01malia.FirstPerson.PlayerModule
             TryGetComponent(out _pushState);
             TryGetComponent(out _climbState);
             TryGetComponent(out _carryState);
+            TryGetComponent(out _inventoryState);
+            TryGetComponent(out _inspectState);
         }
 
         #endregion
@@ -85,9 +89,19 @@ namespace An01malia.FirstPerson.PlayerModule
             return _climbState;
         }
 
-        public PlayerBaseState Carry()
+        public BaseState Carry()
         {
             return _carryState;
+        }
+
+        public PlayerBaseState Inventory()
+        {
+            return _inventoryState;
+        }
+
+        public PlayerBaseState Inspect()
+        {
+            return _inspectState;
         }
 
         #endregion

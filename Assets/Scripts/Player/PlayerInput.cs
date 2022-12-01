@@ -7,27 +7,17 @@ using UnityEngine.InputSystem;
 
 namespace An01malia.FirstPerson.PlayerModule
 {
-    public enum ActionType
-    {
-        None,
-        Run,
-        Crouch,
-        Jump,
-        Push,
-        Climb,
-        Carry,
-        Interact,
-        GrabLedge,
-        Inventory
-    }
-
     public class PlayerInput : MonoBehaviour
     {
         #region Fields
 
+        private bool _isGameplayEnabled;
+        private bool _isUIEnabled;
         private Vector2 _movementInputValues;
         private Vector2 _viewInputValues;
         private Vector2 _cursorInputValues;
+        private Vector2 _zoomInputValues;
+        private Vector2 _rotationInputValues;
 
         private InputActions _actions;
         private PlayerController _context;
@@ -41,6 +31,8 @@ namespace An01malia.FirstPerson.PlayerModule
         public Vector2 MovementInputValues => _movementInputValues;
         public Vector2 ViewInputValues => _viewInputValues;
         public Vector2 CursorInputValues => _cursorInputValues;
+        public Vector2 ZoomInputValues => _zoomInputValues;
+        public Vector2 RotationInputValues => _rotationInputValues;
 
         #endregion
 
@@ -59,6 +51,8 @@ namespace An01malia.FirstPerson.PlayerModule
 
         private void Start()
         {
+            _isGameplayEnabled = true;
+
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
@@ -66,7 +60,6 @@ namespace An01malia.FirstPerson.PlayerModule
         private void OnDisable()
         {
             UnsubscribeEvents();
-            DisableInputActions();
         }
 
         #endregion
@@ -75,9 +68,8 @@ namespace An01malia.FirstPerson.PlayerModule
 
         public void UpdateInput()
         {
-            _movementInputValues = _actions.Player.Movement.ReadValue<Vector2>();
-            _viewInputValues = _actions.Player.View.ReadValue<Vector2>();
-            _cursorInputValues = _actions.UI.Cursor.ReadValue<Vector2>();
+            if (_isGameplayEnabled) SetGameplayInput();
+            else if (_isUIEnabled) SetUIInput();
         }
 
         #endregion
@@ -129,6 +121,10 @@ namespace An01malia.FirstPerson.PlayerModule
                         _context.CurrentState.TriggerSwitchState(ActionType.Climb, new ItemActionDTO(item));
                         break;
 
+                    case Layer.Interactive when interactive is StorageUnit:
+                        _context.CurrentState.TriggerSwitchState(ActionType.Inventory, new ItemActionDTO(item));
+                        break;
+
                     case Layer.Interactive:
                         _context.CurrentState.TriggerSwitchState(ActionType.Interact, new InteractiveActionDTO(interactive));
                         break;
@@ -156,33 +152,53 @@ namespace An01malia.FirstPerson.PlayerModule
         {
             switch (gameState)
             {
-                case GameState.Inventory:
-                    if (_actions.Player.enabled) _actions.Player.Disable();
+                case GameState.Gameplay:
+                    EnableInputActions();
+                    ToggleInputReading(true, false);
                     break;
 
                 case GameState.Paused:
                     DisableInputActions();
+                    ToggleInputReading(false, false);
                     break;
 
-                case GameState.Gameplay:
+                case GameState.UI:
                     EnableInputActions();
+                    ToggleInputReading(false, true);
                     break;
             }
+        }
+
+        private void SetGameplayInput()
+        {
+            _movementInputValues = _actions.Player.Movement.ReadValue<Vector2>();
+            _viewInputValues = _actions.Player.View.ReadValue<Vector2>();
+        }
+
+        private void SetUIInput()
+        {
+            _cursorInputValues = _actions.UI.Cursor.ReadValue<Vector2>();
+            _zoomInputValues = _actions.UI.Zoom.ReadValue<Vector2>();
+            _rotationInputValues = _actions.UI.Rotate.ReadValue<Vector2>();
+        }
+
+        private void ToggleInputReading(bool isGameplayEnabled, bool isUIEnabled)
+        {
+            _isGameplayEnabled = isGameplayEnabled;
+            _isUIEnabled = isUIEnabled;
         }
 
         private void EnableInputActions()
         {
             if (!_actions.Game.enabled) _actions.Game.Enable();
             if (!_actions.Player.enabled) _actions.Player.Enable();
-            if (!_actions.Inspection.enabled) _actions.Inspection.Enable();
             if (!_actions.UI.enabled) _actions.UI.Enable();
         }
 
         private void DisableInputActions()
         {
-            if (_actions.Player.enabled) _actions.Player.Disable();
-            if (_actions.Inspection.enabled) _actions.Inspection.Disable();
-            if (_actions.UI.enabled) _actions.UI.Disable();
+            _actions.Player.Disable();
+            _actions.UI.Disable();
         }
 
         private void SubscribeEvents()

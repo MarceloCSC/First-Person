@@ -1,5 +1,4 @@
-﻿using An01malia.FirstPerson.Inspection;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace An01malia.FirstPerson.Core.References
 {
@@ -23,6 +22,9 @@ namespace An01malia.FirstPerson.Core.References
 
         public static GameObject Tooltip { get; private set; }
         public static GameObject IconToDrag { get; private set; }
+        public static Camera InspectionCamera { get; private set; }
+        public static Transform ItemPlacement { get; private set; }
+        public static GameObject LightSource { get; private set; }
 
         #endregion
 
@@ -32,10 +34,10 @@ namespace An01malia.FirstPerson.Core.References
         {
             Tooltip = _tooltip;
             IconToDrag = _iconToDrag;
+            InspectionCamera = _inspectionCamera;
+            ItemPlacement = _itemPlacement;
+            LightSource = _lightSource;
             _canvas.worldCamera = _inspectionCamera;
-            InspectItem.InspectionCamera = _inspectionCamera;
-            InspectItem.ItemPlacement = _itemPlacement;
-            PlayerItemInspection.LightSource = _lightSource;
         }
 
         #endregion

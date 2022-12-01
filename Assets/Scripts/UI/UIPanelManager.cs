@@ -1,11 +1,10 @@
-﻿using An01malia.FirstPerson.Crafting;
-using An01malia.FirstPerson.Inspection;
+﻿using An01malia.FirstPerson.Inspection;
 using An01malia.FirstPerson.InventoryModule;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.UIModule
 {
-    public class UIPanels : MonoBehaviour
+    public class UIPanelManager : MonoBehaviour
     {
         #region Fields
 
@@ -53,7 +52,7 @@ namespace An01malia.FirstPerson.UIModule
 
         public static void ToggleUIPanel(GameObject panel)
         {
-            if (!PlayerItemInspection.Panel.activeSelf)
+            if (!PlayerInspection.Panel.activeSelf)
             {
                 panel.SetActive(!panel.activeSelf);
 
@@ -66,7 +65,7 @@ namespace An01malia.FirstPerson.UIModule
         {
             CloseOpenPanels();
 
-            PlayerItemInspection.Panel.SetActive(isActive);
+            PlayerInspection.Panel.SetActive(isActive);
         }
 
         public static void CloseOpenPanels()
@@ -96,10 +95,9 @@ namespace An01malia.FirstPerson.UIModule
         {
             PlayerInventory.Panel = _inventoryPanel;
             Container.Panel = _containerPanel;
-            CraftItems.Panel = _craftingPanel;
-            PlayerItemInspection.Panel = _inspectionPanel;
+            PlayerInspection.Panel = _inspectionPanel;
 
-            _panels = new GameObject[] { PlayerInventory.Panel, Container.Panel, CraftItems.Panel, PlayerItemInspection.Panel };
+            _panels = new GameObject[] { PlayerInventory.Panel, Container.Panel, PlayerInspection.Panel };
         }
 
         #endregion

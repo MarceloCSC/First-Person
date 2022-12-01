@@ -6,23 +6,36 @@ namespace An01malia.FirstPerson.InventoryModule
     [CreateAssetMenu(fileName = "NewItemDatabase", menuName = "Inventory/New Item Database")]
     public class ItemDatabase : ScriptableObject
     {
-        public ItemObject[] allItems;
+        #region Fields
+
+        [SerializeField] private ItemObject[] _allItems;
+
+        #endregion
+
+        #region Properties
+
+        public ItemObject[] AllItems => _allItems;
+
+        #endregion
+
+        #region Public Methods
 
         public Item RetrieveItem(string itemID, int amount = 1)
         {
-            foreach (ItemObject item in allItems)
+            foreach (ItemObject item in _allItems)
             {
                 if (item.ID == itemID)
                 {
                     return new Item(item, amount);
                 }
             }
+
             return null;
         }
 
         public void InstantiateItem(string itemID)
         {
-            foreach (ItemObject item in allItems)
+            foreach (ItemObject item in _allItems)
             {
                 if (item.ID == itemID)
                 {
@@ -30,5 +43,7 @@ namespace An01malia.FirstPerson.InventoryModule
                 }
             }
         }
+
+        #endregion
     }
 }

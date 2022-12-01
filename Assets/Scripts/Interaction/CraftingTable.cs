@@ -1,5 +1,4 @@
-﻿using An01malia.FirstPerson.Core.References;
-using An01malia.FirstPerson.Crafting;
+﻿using An01malia.FirstPerson.Crafting;
 using An01malia.FirstPerson.UIModule;
 using UnityEngine;
 
@@ -23,9 +22,9 @@ namespace An01malia.FirstPerson.InteractionModule
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.transform == Player.Transform && CraftItems.Panel.activeSelf)
+            if (other.CompareTag("Player") && CraftItems.Panel.activeSelf)
             {
-                UIPanels.ToggleUIPanel(CraftItems.Panel);
+                UIPanelManager.ToggleUIPanel(CraftItems.Panel);
             }
         }
 
@@ -35,7 +34,8 @@ namespace An01malia.FirstPerson.InteractionModule
 
         public void StartInteraction()
         {
-            UIPanels.ToggleUIPanel(CraftItems.Panel);
+            UIPanelManager.ToggleUIPanel(CraftItems.Panel);
+
             _crafting.CheckRecipes();
         }
 

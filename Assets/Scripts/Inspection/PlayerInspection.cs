@@ -1,15 +1,15 @@
-﻿using An01malia.FirstPerson.UIModule;
+﻿using An01malia.FirstPerson.Core.References;
+using An01malia.FirstPerson.UIModule;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.Inspection
 {
-    public class PlayerItemInspection : MonoBehaviour
+    public class PlayerInspection : MonoBehaviour
     {
         #region Fields
 
         public static GameObject Panel;
         public static GameObject ItemToExamine;
-        public static GameObject LightSource;
 
         #endregion
 
@@ -17,7 +17,7 @@ namespace An01malia.FirstPerson.Inspection
 
         private void Start()
         {
-            LightSource.SetActive(false);
+            UI.LightSource.SetActive(false);
         }
 
         #endregion
@@ -26,9 +26,9 @@ namespace An01malia.FirstPerson.Inspection
 
         public static void StartExamine(bool isActive)
         {
-            UIPanels.ToggleInspectionUI(isActive);
+            UIPanelManager.ToggleInspectionUI(isActive);
             ItemToExamine.SetActive(isActive);
-            LightSource.SetActive(isActive);
+            UI.LightSource.SetActive(isActive);
         }
 
         #endregion

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace An01malia.FirstPerson.PlayerModule.States
 {
-    public class PlayerCarryState : PlayerBaseState
+    public class PlayerCarryState : BaseState
     {
         #region Overriden Methods
 
@@ -42,20 +42,20 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     SuperState.RemoveSubState();
                     break;
 
-                case ActionType.Carry:
+                case ActionType.Push:
                     SuperState.RemoveSubState();
-                    break;
-
-                case ActionType.Interact:
-                    (dto as InteractiveActionDTO).Interactive.StartInteraction();
                     break;
 
                 case ActionType.Climb:
                     SuperState.RemoveSubState();
                     break;
 
-                case ActionType.Push:
+                case ActionType.Carry:
                     SuperState.RemoveSubState();
+                    break;
+
+                case ActionType.Interact:
+                    (dto as InteractiveActionDTO).Interactive.StartInteraction();
                     break;
 
                 default:

@@ -73,7 +73,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
             switch (action)
             {
-                case ActionType.Push when (dto as ItemActionDTO).Item == _data.Item:
+                case ActionType.None:
                     SwitchState(StateMachine.Idle());
                     break;
 
@@ -81,7 +81,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     StateData.SetData(dto);
                     break;
 
-                case ActionType.None:
+                case ActionType.Push when (dto as ItemActionDTO).Item == _data.Item:
                     SwitchState(StateMachine.Idle());
                     break;
 

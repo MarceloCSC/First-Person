@@ -1,27 +1,24 @@
-using An01malia.FirstPerson.PlayerModule.States.Data;
-using An01malia.FirstPerson.PlayerModule.States.DTOs;
+using An01malia.FirstPerson.Core;
+using An01malia.FirstPerson.Core.References;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.PlayerModule.States
 {
-    public abstract class PlayerBaseState : MonoBehaviour
+    public abstract class PlayerBaseState : BaseState
     {
         #region Fields
 
-        protected PlayerBaseState SuperState;
-        protected PlayerBaseState SubState;
+        private readonly float _maxVerticalAngle = 90.0f;
+        private readonly float _minVerticalAngle = -75.0f;
+        private float _mouseX;
+        private float _mouseY;
+        private float _xAxisRotation;
 
         protected CharacterController Controller;
         protected PlayerStateMachine StateMachine;
         protected PlayerInput Input;
 
         private PlayerController _context;
-
-        #endregion
-
-        #region Properties
-
-        protected PlayerStateData StateData { get; set; }
 
         #endregion
 
@@ -34,103 +31,60 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         #endregion
 
-        #region Abstract Methods
-
-        public abstract void EnterState(PlayerActionDTO dto = null);
-
-        public abstract void UpdateState();
-
-        public abstract PlayerActionDTO ExitState();
-
-        public abstract void CheckSwitchState();
-
-        #endregion
-
         #region Public Methods
 
-        public void UpdateStates()
+        public virtual void UpdateCamera()
         {
-            UpdateState();
+            _mouseX = Input.ViewInputValues.x * GameOptions.MouseSensitivity * Time.deltaTime;
+            _mouseY = Input.ViewInputValues.y * GameOptions.MouseSensitivity * Time.deltaTime;
 
-            if (!SubState) return;
+            Player.CameraTransform.Rotate(Vector3.left * _mouseY);
+            Player.Transform.Rotate(Vector3.up * _mouseX);
 
-            SubState.UpdateStates();
-        }
-
-        public virtual void TriggerSwitchState(ActionType action, ActionDTO dto = null)
-        {
-            if (!SubState) return;
-
-            SubState.TriggerSwitchState(action, dto);
-        }
-
-        public void RemoveSubState()
-        {
-            SubState.SuperState = null;
-            SwitchState(this, null);
+            ClampViewAngle();
         }
 
         #endregion
 
         #region Protected Methods
 
-        protected void SwitchState(PlayerBaseState newState)
+        protected override void SwitchState(BaseState newState)
         {
             if (newState == _context.CurrentState) return;
 
-            if (SubState)
-            {
-                newState.SetSubState(SubState);
-                SubState = null;
-            }
+            base.SwitchState(newState);
 
-            var actionDto = ExitState();
-
-            newState.EnterState(actionDto);
-
-            _context.SetCurrentState(newState);
+            _context.SetCurrentState(newState as PlayerBaseState);
         }
 
-        protected void SwitchState(PlayerBaseState newState, PlayerBaseState newSubState)
+        protected virtual void ClampViewAngle()
         {
-            SwitchState(newState);
-            SetSubState(newSubState);
+            _xAxisRotation += _mouseY;
+
+            if (_xAxisRotation > _maxVerticalAngle)
+            {
+                _xAxisRotation = _maxVerticalAngle;
+                _mouseY = 0.0f;
+                Player.CameraTransform.ClampRotation(-_maxVerticalAngle);
+            }
+            else if (_xAxisRotation < _minVerticalAngle)
+            {
+                _xAxisRotation = _minVerticalAngle;
+                _mouseY = 0.0f;
+                Player.CameraTransform.ClampRotation(-_minVerticalAngle);
+            }
         }
 
         #endregion
 
         #region Private Methods
 
-        protected void SetSubState(PlayerBaseState newSubState)
-        {
-            if (SubState && SubState != newSubState)
-            {
-                SubState.ExitState();
-                SubState.SuperState = null;
-            }
-
-            SubState = newSubState;
-
-            if (!newSubState) return;
-
-            if (!SubState.SuperState)
-            {
-                SubState.EnterState(StateData.GetData());
-            }
-
-            SubState.SetSuperState(this);
-        }
-
-        protected void SetSuperState(PlayerBaseState newSuperState)
-        {
-            SuperState = newSuperState;
-        }
-
         private void SetReferences()
         {
             Controller = GetComponentInParent<CharacterController>();
             StateMachine = GetComponent<PlayerStateMachine>();
             Input = GetComponentInParent<PlayerInput>();
+
             _context = GetComponentInParent<PlayerController>();
         }
 

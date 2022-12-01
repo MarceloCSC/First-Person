@@ -66,12 +66,12 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
             switch (action)
             {
-                case ActionType.Jump when _data.JumpsRemaining > 0 && _data.CoyoteTimeCounter < _coyoteTime:
-                    SwitchState(StateMachine.Jump());
-                    break;
-
                 case ActionType.Run:
                     StateData.SetData(dto);
+                    break;
+
+                case ActionType.Jump when _data.JumpsRemaining > 0 && _data.CoyoteTimeCounter < _coyoteTime:
+                    SwitchState(StateMachine.Jump());
                     break;
 
                 case ActionType.GrabLedge:

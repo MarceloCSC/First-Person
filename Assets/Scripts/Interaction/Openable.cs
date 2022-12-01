@@ -12,7 +12,6 @@ namespace An01malia.FirstPerson.InteractionModule
 
         [Header("Automatic Doors")]
         [SerializeField] private bool _isOpenedByTrigger;
-
         [SerializeField] private bool _hasTimer;
         [SerializeField] private bool _staysOpen;
         [SerializeField] private float _timer = 0.0f;
@@ -34,7 +33,7 @@ namespace An01malia.FirstPerson.InteractionModule
 
         private void Awake()
         {
-            _animator = GetComponent<Animator>();
+            SetReferences();
         }
 
         private void Start()
@@ -46,16 +45,11 @@ namespace An01malia.FirstPerson.InteractionModule
         {
             if (_isOpenedByTrigger && other.CompareTag("Player"))
             {
-                if (!_isLocked)
-                {
-                    _isOpen = true;
-                    _animator.SetBool("isOpen", true);
+                if (_isLocked) return;
 
-                    if (_closingDoor != null)
-                    {
-                        StopCoroutine(_closingDoor);
-                    }
-                }
+                ChangeState(true);
+
+                if (_closingDoor != null) StopCoroutine(_closingDoor);
             }
         }
 
@@ -73,21 +67,22 @@ namespace An01malia.FirstPerson.InteractionModule
 
         public void StartInteraction()
         {
-            if (!_isLocked)
-            {
-                _isOpen = !_isOpen;
-                _animator.SetBool("isOpen", _isOpen);
+            if (_isLocked) return;
 
-                if (_hasTimer && _isOpen)
-                {
-                    PrepareCoroutine();
-                }
-            }
+            ChangeState(!_isOpen);
+
+            if (_hasTimer && _isOpen) PrepareCoroutine();
         }
 
         #endregion Public Methods
 
         #region Private Methods
+
+        private void ChangeState(bool isOpen)
+        {
+            _isOpen = isOpen;
+            _animator.SetBool("isOpen", isOpen);
+        }
 
         private void SetAnimation()
         {
@@ -99,10 +94,7 @@ namespace An01malia.FirstPerson.InteractionModule
 
         private void PrepareCoroutine()
         {
-            if (_closingDoor != null)
-            {
-                StopCoroutine(_closingDoor);
-            }
+            if (_closingDoor != null) StopCoroutine(_closingDoor);
 
             _closingDoor = StartCoroutine(WaitToClose(_timer));
         }
@@ -117,10 +109,14 @@ namespace An01malia.FirstPerson.InteractionModule
                 _timeLeft -= 1.0f;
             }
 
-            _isOpen = false;
-            _animator.SetBool("isOpen", false);
+            ChangeState(false);
 
             yield return null;
+        }
+
+        private void SetReferences()
+        {
+            _animator = GetComponent<Animator>();
         }
 
         #endregion Private Methods

@@ -1,9 +1,6 @@
-using An01malia.FirstPerson.Core;
 using An01malia.FirstPerson.Core.References;
-using An01malia.FirstPerson.InventoryModule;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
-using An01malia.FirstPerson.UIModule;
 using System.Collections;
 using UnityEngine;
 
@@ -65,10 +62,6 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
             switch (action)
             {
-                case ActionType.Jump when CanStandUp():
-                    StandUp(StateMachine.Idle());
-                    break;
-
                 case ActionType.Run when CanStandUp() && (dto as RunActionDTO).IsRunPressed:
                     StandUp(StateMachine.Run());
                     break;
@@ -81,13 +74,12 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     StandUp(StateMachine.Idle());
                     break;
 
-                case ActionType.GrabLedge when CanStandUp():
-                    StandUp(StateMachine.GrabLedge());
+                case ActionType.Jump when CanStandUp():
+                    StandUp(StateMachine.Idle());
                     break;
 
-                case ActionType.Climb when CanStandUp():
-                    StateData.SetData(dto);
-                    StandUp(StateMachine.Climb());
+                case ActionType.GrabLedge when CanStandUp():
+                    StandUp(StateMachine.GrabLedge());
                     break;
 
                 case ActionType.Push when CanStandUp():
@@ -95,18 +87,27 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     StandUp(StateMachine.Push());
                     break;
 
+                case ActionType.Climb when CanStandUp():
+                    StateData.SetData(dto);
+                    StandUp(StateMachine.Climb());
+                    break;
+
                 case ActionType.Carry:
                     StateData.SetData(dto);
                     SwitchState(this, StateMachine.Carry());
                     break;
 
-                case ActionType.Interact:
-                    (dto as InteractiveActionDTO).Interactive.StartInteraction();
+                case ActionType.Inventory when dto is ItemActionDTO:
+                    StateData.SetData(dto);
+                    SwitchState(StateMachine.Inventory());
                     break;
 
                 case ActionType.Inventory:
-                    GameStateManager.Instance.ChangeState(GameState.Inventory);
-                    UIPanels.ToggleUIPanel(PlayerInventory.Panel);
+                    SwitchState(StateMachine.Inventory());
+                    break;
+
+                case ActionType.Interact:
+                    (dto as InteractiveActionDTO).Interactive.StartInteraction();
                     break;
 
                 default:

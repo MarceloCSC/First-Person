@@ -70,16 +70,16 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
             switch (action)
             {
-                case ActionType.Climb:
-                    SwitchState(StateMachine.Fall());
+                case ActionType.Run:
+                    StateData.SetData(dto);
                     break;
 
                 case ActionType.GrabLedge:
                     SwitchState(StateMachine.GrabLedge());
                     break;
 
-                case ActionType.Run:
-                    StateData.SetData(dto);
+                case ActionType.Climb:
+                    SwitchState(StateMachine.Fall());
                     break;
 
                 default:

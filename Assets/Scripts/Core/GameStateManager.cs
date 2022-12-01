@@ -2,13 +2,6 @@ using System;
 
 namespace An01malia.FirstPerson.Core
 {
-    public enum GameState
-    {
-        Gameplay,
-        Paused,
-        Inventory
-    }
-
     public class GameStateManager : Singleton<GameStateManager>
     {
         #region Delegates
@@ -20,6 +13,7 @@ namespace An01malia.FirstPerson.Core
         #region Properties
 
         public GameState CurrentGameState { get; private set; }
+        public GameState? PreviousGameState { get; private set; }
 
         #endregion
 
@@ -29,12 +23,7 @@ namespace An01malia.FirstPerson.Core
         {
             if (gameState == GameState.Gameplay && gameState == CurrentGameState) return;
 
-            GameState newGameState = gameState;
-
-            if (gameState == CurrentGameState)
-            {
-                newGameState = GameState.Gameplay;
-            }
+            GameState newGameState = GetNewGameState(gameState);
 
             CurrentGameState = newGameState;
             OnGameStateChanged(newGameState);
@@ -46,6 +35,36 @@ namespace An01malia.FirstPerson.Core
 
         protected override void Initialize()
         {
+            CurrentGameState = GameState.Gameplay;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private GameState GetNewGameState(GameState gameState)
+        {
+            switch (gameState)
+            {
+                case GameState.Paused when PreviousGameState != null:
+                    gameState = (GameState)PreviousGameState;
+                    PreviousGameState = null;
+                    break;
+
+                case GameState.Paused:
+                    PreviousGameState = CurrentGameState;
+                    break;
+
+                default:
+                    if (gameState == CurrentGameState)
+                    {
+                        gameState = GameState.Gameplay;
+                    }
+
+                    break;
+            }
+
+            return gameState;
         }
 
         #endregion

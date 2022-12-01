@@ -1,6 +1,4 @@
-﻿using An01malia.FirstPerson.Core.References;
-using An01malia.FirstPerson.InventoryModule;
-using An01malia.FirstPerson.UIModule;
+﻿using An01malia.FirstPerson.InventoryModule;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.InteractionModule
@@ -21,15 +19,6 @@ namespace An01malia.FirstPerson.InteractionModule
             SetReferences();
         }
 
-        private void OnTriggerExit(Collider other)
-        {
-            if (other.transform == Player.Transform && Container.Panel.activeSelf)
-            {
-                _container.IsOpen = false;
-                UIPanels.ToggleUIPanel(Container.Panel);
-            }
-        }
-
         #endregion
 
         #region Public Methods
@@ -37,7 +26,6 @@ namespace An01malia.FirstPerson.InteractionModule
         public void StartInteraction()
         {
             _container.IsOpen = !_container.IsOpen;
-            UIPanels.ToggleUIPanel(Container.Panel);
         }
 
         #endregion

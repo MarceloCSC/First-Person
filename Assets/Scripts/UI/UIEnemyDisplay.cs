@@ -47,13 +47,15 @@ namespace An01malia.FirstPerson.UIModule
 
         private void UpdateEnemyState(EnemyState newState)
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
+
             _enemyStateText.text = stringBuilder.Append(newState).ToString();
         }
 
         private void UpdateAlertState(AlertState newState)
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
+
             _alertStateText.text = stringBuilder.Append(newState).ToString();
         }
 

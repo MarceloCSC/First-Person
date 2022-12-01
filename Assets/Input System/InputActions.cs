@@ -306,65 +306,6 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
             ]
         },
         {
-            ""name"": ""Inspection"",
-            ""id"": ""c46ade27-fb3d-4155-b474-0846e80b1100"",
-            ""actions"": [
-                {
-                    ""name"": ""Rotate"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""40f05e25-a1b6-478c-9d04-962524a5e32a"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Zoom"",
-                    ""type"": ""Value"",
-                    ""id"": ""bd1841b5-21db-47e2-b8b9-6c0503d46b30"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""2b2efeee-41aa-4098-b036-adc58197d305"",
-                    ""path"": ""<Mouse>/scroll"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Zoom"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""48628202-ebb8-4284-b00f-872e856b8eeb"",
-                    ""path"": ""<Mouse>/delta"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Rotate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""91a6251c-b3c4-4947-9518-dc5af23530a7"",
-                    ""path"": ""<Gamepad>/rightStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Rotate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
             ""name"": ""UI"",
             ""id"": ""2dcd07ee-155d-4a55-8b6c-a58e7c37f26e"",
             ""actions"": [
@@ -385,6 +326,24 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Rotate"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""8b768a16-fa1b-4f49-aaa7-4f9d1de45a64"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Zoom"",
+                    ""type"": ""Value"",
+                    ""id"": ""dadb9162-c5c2-4f77-9683-5ba02878715e"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -407,6 +366,39 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Cursor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3d3c932b-21a5-4d6b-bd67-df3c8cb03d86"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2b6fa9a8-7357-4c89-85ca-586c5de22577"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3137cd7b-dca8-4c05-a27a-0fd76c425dd4"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Zoom"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -451,14 +443,12 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
         m_Player_Run = m_Player.FindAction("Run", throwIfNotFound: true);
         m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
-        // Inspection
-        m_Inspection = asset.FindActionMap("Inspection", throwIfNotFound: true);
-        m_Inspection_Rotate = m_Inspection.FindAction("Rotate", throwIfNotFound: true);
-        m_Inspection_Zoom = m_Inspection.FindAction("Zoom", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Cursor = m_UI.FindAction("Cursor", throwIfNotFound: true);
         m_UI_Inventory = m_UI.FindAction("Inventory", throwIfNotFound: true);
+        m_UI_Rotate = m_UI.FindAction("Rotate", throwIfNotFound: true);
+        m_UI_Zoom = m_UI.FindAction("Zoom", throwIfNotFound: true);
         // Game
         m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
         m_Game_Pause = m_Game.FindAction("Pause", throwIfNotFound: true);
@@ -591,58 +581,21 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
     }
     public PlayerActions @Player => new PlayerActions(this);
 
-    // Inspection
-    private readonly InputActionMap m_Inspection;
-    private IInspectionActions m_InspectionActionsCallbackInterface;
-    private readonly InputAction m_Inspection_Rotate;
-    private readonly InputAction m_Inspection_Zoom;
-    public struct InspectionActions
-    {
-        private @InputActions m_Wrapper;
-        public InspectionActions(@InputActions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Rotate => m_Wrapper.m_Inspection_Rotate;
-        public InputAction @Zoom => m_Wrapper.m_Inspection_Zoom;
-        public InputActionMap Get() { return m_Wrapper.m_Inspection; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(InspectionActions set) { return set.Get(); }
-        public void SetCallbacks(IInspectionActions instance)
-        {
-            if (m_Wrapper.m_InspectionActionsCallbackInterface != null)
-            {
-                @Rotate.started -= m_Wrapper.m_InspectionActionsCallbackInterface.OnRotate;
-                @Rotate.performed -= m_Wrapper.m_InspectionActionsCallbackInterface.OnRotate;
-                @Rotate.canceled -= m_Wrapper.m_InspectionActionsCallbackInterface.OnRotate;
-                @Zoom.started -= m_Wrapper.m_InspectionActionsCallbackInterface.OnZoom;
-                @Zoom.performed -= m_Wrapper.m_InspectionActionsCallbackInterface.OnZoom;
-                @Zoom.canceled -= m_Wrapper.m_InspectionActionsCallbackInterface.OnZoom;
-            }
-            m_Wrapper.m_InspectionActionsCallbackInterface = instance;
-            if (instance != null)
-            {
-                @Rotate.started += instance.OnRotate;
-                @Rotate.performed += instance.OnRotate;
-                @Rotate.canceled += instance.OnRotate;
-                @Zoom.started += instance.OnZoom;
-                @Zoom.performed += instance.OnZoom;
-                @Zoom.canceled += instance.OnZoom;
-            }
-        }
-    }
-    public InspectionActions @Inspection => new InspectionActions(this);
-
     // UI
     private readonly InputActionMap m_UI;
     private IUIActions m_UIActionsCallbackInterface;
     private readonly InputAction m_UI_Cursor;
     private readonly InputAction m_UI_Inventory;
+    private readonly InputAction m_UI_Rotate;
+    private readonly InputAction m_UI_Zoom;
     public struct UIActions
     {
         private @InputActions m_Wrapper;
         public UIActions(@InputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Cursor => m_Wrapper.m_UI_Cursor;
         public InputAction @Inventory => m_Wrapper.m_UI_Inventory;
+        public InputAction @Rotate => m_Wrapper.m_UI_Rotate;
+        public InputAction @Zoom => m_Wrapper.m_UI_Zoom;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -658,6 +611,12 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                 @Inventory.started -= m_Wrapper.m_UIActionsCallbackInterface.OnInventory;
                 @Inventory.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnInventory;
                 @Inventory.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnInventory;
+                @Rotate.started -= m_Wrapper.m_UIActionsCallbackInterface.OnRotate;
+                @Rotate.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnRotate;
+                @Rotate.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnRotate;
+                @Zoom.started -= m_Wrapper.m_UIActionsCallbackInterface.OnZoom;
+                @Zoom.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnZoom;
+                @Zoom.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnZoom;
             }
             m_Wrapper.m_UIActionsCallbackInterface = instance;
             if (instance != null)
@@ -668,6 +627,12 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                 @Inventory.started += instance.OnInventory;
                 @Inventory.performed += instance.OnInventory;
                 @Inventory.canceled += instance.OnInventory;
+                @Rotate.started += instance.OnRotate;
+                @Rotate.performed += instance.OnRotate;
+                @Rotate.canceled += instance.OnRotate;
+                @Zoom.started += instance.OnZoom;
+                @Zoom.performed += instance.OnZoom;
+                @Zoom.canceled += instance.OnZoom;
             }
         }
     }
@@ -714,15 +679,12 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
         void OnCrouch(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
     }
-    public interface IInspectionActions
-    {
-        void OnRotate(InputAction.CallbackContext context);
-        void OnZoom(InputAction.CallbackContext context);
-    }
     public interface IUIActions
     {
         void OnCursor(InputAction.CallbackContext context);
         void OnInventory(InputAction.CallbackContext context);
+        void OnRotate(InputAction.CallbackContext context);
+        void OnZoom(InputAction.CallbackContext context);
     }
     public interface IGameActions
     {
