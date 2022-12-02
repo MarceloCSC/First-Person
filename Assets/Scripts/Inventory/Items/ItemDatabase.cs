@@ -1,7 +1,7 @@
 ﻿using An01malia.FirstPerson.Core.References;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.InventoryModule
+namespace An01malia.FirstPerson.InventoryModule.Items
 {
     [CreateAssetMenu(fileName = "NewItemDatabase", menuName = "Inventory/New Item Database")]
     public class ItemDatabase : ScriptableObject

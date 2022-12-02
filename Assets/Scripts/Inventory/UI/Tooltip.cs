@@ -1,4 +1,5 @@
 ﻿using An01malia.FirstPerson.Core;
+using An01malia.FirstPerson.InventoryModule.Items;
 using An01malia.FirstPerson.PlayerModule;
 using UnityEngine;
 using UnityEngine.EventSystems;

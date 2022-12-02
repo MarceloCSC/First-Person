@@ -274,7 +274,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 162999
+    m_Bits: 160951
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -308,7 +308,6 @@ GameObject:
   - component: {fileID: 9214957603807242117}
   - component: {fileID: 8386371829049879704}
   - component: {fileID: 461543981620360515}
-  - component: {fileID: 141440331141378138}
   - component: {fileID: 3060927387941127836}
   m_Layer: 6
   m_Name: Player
@@ -420,18 +419,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 139265
   _toggleGizmos: 0
---- !u!114 &141440331141378138
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 192995566219779120}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ee8d60a0d87b8542971269a2ab5b063, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3060927387941127836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -743,7 +730,7 @@ MonoBehaviour:
   _initialFOV: 60
   _minZoom: 30
   _maxZoom: 100
-  _zoomSpeed: 500
+  _zoomSpeed: 1000
   _rotationSpeed: 5
 --- !u!1 &4973796431249347001
 GameObject:

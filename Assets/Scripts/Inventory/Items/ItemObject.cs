@@ -1,39 +1,30 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
-namespace An01malia.FirstPerson.InventoryModule
+namespace An01malia.FirstPerson.InventoryModule.Items
 {
-
-    public enum ItemType
-    {
-        Food,
-        Valuable,
-        Flammable,
-        Readable,
-        Unique,
-        Misc
-    }
-
     [CreateAssetMenu(fileName = "NewItem", menuName = "Inventory/New Item")]
     public class ItemObject : ScriptableObject
     {
+        [SerializeField] private string itemName = null;
+        [SerializeField] private ItemType itemType = ItemType.Misc;
 
-        [SerializeField] string itemName = null;
-        [SerializeField] ItemType itemType = ItemType.Misc;
         [Space]
-        [SerializeField] string uniqueID = null;
-        [SerializeField] GameObject inGamePrefab = null;
-        [SerializeField] GameObject itemToExamine = null;
-        [SerializeField] Sprite icon = null;
+        [SerializeField] private string uniqueID = null;
+        [SerializeField] private GameObject inGamePrefab = null;
+        [SerializeField] private GameObject itemToExamine = null;
+        [SerializeField] private Sprite icon = null;
+
         [Space]
         [TextArea(5, 30)]
-        [SerializeField] string itemDescription = null;
+        [SerializeField] private string itemDescription = null;
+
         [Space]
         [Range(1, 999)]
-        [SerializeField] int maxAmount = 1;
-
+        [SerializeField] private int maxAmount = 1;
 
         #region Properties
+
         public string Name => itemName;
         public ItemType Type => itemType;
         public string ID => uniqueID;
@@ -42,15 +33,13 @@ namespace An01malia.FirstPerson.InventoryModule
         public Sprite Icon => icon;
         public string Description => itemDescription;
         public int MaxAmount => maxAmount;
-        #endregion
 
+        #endregion
 
         private void OnValidate()
         {
             string path = AssetDatabase.GetAssetPath(this);
             uniqueID = AssetDatabase.AssetPathToGUID(path);
         }
-
     }
-
 }

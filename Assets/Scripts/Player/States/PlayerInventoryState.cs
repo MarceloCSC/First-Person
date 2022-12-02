@@ -46,6 +46,10 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
             switch (action)
             {
+                case ActionType.None:
+                    SwitchState(StateMachine.Idle());
+                    break;
+
                 case ActionType.Inventory:
                     SwitchState(StateMachine.Idle());
                     break;

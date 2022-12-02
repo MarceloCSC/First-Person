@@ -270,6 +270,7 @@ GameObject:
   - component: {fileID: 3399516271954562109}
   - component: {fileID: 3399516271954562108}
   - component: {fileID: 3399516271954562099}
+  - component: {fileID: 1881487256652012972}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -379,20 +380,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3399516271954562108}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2258793567771360637, guid: 73eac5d20a68dc143bea838b4f3e104c,
-          type: 3}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: StopExamine
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
+--- !u!114 &1881487256652012972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3399516271954562097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ControlPath: <Keyboard>/escape
 --- !u!1 &7713159012864983088
 GameObject:
   m_ObjectHideFlags: 0

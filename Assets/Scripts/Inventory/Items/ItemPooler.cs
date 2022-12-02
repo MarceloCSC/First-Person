@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.InventoryModule
+namespace An01malia.FirstPerson.InventoryModule.Items
 {
     public class ItemPooler : Singleton<ItemPooler>
     {

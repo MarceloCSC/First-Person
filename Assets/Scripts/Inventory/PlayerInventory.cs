@@ -1,15 +1,14 @@
-﻿using UnityEngine;
+﻿using An01malia.FirstPerson.InventoryModule.Items;
+using UnityEngine;
 
 namespace An01malia.FirstPerson.InventoryModule
 {
-
     public class PlayerInventory : InventoryBaseClass
     {
-
         public static GameObject Panel;
 
-
         #region Properties
+
         public bool IsOpen
         {
             get => isOpen;
@@ -20,8 +19,8 @@ namespace An01malia.FirstPerson.InventoryModule
                 StoreAndRestore();
             }
         }
-        #endregion
 
+        #endregion
 
         private void Start()
         {
@@ -55,7 +54,5 @@ namespace An01malia.FirstPerson.InventoryModule
         {
             slots = Panel.GetComponentsInChildren<Slot>();
         }
-
     }
-
 }

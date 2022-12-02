@@ -1,19 +1,18 @@
-﻿using UnityEngine;
+﻿using An01malia.FirstPerson.InventoryModule.Items;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace An01malia.FirstPerson.InventoryModule
 {
-
     public class Slot : SlotBaseClass
     {
-
         private static Item itemSelected;
 
         private bool isSelected;
         private Color selected = Color.grey;
 
-
         #region Properties
+
         public Item Item
         {
             get => item;
@@ -55,8 +54,8 @@ namespace An01malia.FirstPerson.InventoryModule
                 image.color = isSelected ? selected : defaultColor;
             }
         }
-        #endregion
 
+        #endregion
 
         public void HideContents(bool isHidden)
         {
@@ -97,7 +96,5 @@ namespace An01malia.FirstPerson.InventoryModule
                 item.OnAmountChanged += AmountDisplay;
             }
         }
-
     }
-
 }

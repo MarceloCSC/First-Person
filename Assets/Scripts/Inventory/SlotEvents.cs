@@ -1,4 +1,5 @@
 ﻿using An01malia.FirstPerson.Core.References;
+using An01malia.FirstPerson.InventoryModule.Items;
 using UnityEngine;
 using UnityEngine.EventSystems;
 

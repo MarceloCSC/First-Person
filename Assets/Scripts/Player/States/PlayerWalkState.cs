@@ -90,6 +90,11 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     SwitchState(this, StateMachine.Carry());
                     break;
 
+                case ActionType.Inspect:
+                    StateData.SetData(dto);
+                    SwitchState(StateMachine.Inspect());
+                    break;
+
                 case ActionType.Inventory when dto is ItemActionDTO:
                     StateData.SetData(dto);
                     SwitchState(StateMachine.Inventory());

@@ -1,13 +1,12 @@
-﻿using System;
+﻿using An01malia.FirstPerson.InventoryModule.Items;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.InventoryModule
 {
-
     public abstract class InventoryBaseClass : MonoBehaviour, IContainer
     {
-
         [SerializeField] protected ItemDatabase database;
         [SerializeField] protected Item[] startingItems = null;
 
@@ -15,7 +14,6 @@ namespace An01malia.FirstPerson.InventoryModule
         protected Dictionary<Slot, Tuple<string, int>> storedItems;
 
         protected bool isOpen;
-
 
         protected void StoreAndRestore()
         {
@@ -162,7 +160,5 @@ namespace An01malia.FirstPerson.InventoryModule
 
             return totalAmount;
         }
-
     }
-
 }

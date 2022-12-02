@@ -1,5 +1,5 @@
-﻿using An01malia.FirstPerson.Inspection;
-using An01malia.FirstPerson.InventoryModule;
+﻿using An01malia.FirstPerson.InventoryModule;
+using An01malia.FirstPerson.InventoryModule.Items;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.UIModule
@@ -18,17 +18,13 @@ namespace An01malia.FirstPerson.UIModule
         {
             if (Slot.ItemSelected != null)
             {
-                if (ItemPooler.Instance.ItemsToExamine.TryGetValue(Slot.ItemSelected.Root.ID, out GameObject item))
-                {
-                    PlayerInspection.ItemToExamine = item;
-                    PlayerInspection.StartExamine(true);
-                }
+                // trigger inspection state
             }
         }
 
         public void StopExamine()
         {
-            PlayerInspection.StartExamine(false);
+            // trigger idle state
         }
 
         public void UseItem()

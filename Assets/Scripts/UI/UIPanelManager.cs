@@ -1,5 +1,5 @@
-﻿using An01malia.FirstPerson.Inspection;
-using An01malia.FirstPerson.InventoryModule;
+﻿using An01malia.FirstPerson.InventoryModule;
+using An01malia.FirstPerson.PlayerModule.States;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.UIModule
@@ -52,20 +52,10 @@ namespace An01malia.FirstPerson.UIModule
 
         public static void ToggleUIPanel(GameObject panel)
         {
-            if (!PlayerInspection.Panel.activeSelf)
-            {
-                panel.SetActive(!panel.activeSelf);
+            panel.SetActive(!panel.activeSelf);
 
-                Cursor.lockState = panel.activeSelf ? CursorLockMode.None : CursorLockMode.Locked;
-                Cursor.visible = panel.activeSelf;
-            }
-        }
-
-        public static void ToggleInspectionUI(bool isActive)
-        {
-            CloseOpenPanels();
-
-            PlayerInspection.Panel.SetActive(isActive);
+            Cursor.lockState = panel.activeSelf ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = panel.activeSelf;
         }
 
         public static void CloseOpenPanels()
@@ -95,9 +85,9 @@ namespace An01malia.FirstPerson.UIModule
         {
             PlayerInventory.Panel = _inventoryPanel;
             Container.Panel = _containerPanel;
-            PlayerInspection.Panel = _inspectionPanel;
+            PlayerInspectState.Panel = _inspectionPanel;
 
-            _panels = new GameObject[] { PlayerInventory.Panel, Container.Panel, PlayerInspection.Panel };
+            _panels = new GameObject[] { PlayerInventory.Panel, Container.Panel, PlayerInspectState.Panel };
         }
 
         #endregion

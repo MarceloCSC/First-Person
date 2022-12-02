@@ -1,6 +1,7 @@
 using An01malia.FirstPerson.Core;
 using An01malia.FirstPerson.Core.References;
 using An01malia.FirstPerson.InteractionModule;
+using An01malia.FirstPerson.PlayerModule.States;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -121,12 +122,23 @@ namespace An01malia.FirstPerson.PlayerModule
                         _context.CurrentState.TriggerSwitchState(ActionType.Climb, new ItemActionDTO(item));
                         break;
 
+                    case Layer.Interactive when interactive is Inspectable:
+                        _context.CurrentState.TriggerSwitchState(ActionType.Inspect, new ItemActionDTO(item));
+                        break;
+
                     case Layer.Interactive when interactive is StorageUnit:
                         _context.CurrentState.TriggerSwitchState(ActionType.Inventory, new ItemActionDTO(item));
                         break;
 
                     case Layer.Interactive:
                         _context.CurrentState.TriggerSwitchState(ActionType.Interact, new InteractiveActionDTO(interactive));
+                        break;
+
+                    case Layer.Inspectable when _context.CurrentState is PlayerInspectState:
+                        _context.CurrentState.TriggerSwitchState(ActionType.None);
+                        break;
+
+                    default:
                         break;
                 }
             }
@@ -144,6 +156,19 @@ namespace An01malia.FirstPerson.PlayerModule
         private void OnPausePressed(InputAction.CallbackContext callback)
         {
             GameStateManager.Instance.ChangeState(GameState.Paused);
+        }
+
+        private void OnEscapePressed(InputAction.CallbackContext callback)
+        {
+            if (_isUIEnabled)
+            {
+                _context.CurrentState.TriggerSwitchState(ActionType.None);
+
+                return;
+            }
+
+            GameStateManager.Instance.ChangeState(GameState.Paused);
+            // TOGGLE GAME MENU
         }
 
         #endregion
@@ -179,7 +204,11 @@ namespace An01malia.FirstPerson.PlayerModule
         {
             _cursorInputValues = _actions.UI.Cursor.ReadValue<Vector2>();
             _zoomInputValues = _actions.UI.Zoom.ReadValue<Vector2>();
-            _rotationInputValues = _actions.UI.Rotate.ReadValue<Vector2>();
+
+            if (_actions.UI.Hold.IsPressed())
+            {
+                _rotationInputValues = _actions.UI.Rotate.ReadValue<Vector2>();
+            }
         }
 
         private void ToggleInputReading(bool isGameplayEnabled, bool isUIEnabled)
@@ -203,30 +232,30 @@ namespace An01malia.FirstPerson.PlayerModule
 
         private void SubscribeEvents()
         {
-            _actions.Game.Pause.performed += OnPausePressed;
             _actions.Player.Jump.performed += OnJumpPressed;
             _actions.Player.Run.performed += OnRunPressed;
             _actions.Player.Run.canceled += OnRunPressed;
             _actions.Player.Crouch.performed += OnCrouchPressed;
             _actions.Player.Interact.performed += OnInteractionPressed;
             _actions.UI.Inventory.performed += OnInventoryPressed;
+            _actions.Game.Pause.performed += OnPausePressed;
+            _actions.Game.Escape.performed += OnEscapePressed;
+
             GameStateManager.Instance.OnGameStateChanged += OnGameStateChanged;
         }
 
         private void UnsubscribeEvents()
         {
-            _actions.Game.Pause.performed -= OnPausePressed;
             _actions.Player.Jump.performed -= OnJumpPressed;
             _actions.Player.Run.performed -= OnRunPressed;
             _actions.Player.Run.canceled -= OnRunPressed;
             _actions.Player.Crouch.performed -= OnCrouchPressed;
             _actions.Player.Interact.performed -= OnInteractionPressed;
             _actions.UI.Inventory.performed -= OnInventoryPressed;
+            _actions.Game.Pause.performed -= OnPausePressed;
+            _actions.Game.Escape.performed -= OnEscapePressed;
 
-            if (GameStateManager.Instance != null)
-            {
-                GameStateManager.Instance.OnGameStateChanged -= OnGameStateChanged;
-            }
+            if (GameStateManager.Instance != null) GameStateManager.Instance.OnGameStateChanged -= OnGameStateChanged;
         }
 
         private void SetReferences()

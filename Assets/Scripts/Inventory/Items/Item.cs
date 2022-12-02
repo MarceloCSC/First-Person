@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.InventoryModule
+namespace An01malia.FirstPerson.InventoryModule.Items
 {
 
     [Serializable]
