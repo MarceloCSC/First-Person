@@ -6,7 +6,6 @@ namespace An01malia.FirstPerson.Core.References
     {
         #region Fields
 
-        [Header("Player")]
         [SerializeField] private GameObject _player;
         [SerializeField] private Camera _firstPersonCamera;
         [SerializeField] private Transform _playerSight;

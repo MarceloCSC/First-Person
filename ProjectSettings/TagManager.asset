@@ -17,10 +17,10 @@ TagManager:
   - 
   - 
   - Interactive
-  - Inspectable
-  - Carriable
-  - Pushable
-  - Climbable
+  - To Inspect
+  - To Carry
+  - To Push
+  - To Climb
   - 
   - 
   - Obstacle

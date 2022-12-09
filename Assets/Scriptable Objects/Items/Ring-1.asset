@@ -15,9 +15,8 @@ MonoBehaviour:
   itemName: Golden Ring
   itemType: 1
   uniqueID: 538b3aeb1c333c842b9843976f33948c
-  inGamePrefab: {fileID: 3296901847148863773, guid: 87237ecaf895c204daf2f7cbac384466,
-    type: 3}
-  itemToExamine: {fileID: 4764530112575922735, guid: 7ee9ab7c5f9373e4ba6c7bf2d01c66e7,
+  inGamePrefab: {fileID: 0}
+  itemToInspect: {fileID: 4764530112575922735, guid: 7ee9ab7c5f9373e4ba6c7bf2d01c66e7,
     type: 3}
   icon: {fileID: 21300000, guid: 6f5e421f941b64041b48737c9165c062, type: 3}
   itemDescription: This must be worth a lot!

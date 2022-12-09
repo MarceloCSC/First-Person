@@ -5,5 +5,6 @@
         Gameplay,
         Paused,
         UI,
+        Dialogue
     }
 }

@@ -15,9 +15,8 @@ MonoBehaviour:
   itemName: Cheese
   itemType: 0
   uniqueID: afcaabe1b8212f94bb4bce01920d2bca
-  inGamePrefab: {fileID: 3296901847148863773, guid: 87237ecaf895c204daf2f7cbac384466,
-    type: 3}
-  itemToExamine: {fileID: 4764530112575922735, guid: 7ee9ab7c5f9373e4ba6c7bf2d01c66e7,
+  inGamePrefab: {fileID: 0}
+  itemToInspect: {fileID: 4764530112575922735, guid: 7ee9ab7c5f9373e4ba6c7bf2d01c66e7,
     type: 3}
   icon: {fileID: 21300000, guid: 734db443add33ab4fbf9c8f4ae3a9c1e, type: 3}
   itemDescription: Hmmm... tasty!

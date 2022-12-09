@@ -431,14 +431,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72f13e4f261c62c408ba5c9278e51b8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  database: {fileID: 11400000, guid: 9ab6f5d371e572040a1eff122ac45e89, type: 2}
-  startingItems:
+  Database: {fileID: 11400000, guid: 9ab6f5d371e572040a1eff122ac45e89, type: 2}
+  StartingItems:
   - item: {fileID: 11400000, guid: c2aa240e181d31145908c9f584020e54, type: 2}
     currentAmount: 1
   - item: {fileID: 11400000, guid: 538b3aeb1c333c842b9843976f33948c, type: 2}
     currentAmount: 8
-  - item: {fileID: 11400000, guid: afcaabe1b8212f94bb4bce01920d2bca, type: 2}
-    currentAmount: 1
 --- !u!1 &1060343550891344425
 GameObject:
   m_ObjectHideFlags: 0
@@ -461,6 +459,7 @@ GameObject:
   - component: {fileID: 1256492175391114339}
   - component: {fileID: 3531467801051237284}
   - component: {fileID: 9188772267139577504}
+  - component: {fileID: 3500095882006115623}
   m_Layer: 6
   m_Name: States
   m_TagString: Untagged
@@ -732,6 +731,18 @@ MonoBehaviour:
   _maxZoom: 100
   _zoomSpeed: 1000
   _rotationSpeed: 5
+--- !u!114 &3500095882006115623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1060343550891344425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a0a36cfa88fd0e4ea49c2750064316f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4973796431249347001
 GameObject:
   m_ObjectHideFlags: 0
