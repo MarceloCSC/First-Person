@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3bd39a9886bfa9d41a82d5f4685cb308, type: 3}
-  m_Name: Ring-1
+  m_Name: Book
   m_EditorClassIdentifier: 
-  itemName: Golden Ring
-  itemType: 1
-  uniqueID: 538b3aeb1c333c842b9843976f33948c
-  inGamePrefab: {fileID: 0}
-  itemToInspect: {fileID: 4764530112575922735, guid: 7ee9ab7c5f9373e4ba6c7bf2d01c66e7,
+  _itemName: Book
+  _itemType: 4
+  _uniqueID: c2aa240e181d31145908c9f584020e54
+  _inGamePrefab: {fileID: 0}
+  _itemToInspect: {fileID: 4764530112575922735, guid: 7ee9ab7c5f9373e4ba6c7bf2d01c66e7,
     type: 3}
-  icon: {fileID: 21300000, guid: 6f5e421f941b64041b48737c9165c062, type: 3}
-  itemDescription: This must be worth a lot!
-  maxAmount: 10
+  _icon: {fileID: 21300000, guid: 82fb63cc8f369fa4286c58a9ec2b61fb, type: 3}
+  _itemDescription: I've read this many times.
+  _maxAmount: 1

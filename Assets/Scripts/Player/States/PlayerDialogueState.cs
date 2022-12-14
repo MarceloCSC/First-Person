@@ -74,9 +74,9 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         private void HandleDialogue()
         {
-            DialogueManager.Instance.ContinueDialogue();
+            DialogueManager.Instance.HandleDialogue();
 
-            if (!DialogueManager.Instance.CanContinue)
+            if (DialogueManager.Instance.CanQuitDialogue)
             {
                 SwitchState(StateMachine.Idle());
             }

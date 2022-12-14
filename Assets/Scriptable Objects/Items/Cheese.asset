@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bd39a9886bfa9d41a82d5f4685cb308, type: 3}
   m_Name: Cheese
   m_EditorClassIdentifier: 
-  itemName: Cheese
-  itemType: 0
-  uniqueID: afcaabe1b8212f94bb4bce01920d2bca
-  inGamePrefab: {fileID: 0}
-  itemToInspect: {fileID: 4764530112575922735, guid: 7ee9ab7c5f9373e4ba6c7bf2d01c66e7,
+  _itemName: Cheese
+  _itemType: 1
+  _uniqueID: afcaabe1b8212f94bb4bce01920d2bca
+  _inGamePrefab: {fileID: 0}
+  _itemToInspect: {fileID: 4764530112575922735, guid: 7ee9ab7c5f9373e4ba6c7bf2d01c66e7,
     type: 3}
-  icon: {fileID: 21300000, guid: 734db443add33ab4fbf9c8f4ae3a9c1e, type: 3}
-  itemDescription: Hmmm... tasty!
-  maxAmount: 1
+  _icon: {fileID: 21300000, guid: 734db443add33ab4fbf9c8f4ae3a9c1e, type: 3}
+  _itemDescription: Tastes good.
+  _maxAmount: 1

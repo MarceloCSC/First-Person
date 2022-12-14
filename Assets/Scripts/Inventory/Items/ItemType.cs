@@ -2,11 +2,11 @@
 {
     public enum ItemType
     {
+        Misc,
         Food,
         Valuable,
         Flammable,
         Readable,
-        Unique,
-        Misc
+        Unique
     }
 }

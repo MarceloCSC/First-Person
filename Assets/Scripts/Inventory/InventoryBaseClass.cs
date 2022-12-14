@@ -12,10 +12,14 @@ namespace An01malia.FirstPerson.InventoryModule
         [SerializeField] protected ItemDatabase Database;
         [SerializeField] protected Item[] StartingItems;
 
-        protected bool IsContainerOpen;
         protected Slot[] Slots;
         protected Dictionary<Slot, Tuple<string, int>> StoredItems;
 
+        #endregion
+
+        #region Properties
+
+        public virtual bool IsOpen { get; set; }
 
         #endregion
 
@@ -128,7 +132,7 @@ namespace An01malia.FirstPerson.InventoryModule
 
         protected void StoreAndRestore()
         {
-            if (IsContainerOpen)
+            if (IsOpen)
             {
                 RestoreItems();
             }

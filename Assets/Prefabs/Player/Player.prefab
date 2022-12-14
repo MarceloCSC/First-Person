@@ -257,9 +257,17 @@ Camera:
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -343,9 +351,17 @@ CharacterController:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 192995566219779120}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_Height: 2
   m_Radius: 0.5
   m_SlopeLimit: 45
@@ -433,10 +449,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Database: {fileID: 11400000, guid: 9ab6f5d371e572040a1eff122ac45e89, type: 2}
   StartingItems:
-  - item: {fileID: 11400000, guid: c2aa240e181d31145908c9f584020e54, type: 2}
-    currentAmount: 1
-  - item: {fileID: 11400000, guid: 538b3aeb1c333c842b9843976f33948c, type: 2}
-    currentAmount: 8
+  - _item: {fileID: 11400000, guid: c2aa240e181d31145908c9f584020e54, type: 2}
+    _currentAmount: 1
+  - _item: {fileID: 11400000, guid: 538b3aeb1c333c842b9843976f33948c, type: 2}
+    _currentAmount: 3
 --- !u!1 &1060343550891344425
 GameObject:
   m_ObjectHideFlags: 0
@@ -937,9 +953,17 @@ Camera:
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0

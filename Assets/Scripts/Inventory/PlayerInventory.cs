@@ -13,12 +13,12 @@ namespace An01malia.FirstPerson.InventoryModule
 
         #region Properties
 
-        public bool IsOpen
+        public override bool IsOpen
         {
-            get => IsContainerOpen;
+            get => base.IsOpen;
             set
             {
-                IsContainerOpen = value;
+                base.IsOpen = value;
 
                 StoreAndRestore();
             }
