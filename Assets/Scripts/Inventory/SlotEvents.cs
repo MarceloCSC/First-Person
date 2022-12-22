@@ -1,5 +1,6 @@
 ﻿using An01malia.FirstPerson.Core.References;
-using An01malia.FirstPerson.InventoryModule.Items;
+using An01malia.FirstPerson.ItemModule.Items;
+using An01malia.FirstPerson.UserInterfaceModule.Inventory;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -42,7 +43,7 @@ namespace An01malia.FirstPerson.InventoryModule
 
         private void SwapItems()
         {
-            Item itemToDrop = originalSlot.Item;
+            InventoryItem itemToDrop = originalSlot.Item;
 
             originalSlot.Item = Item;
             Item = itemToDrop;

@@ -1,5 +1,5 @@
 ﻿using An01malia.FirstPerson.CraftingModule;
-using An01malia.FirstPerson.UIModule;
+using An01malia.FirstPerson.UserInterfaceModule;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.InteractionModule.Interactive

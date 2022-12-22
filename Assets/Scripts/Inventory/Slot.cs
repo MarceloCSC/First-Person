@@ -1,4 +1,4 @@
-﻿using An01malia.FirstPerson.InventoryModule.Items;
+﻿using An01malia.FirstPerson.ItemModule.Items;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -6,14 +6,14 @@ namespace An01malia.FirstPerson.InventoryModule
 {
     public class Slot : SlotBaseClass
     {
-        private static Item itemSelected;
+        private static InventoryItem itemSelected;
 
         private bool isSelected;
         private Color selected = Color.grey;
 
         #region Properties
 
-        public Item Item
+        public InventoryItem Item
         {
             get => item;
             set
@@ -29,7 +29,7 @@ namespace An01malia.FirstPerson.InventoryModule
             }
         }
 
-        public static Item ItemSelected
+        public static InventoryItem ItemSelected
         {
             get => itemSelected;
             set
@@ -67,7 +67,7 @@ namespace An01malia.FirstPerson.InventoryModule
             }
         }
 
-        private void AmountDisplay(Item item)
+        private void AmountDisplay(InventoryItem item)
         {
             amountText.enabled = item != null && item.Amount > 1;
 
@@ -82,7 +82,7 @@ namespace An01malia.FirstPerson.InventoryModule
             }
         }
 
-        private void OnValueChanged(Item value)
+        private void OnValueChanged(InventoryItem value)
         {
             if (item != null)
             {

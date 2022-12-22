@@ -1,4 +1,4 @@
-﻿using An01malia.FirstPerson.InventoryModule.Items;
+﻿using An01malia.FirstPerson.ItemModule.Items;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +8,7 @@ namespace An01malia.FirstPerson.InventoryModule
     {
         [SerializeField] protected Image image = null;
         [SerializeField] protected Text amountText = null;
-        [SerializeField] protected Item item;
+        [SerializeField] protected InventoryItem item;
 
         protected Color defaultColor = Color.white;
         protected Color invisible = new Color(1, 1, 1, 0);

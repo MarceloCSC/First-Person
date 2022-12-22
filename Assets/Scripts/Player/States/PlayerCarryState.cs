@@ -55,7 +55,10 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     break;
 
                 case ActionType.Interact:
-                    (dto as InteractiveActionDTO).Interactive.StartInteraction();
+                    if (dto is InteractiveActionDTO interactive)
+                    {
+                        PlaceItem(interactive);
+                    }
                     break;
 
                 default:
@@ -69,18 +72,25 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         private void CarryItem()
         {
-            StateData.Item.GetComponent<Rigidbody>().isKinematic = true;
-            StateData.Item.GetComponent<Collider>().enabled = false;
-            StateData.Item.parent = Player.Hand;
-            StateData.Item.localPosition = Vector3.zero;
-            StateData.Item.eulerAngles = Vector3.zero;
+            StateData.Transform.GetComponent<Rigidbody>().isKinematic = true;
+            StateData.Transform.GetComponent<Collider>().enabled = false;
+            StateData.Transform.parent = Player.Hand;
+            StateData.Transform.localPosition = Vector3.zero;
+            StateData.Transform.eulerAngles = Vector3.zero;
         }
 
         private void DropItem()
         {
-            StateData.Item.GetComponent<Rigidbody>().isKinematic = false;
-            StateData.Item.GetComponent<Collider>().enabled = true;
-            StateData.Item.parent = null;
+            StateData.Transform.GetComponent<Rigidbody>().isKinematic = false;
+            StateData.Transform.GetComponent<Collider>().enabled = true;
+            StateData.Transform.parent = null;
+        }
+
+        private void PlaceItem(InteractiveActionDTO dto)
+        {
+            print("placing item");
+
+            dto.Interactive.StartInteraction();
         }
 
         #endregion

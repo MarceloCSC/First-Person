@@ -1,6 +1,6 @@
 using An01malia.FirstPerson.Core;
 using An01malia.FirstPerson.DialogueModule.DTOs;
-using An01malia.FirstPerson.UIModule;
+using An01malia.FirstPerson.UserInterfaceModule;
 using Ink.Runtime;
 using System;
 using System.Collections.Generic;

@@ -22,7 +22,7 @@ namespace An01malia.FirstPerson.PlayerModule.States.Data
 
         #region Public Methods
 
-        public override PlayerActionDTO GetData() => new JumpPlayerActionDTO(JumpsRemaining, Speed, IsRunPressed, Momentum, Item);
+        public override PlayerActionDTO GetData() => new JumpPlayerActionDTO(JumpsRemaining, Speed, IsRunPressed, Momentum, Transform);
 
         #endregion
     }

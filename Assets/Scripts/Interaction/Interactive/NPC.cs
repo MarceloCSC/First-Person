@@ -1,5 +1,6 @@
 using An01malia.FirstPerson.DialogueModule;
 using An01malia.FirstPerson.DialogueModule.DTOs;
+using An01malia.FirstPerson.NonPlayableCharacterModule;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.InteractionModule.Interactive
@@ -8,7 +9,7 @@ namespace An01malia.FirstPerson.InteractionModule.Interactive
     {
         #region Fields
 
-        [SerializeField] private string _name;
+        [SerializeField] private CharacterObject _character;
         [SerializeField] private TextAsset _dialogue;
         [SerializeField] private bool _canInteract = true;
 
@@ -26,7 +27,7 @@ namespace An01malia.FirstPerson.InteractionModule.Interactive
         {
             if (!_canInteract) return;
 
-            DialogueManager.Instance.StartDialogue(new DialogueDTO(_dialogue.text, _name));
+            DialogueManager.Instance.StartDialogue(new DialogueDTO(_dialogue.text, _character.Name));
         }
 
         #endregion

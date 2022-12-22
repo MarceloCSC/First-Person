@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using An01malia.FirstPerson.UIModule;
+using An01malia.FirstPerson.UserInterfaceModule;
 
 namespace An01malia.FirstPerson.PlayerModule
 {

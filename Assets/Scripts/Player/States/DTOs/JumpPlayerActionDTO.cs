@@ -16,9 +16,9 @@ namespace An01malia.FirstPerson.PlayerModule.States.DTOs
                                    float speed,
                                    bool isRunPressed,
                                    Vector3 momentum = default,
-                                   Transform item = null)
+                                   Transform transform = null)
 
-            : base(speed, isRunPressed, momentum, item)
+            : base(speed, isRunPressed, momentum, transform)
         {
             JumpsRemaining = jumpsRemaining;
         }

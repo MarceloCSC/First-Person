@@ -66,7 +66,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         private void EnterDialogue()
         {
-            if (StateData.Item.TryGetComponent(out _character))
+            if (StateData.Transform.TryGetComponent(out _character))
             {
                 _character.StartInteraction();
             }

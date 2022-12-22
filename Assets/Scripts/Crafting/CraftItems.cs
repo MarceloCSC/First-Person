@@ -1,6 +1,6 @@
 ﻿using An01malia.FirstPerson.Core.References;
 using An01malia.FirstPerson.InventoryModule;
-using An01malia.FirstPerson.InventoryModule.Items;
+using An01malia.FirstPerson.ItemModule.Items;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.CraftingModule
@@ -38,7 +38,7 @@ namespace An01malia.FirstPerson.CraftingModule
         {
             if (HasIngredients(recipe))
             {
-                foreach (Item ingredient in recipe.Ingredients)
+                foreach (InventoryItem ingredient in recipe.Ingredients)
                 {
                     _playerInventory.RemoveItem(ingredient);
                 }
@@ -57,7 +57,7 @@ namespace An01malia.FirstPerson.CraftingModule
 
         private bool HasIngredients(Recipe recipe)
         {
-            foreach (Item ingredient in recipe.Ingredients)
+            foreach (InventoryItem ingredient in recipe.Ingredients)
             {
                 if (_playerInventory.CountItems(ingredient) < ingredient.Amount)
                 {

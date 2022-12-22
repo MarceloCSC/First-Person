@@ -102,7 +102,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     SwitchState(StateMachine.Inspect());
                     break;
 
-                case ActionType.Inventory when dto is ItemActionDTO:
+                case ActionType.Inventory when dto is TransformActionDTO:
                     StateData.SetData(dto);
                     SwitchState(StateMachine.Inventory());
                     break;

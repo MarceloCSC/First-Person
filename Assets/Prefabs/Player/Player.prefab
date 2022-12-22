@@ -282,7 +282,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 160951
+    m_Bits: 158903
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -409,10 +409,10 @@ MonoBehaviour:
   _distanceToInteract: 3
   _visibleLayers:
     serializedVersion: 2
-    m_Bits: 29825
+    m_Bits: 31873
   _examinableLayers:
     serializedVersion: 2
-    m_Bits: 29696
+    m_Bits: 31744
   _reachableLayers:
     serializedVersion: 2
     m_Bits: 24576
@@ -433,7 +433,7 @@ MonoBehaviour:
   _lowerBounds: {x: 0, y: 0.9, z: 0}
   _layersToGrab:
     serializedVersion: 2
-    m_Bits: 139265
+    m_Bits: 139264
   _toggleGizmos: 0
 --- !u!114 &3060927387941127836
 MonoBehaviour:
@@ -978,7 +978,7 @@ Camera:
   m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 2560
+    m_Bits: 4608
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0

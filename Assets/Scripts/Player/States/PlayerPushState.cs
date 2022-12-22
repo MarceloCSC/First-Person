@@ -26,7 +26,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         public override void EnterState(PlayerActionDTO dto)
         {
-            StateData = new PushStateData(dto.Item.GetComponent<BoxCollider>().size, dto)
+            StateData = new PushStateData(dto.Transform.GetComponent<BoxCollider>().size, dto)
             {
                 Speed = GetInitialSpeed(dto.Speed),
             };
@@ -81,7 +81,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     StateData.SetData(dto);
                     break;
 
-                case ActionType.Push when (dto as ItemActionDTO).Item == _data.Item:
+                case ActionType.Push when (dto as TransformActionDTO).Transform == _data.Transform:
                     SwitchState(StateMachine.Idle());
                     break;
 
@@ -119,7 +119,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
             Controller.Move(movementVector * Time.fixedDeltaTime);
 
-            _data.Item.position = GetItemPosition();
+            _data.Transform.position = GetTargetPosition();
         }
 
         private Vector3 HandleCollision(Vector3 inputVector)
@@ -155,8 +155,8 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         private bool IsColliding(Vector3 inputVector, out RaycastHit hit)
         {
-            return Physics.BoxCast(_data.Item.localPosition, _data.ColliderSize / 2, inputVector, out hit,
-                                   _data.Item.localRotation, _distanceToCollision, _layersToCollide);
+            return Physics.BoxCast(_data.Transform.localPosition, _data.ColliderSize / 2, inputVector, out hit,
+                                   _data.Transform.localRotation, _distanceToCollision, _layersToCollide);
         }
 
         private static bool IsPushingAgainstObstacle(Vector3 inputVector, RaycastHit hit)
@@ -165,10 +165,10 @@ namespace An01malia.FirstPerson.PlayerModule.States
                    (inputVector.z != 0 && Mathf.Sign(inputVector.z) != Mathf.Sign(hit.normal.z));
         }
 
-        private Vector3 GetItemPosition()
+        private Vector3 GetTargetPosition()
         {
             Vector3 position = Player.Transform.position + _data.DifferenceToPlayer;
-            position.y = _data.Item.position.y;
+            position.y = _data.Transform.position.y;
 
             return position;
         }
@@ -220,21 +220,21 @@ namespace An01malia.FirstPerson.PlayerModule.States
         private bool IsRaycastHitting(out RaycastHit hit)
         {
             return Physics.Raycast(Player.Transform.position, Player.Transform.forward, out hit,
-                                   Vector3.Distance(Player.Transform.position, _data.Item.position), _layerToPush);
+                                   Vector3.Distance(Player.Transform.position, _data.Transform.position), _layerToPush);
         }
 
         private void SetInitialData()
         {
-            _data.DifferenceToPlayer = _data.Item.position - Player.Transform.position;
+            _data.DifferenceToPlayer = _data.Transform.position - Player.Transform.position;
 
-            if (_data.Item.TryGetComponent(out CrateToPush crate))
+            if (_data.Transform.TryGetComponent(out CrateToPush crate))
             {
                 _data.Acceleration = crate.Acceleration;
                 _data.Speed = crate.MovementSpeed;
                 _data.CanPushForward = crate.CanMoveForward;
                 _data.CanPushSideways = crate.CanMoveSideways;
-                _data.IsZAxisAligned = _data.Item.forward == _data.FacingDirection ||
-                                       _data.Item.forward == -_data.FacingDirection;
+                _data.IsZAxisAligned = _data.Transform.forward == _data.FacingDirection ||
+                                       _data.Transform.forward == -_data.FacingDirection;
             }
         }
 

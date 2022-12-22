@@ -9,18 +9,18 @@ namespace An01malia.FirstPerson.PlayerModule.States.DTOs
         public float Speed { get; }
         public bool IsRunPressed { get; }
         public Vector3 Momentum { get; }
-        public Transform Item { get; }
+        public Transform Transform { get; }
 
         #endregion
 
         #region Constructor
 
-        public PlayerActionDTO(float speed, bool isRunPressed, Vector3 momentum, Transform item = null)
+        public PlayerActionDTO(float speed, bool isRunPressed, Vector3 momentum, Transform transform = null)
         {
             Speed = speed;
             IsRunPressed = isRunPressed;
             Momentum = momentum != null ? momentum : Vector3.zero;
-            Item = item;
+            Transform = transform;
         }
 
         #endregion

@@ -1,10 +1,10 @@
 using An01malia.FirstPerson.Core;
 using An01malia.FirstPerson.Core.References;
-using An01malia.FirstPerson.InteractionModule.Interactive;
-using An01malia.FirstPerson.InventoryModule.Items;
+using An01malia.FirstPerson.ItemModule;
+using An01malia.FirstPerson.ItemModule.Items;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
-using An01malia.FirstPerson.UIModule;
+using An01malia.FirstPerson.UserInterfaceModule;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.PlayerModule.States
@@ -141,10 +141,10 @@ namespace An01malia.FirstPerson.PlayerModule.States
             _item = null;
         }
 
-        private bool TrySetItem() => StateData.Item.TryGetComponent(out ItemToInspect item) &&
+        private bool TrySetItem() => StateData.Transform.TryGetComponent(out ItemToInspect item) &&
                                         ItemPooler.Instance.ItemsToExamine.TryGetValue(item.Root.ID, out _item);
 
-        private void ToggleInGameItem(bool isActive) => StateData.Item.gameObject.SetActive(isActive);
+        private void ToggleInGameItem(bool isActive) => StateData.Transform.gameObject.SetActive(isActive);
 
         #endregion
     }

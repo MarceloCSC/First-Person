@@ -3,7 +3,7 @@ using An01malia.FirstPerson.InteractionModule.Interactive;
 using An01malia.FirstPerson.InventoryModule;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
-using An01malia.FirstPerson.UIModule;
+using An01malia.FirstPerson.UserInterfaceModule;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.PlayerModule.States
@@ -90,7 +90,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
             storage = null;
 
-            return StateData.Item != null && StateData.Item.TryGetComponent(out storage);
+            return StateData.Transform != null && StateData.Transform.TryGetComponent(out storage);
         }
 
         #endregion

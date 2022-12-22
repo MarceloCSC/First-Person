@@ -24,7 +24,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         public override void EnterState(PlayerActionDTO dto)
         {
-            StateData = new ClimbStateData(dto.Item.position, dto)
+            StateData = new ClimbStateData(dto.Transform.position, dto)
             {
                 Speed = GetInitialSpeed(dto.Speed),
             };

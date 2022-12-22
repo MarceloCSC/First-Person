@@ -1,4 +1,5 @@
-﻿using An01malia.FirstPerson.InventoryModule.Items;
+﻿using An01malia.FirstPerson.ItemModule;
+using An01malia.FirstPerson.ItemModule.Items;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace An01malia.FirstPerson.InventoryModule
         #region Fields
 
         [SerializeField] protected ItemDatabase Database;
-        [SerializeField] protected Item[] StartingItems;
+        [SerializeField] protected InventoryItem[] StartingItems;
 
         protected Slot[] Slots;
         protected Dictionary<Slot, Tuple<string, int>> StoredItems;
@@ -45,7 +46,7 @@ namespace An01malia.FirstPerson.InventoryModule
             }
         }
 
-        public virtual void AddItems(Item item)
+        public virtual void AddItems(InventoryItem item)
         {
             AddToStack(item);
 
@@ -58,7 +59,7 @@ namespace An01malia.FirstPerson.InventoryModule
             AddRemaining(item);
         }
 
-        public virtual void AddToStack(Item item)
+        public virtual void AddToStack(InventoryItem item)
         {
             for (int i = 0; i < Slots.Length; i++)
             {
@@ -79,7 +80,7 @@ namespace An01malia.FirstPerson.InventoryModule
             }
         }
 
-        public virtual void DivideIntoStacks(Item item)
+        public virtual void DivideIntoStacks(InventoryItem item)
         {
             int maxAmount = item.Root.MaxAmount;
 
@@ -98,7 +99,7 @@ namespace An01malia.FirstPerson.InventoryModule
             }
         }
 
-        public virtual void AddRemaining(Item item)
+        public virtual void AddRemaining(InventoryItem item)
         {
             for (int i = 0; i < Slots.Length; i++)
             {
@@ -111,7 +112,7 @@ namespace An01malia.FirstPerson.InventoryModule
             }
         }
 
-        public virtual int CountItems(Item item)
+        public virtual int CountItems(InventoryItem item)
         {
             int totalAmount = 0;
 
@@ -167,7 +168,7 @@ namespace An01malia.FirstPerson.InventoryModule
                 {
                     if (key.Equals(Slots[i]))
                     {
-                        Item item = Database.RetrieveItem(StoredItems[key].Item1, StoredItems[key].Item2);
+                        InventoryItem item = Database.RetrieveItem(StoredItems[key].Item1, StoredItems[key].Item2);
 
                         Slots[i].Item = item;
                     }

@@ -1,4 +1,4 @@
-﻿using An01malia.FirstPerson.InventoryModule.Items;
+﻿using An01malia.FirstPerson.ItemModule.Items;
 
 namespace An01malia.FirstPerson.InventoryModule
 {
@@ -10,14 +10,14 @@ namespace An01malia.FirstPerson.InventoryModule
 
         void ClearAllItems();
 
-        void AddItems(Item item);
+        void AddItems(InventoryItem item);
 
-        void AddToStack(Item item);
+        void AddToStack(InventoryItem item);
 
-        void DivideIntoStacks(Item item);
+        void DivideIntoStacks(InventoryItem item);
 
-        void AddRemaining(Item item);
+        void AddRemaining(InventoryItem item);
 
-        int CountItems(Item item);
+        int CountItems(InventoryItem item);
     }
 }

@@ -1,6 +1,7 @@
 using An01malia.FirstPerson.Core;
 using An01malia.FirstPerson.Core.References;
 using An01malia.FirstPerson.InteractionModule.Interactive;
+using An01malia.FirstPerson.ItemModule.Items;
 using An01malia.FirstPerson.PlayerModule.States;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using UnityEngine;
@@ -104,52 +105,20 @@ namespace An01malia.FirstPerson.PlayerModule
 
         private void OnInteractionPressed(InputAction.CallbackContext callback)
         {
-            if (_interaction.TryGetInteractive(out IInteractive interactive))
-            {
-                var item = _interaction.InteractiveItem;
-
-                switch (LayerMask.LayerToName(item.gameObject.layer))
-                {
-                    case Layer.Interactive when interactive is ItemToInspect:
-                        _context.CurrentState.TriggerSwitchState(ActionType.Inspect, new ItemActionDTO(item));
-                        break;
-
-                    case Layer.Interactive when interactive is StorageUnit:
-                        _context.CurrentState.TriggerSwitchState(ActionType.Inventory, new ItemActionDTO(item));
-                        break;
-
-                    case Layer.Interactive when interactive is NPC:
-                        _context.CurrentState.TriggerSwitchState(ActionType.Dialogue, new ItemActionDTO(item));
-                        break;
-
-                    case Layer.Interactive:
-                        _context.CurrentState.TriggerSwitchState(ActionType.Interact, new InteractiveActionDTO(interactive));
-                        break;
-
-                    case Layer.ToPush:
-                        _context.CurrentState.TriggerSwitchState(ActionType.Push, new ItemActionDTO(item));
-                        break;
-
-                    case Layer.ToClimb:
-                        _context.CurrentState.TriggerSwitchState(ActionType.Climb, new ItemActionDTO(item));
-                        break;
-
-                    case Layer.ToCarry:
-                        _context.CurrentState.TriggerSwitchState(ActionType.Carry, new ItemActionDTO(item));
-                        break;
-
-                    case Layer.ToInspect when _context.CurrentState is PlayerInspectState:
-                        _context.CurrentState.TriggerSwitchState(ActionType.None);
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-            else
+            if (!_interaction.Interaction)
             {
                 _context.CurrentState.TriggerSwitchState(ActionType.None);
+
+                return;
             }
+
+            Transform interaction = _interaction.Interaction;
+
+            if (TryHandleInteractive(interaction)) return;
+
+            if (TryHandleItem(interaction)) return;
+
+            HandleInteraction(interaction);
         }
 
         private void OnInventoryPressed(InputAction.CallbackContext callback)
@@ -176,6 +145,71 @@ namespace An01malia.FirstPerson.PlayerModule
         }
 
         #endregion
+
+        private bool TryHandleInteractive(Transform interaction)
+        {
+            if (!_interaction.TryGetInteractive(out IInteractive interactive)) return false;
+
+            switch (interactive)
+            {
+                case StorageUnit:
+                    _context.CurrentState.TriggerSwitchState(ActionType.Inventory, new TransformActionDTO(interaction));
+                    break;
+
+                case NPC:
+                    _context.CurrentState.TriggerSwitchState(ActionType.Dialogue, new TransformActionDTO(interaction));
+                    break;
+
+                default:
+                    _context.CurrentState.TriggerSwitchState(ActionType.Interact, new InteractiveActionDTO(interactive));
+                    break;
+            }
+
+            return true;
+        }
+
+        private bool TryHandleItem(Transform interaction)
+        {
+            if (!_interaction.TryGetItem(out IItem item)) return false;
+
+            switch (item)
+            {
+                case ItemToCarry:
+                    _context.CurrentState.TriggerSwitchState(ActionType.Carry, new TransformActionDTO(interaction));
+                    break;
+
+                case ItemToPickUp:
+                    // HANDLE PICKING UP
+                    break;
+
+                case ItemToInspect when _context.CurrentState is PlayerInspectState:
+                    _context.CurrentState.TriggerSwitchState(ActionType.None);
+                    break;
+
+                case ItemToInspect:
+                    _context.CurrentState.TriggerSwitchState(ActionType.Inspect, new TransformActionDTO(interaction));
+                    break;
+            }
+
+            return true;
+        }
+
+        private void HandleInteraction(Transform interaction)
+        {
+            switch (LayerMask.LayerToName(interaction.gameObject.layer))
+            {
+                case Layer.ToPush:
+                    _context.CurrentState.TriggerSwitchState(ActionType.Push, new TransformActionDTO(interaction));
+                    break;
+
+                case Layer.ToClimb:
+                    _context.CurrentState.TriggerSwitchState(ActionType.Climb, new TransformActionDTO(interaction));
+                    break;
+
+                default:
+                    break;
+            }
+        }
 
         private void OnGameStateChanged(GameState gameState)
         {

@@ -1,4 +1,4 @@
-﻿using An01malia.FirstPerson.InventoryModule.Items;
+﻿using An01malia.FirstPerson.ItemModule.Items;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.InventoryModule
@@ -38,7 +38,7 @@ namespace An01malia.FirstPerson.InventoryModule
 
         #region Public Methods
 
-        public void RemoveItem(Item item)
+        public void RemoveItem(InventoryItem item)
         {
             int amount = item.Amount;
 

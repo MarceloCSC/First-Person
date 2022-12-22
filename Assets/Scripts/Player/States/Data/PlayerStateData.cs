@@ -10,7 +10,7 @@ namespace An01malia.FirstPerson.PlayerModule.States.Data
         public float Speed { get; set; }
         public bool IsRunPressed { get; set; }
         public Vector3 Momentum { get; set; } = Vector3.zero;
-        public Transform Item { get; set; }
+        public Transform Transform { get; set; }
 
         #endregion
 
@@ -20,12 +20,12 @@ namespace An01malia.FirstPerson.PlayerModule.States.Data
         {
         }
 
-        public PlayerStateData(float speed, bool isRunPressed, Vector3 momentum = default, Transform item = null)
+        public PlayerStateData(float speed, bool isRunPressed, Vector3 momentum = default, Transform transform = null)
         {
             Speed = speed;
             IsRunPressed = isRunPressed;
             Momentum = momentum;
-            Item = item;
+            Transform = transform;
         }
 
         public PlayerStateData(PlayerActionDTO dto)
@@ -33,7 +33,7 @@ namespace An01malia.FirstPerson.PlayerModule.States.Data
             IsRunPressed = dto.IsRunPressed;
             Speed = dto.Speed;
             Momentum = dto.Momentum;
-            Item = dto.Item;
+            Transform = dto.Transform;
         }
 
         #endregion
@@ -48,14 +48,14 @@ namespace An01malia.FirstPerson.PlayerModule.States.Data
                     IsRunPressed = jumpDto.IsRunPressed;
                     Speed = jumpDto.Speed;
                     Momentum = jumpDto.Momentum;
-                    Item = jumpDto.Item ? jumpDto.Item : Item;
+                    Transform = jumpDto.Transform ? jumpDto.Transform : Transform;
                     break;
 
                 case PlayerActionDTO actionDto:
                     IsRunPressed = actionDto.IsRunPressed;
                     Speed = actionDto.Speed;
                     Momentum = actionDto.Momentum;
-                    Item = actionDto.Item ? actionDto.Item : Item;
+                    Transform = actionDto.Transform ? actionDto.Transform : Transform;
                     break;
 
                 case RunActionDTO runDto:
@@ -66,15 +66,15 @@ namespace An01malia.FirstPerson.PlayerModule.States.Data
                     Momentum = movementDto.Movement;
                     break;
 
-                case ItemActionDTO itemDto:
-                    Item = itemDto.Item;
+                case TransformActionDTO transformDto:
+                    Transform = transformDto.Transform;
                     break;
             }
         }
 
         public virtual PlayerActionDTO GetData()
         {
-            return new PlayerActionDTO(Speed, IsRunPressed, Momentum, Item);
+            return new PlayerActionDTO(Speed, IsRunPressed, Momentum, Transform);
         }
 
         #endregion

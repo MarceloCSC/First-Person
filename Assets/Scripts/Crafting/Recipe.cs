@@ -1,4 +1,4 @@
-﻿using An01malia.FirstPerson.InventoryModule.Items;
+﻿using An01malia.FirstPerson.ItemModule.Items;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.CraftingModule
@@ -8,8 +8,8 @@ namespace An01malia.FirstPerson.CraftingModule
     {
         #region Fields
 
-        [SerializeField] private Item _itemToCraft;
-        [SerializeField] private Item[] _ingredients = new Item[4];
+        [SerializeField] private InventoryItem _itemToCraft;
+        [SerializeField] private InventoryItem[] _ingredients = new InventoryItem[4];
 
         [Space]
         [SerializeField] private bool _isAvailable;
@@ -18,8 +18,8 @@ namespace An01malia.FirstPerson.CraftingModule
 
         #region Properties
 
-        public Item ItemToCraft => _itemToCraft;
-        public Item[] Ingredients => _ingredients;
+        public InventoryItem ItemToCraft => _itemToCraft;
+        public InventoryItem[] Ingredients => _ingredients;
 
         public bool HasBeenLearned
         {
@@ -34,9 +34,9 @@ namespace An01malia.FirstPerson.CraftingModule
 
         #region Public Methods
 
-        public Item CraftedItem()
+        public InventoryItem CraftedItem()
         {
-            return new Item(_itemToCraft.Root, _itemToCraft.Amount);
+            return new InventoryItem(_itemToCraft.Root, _itemToCraft.Amount);
         }
 
         #endregion

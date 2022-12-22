@@ -1,5 +1,6 @@
 using An01malia.FirstPerson.Core.References;
 using An01malia.FirstPerson.InteractionModule.Interactive;
+using An01malia.FirstPerson.ItemModule.Items;
 using System;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace An01malia.FirstPerson.PlayerModule
     {
         #region Delegates
 
-        public event Action<bool, bool> OnItemExamined = delegate { };
+        public event Action<bool, bool> OnExamination = delegate { };
 
         #endregion
 
@@ -21,15 +22,15 @@ namespace An01malia.FirstPerson.PlayerModule
         [SerializeField] private LayerMask _examinableLayers;
         [SerializeField] private LayerMask _reachableLayers;
 
-        private Transform _examinedItem;
-        private Transform _interactiveItem;
+        private Transform _examinationObject;
+        private Transform _interactionObject;
         private PlayerSurroundings _surroundings;
 
         #endregion
 
         #region Properties
 
-        public Transform InteractiveItem => _interactiveItem;
+        public Transform Interaction => _interactionObject;
 
         #endregion
 
@@ -52,9 +53,9 @@ namespace An01malia.FirstPerson.PlayerModule
 
                 bool canInteract = TrySetInteractive(hit);
 
-                OnItemExamined(true, canInteract);
+                OnExamination(true, canInteract);
             }
-            else if (_examinedItem)
+            else if (_examinationObject)
             {
                 ClearExamined();
             }
@@ -64,11 +65,18 @@ namespace An01malia.FirstPerson.PlayerModule
         {
             interactive = null;
 
-            if (!_interactiveItem) return false;
+            if (!_interactionObject) return false;
 
-            _interactiveItem.TryGetComponent(out interactive);
+            return _interactionObject.TryGetComponent(out interactive);
+        }
 
-            return true;
+        public bool TryGetItem(out IItem item)
+        {
+            item = null;
+
+            if (!_interactionObject) return false;
+
+            return _interactionObject.TryGetComponent(out item);
         }
 
         #endregion
@@ -77,17 +85,17 @@ namespace An01malia.FirstPerson.PlayerModule
 
         private void SetExamined(RaycastHit hit)
         {
-            if (hit.transform != _examinedItem)
+            if (hit.transform != _examinationObject)
             {
-                _examinedItem = hit.transform;
+                _examinationObject = hit.transform;
             }
         }
 
         private void SetInteractive(RaycastHit hit)
         {
-            if (hit.transform != _interactiveItem)
+            if (hit.transform != _interactionObject)
             {
-                _interactiveItem = _examinedItem;
+                _interactionObject = _examinationObject;
             }
         }
 
@@ -99,9 +107,9 @@ namespace An01malia.FirstPerson.PlayerModule
 
                 return true;
             }
-            else if (_interactiveItem)
+            else if (_interactionObject)
             {
-                _interactiveItem = null;
+                _interactionObject = null;
             }
 
             return false;
@@ -109,10 +117,10 @@ namespace An01malia.FirstPerson.PlayerModule
 
         private void ClearExamined()
         {
-            _examinedItem = null;
-            _interactiveItem = null;
+            _examinationObject = null;
+            _interactionObject = null;
 
-            OnItemExamined(false, false);
+            OnExamination(false, false);
         }
 
         private bool CanExamine(out RaycastHit hit)
