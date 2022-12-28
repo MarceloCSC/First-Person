@@ -69,6 +69,9 @@ namespace An01malia.FirstPerson.PlayerModule.States.Data
                 case TransformActionDTO transformDto:
                     Transform = transformDto.Transform;
                     break;
+
+                default:
+                    break;
             }
         }
 

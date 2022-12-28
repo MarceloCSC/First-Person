@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bd39a9886bfa9d41a82d5f4685cb308, type: 3}
+  m_Name: Capsule
+  m_EditorClassIdentifier: 
+  _itemName: Capsule
+  _itemType: 0
+  _uniqueID: f645a8522d0e5144eb82b11f259a1262
+  _inGamePrefab: {fileID: 8841902415351356969, guid: 9c17e442b29cf134aa3518761fe98920,
+    type: 3}
+  _itemToInspect: {fileID: 0}
+  _icon: {fileID: 0}
+  _itemDescription: It's just a capsule.
+  _maxAmount: 1

@@ -42,11 +42,11 @@ namespace An01malia.FirstPerson.PlayerModule.States
             SubState.UpdateStates();
         }
 
-        public virtual void TriggerSwitchState(ActionType action, ActionDTO dto = null)
+        public virtual bool TrySwitchState(ActionType action, ActionDTO dto = null)
         {
-            if (!SubState) return;
+            if (!SubState) return false;
 
-            SubState.TriggerSwitchState(action, dto);
+            return SubState.TrySwitchState(action, dto);
         }
 
         public void RemoveSubState()

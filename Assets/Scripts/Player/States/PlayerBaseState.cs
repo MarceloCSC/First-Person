@@ -1,5 +1,4 @@
 using An01malia.FirstPerson.Core;
-using An01malia.FirstPerson.Core.References;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.PlayerModule.States
@@ -16,7 +15,6 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         protected CharacterController Controller;
         protected PlayerStateMachine StateMachine;
-        protected PlayerInput Input;
 
         private PlayerController _context;
 
@@ -35,10 +33,10 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         public virtual void UpdateCamera()
         {
-            _mouseX = Input.ViewInputValues.x * GameOptions.MouseSensitivity * Time.deltaTime;
-            _mouseY = Input.ViewInputValues.y * GameOptions.MouseSensitivity * Time.deltaTime;
+            _mouseX = PlayerInput.ViewInputValues.x * GameOptions.MouseSensitivity * Time.deltaTime;
+            _mouseY = PlayerInput.ViewInputValues.y * GameOptions.MouseSensitivity * Time.deltaTime;
 
-            Player.CameraTransform.Rotate(Vector3.left * _mouseY);
+            Player.Camera.Rotate(Vector3.left * _mouseY);
             Player.Transform.Rotate(Vector3.up * _mouseX);
 
             ClampViewAngle();
@@ -65,13 +63,13 @@ namespace An01malia.FirstPerson.PlayerModule.States
             {
                 _xAxisRotation = _maxVerticalAngle;
                 _mouseY = 0.0f;
-                Player.CameraTransform.ClampRotation(-_maxVerticalAngle);
+                Player.Camera.ClampRotation(-_maxVerticalAngle);
             }
             else if (_xAxisRotation < _minVerticalAngle)
             {
                 _xAxisRotation = _minVerticalAngle;
                 _mouseY = 0.0f;
-                Player.CameraTransform.ClampRotation(-_minVerticalAngle);
+                Player.Camera.ClampRotation(-_minVerticalAngle);
             }
         }
 
@@ -83,7 +81,6 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
             Controller = GetComponentInParent<CharacterController>();
             StateMachine = GetComponent<PlayerStateMachine>();
-            Input = GetComponentInParent<PlayerInput>();
 
             _context = GetComponentInParent<PlayerController>();
         }

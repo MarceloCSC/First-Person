@@ -1,4 +1,3 @@
-using An01malia.FirstPerson.Core.References;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using System.Collections;
@@ -56,72 +55,79 @@ namespace An01malia.FirstPerson.PlayerModule.States
             StandUp(StateMachine.Fall(), true);
         }
 
-        public override void TriggerSwitchState(ActionType action, ActionDTO dto = null)
+        public override bool TrySwitchState(ActionType action, ActionDTO dto = null)
         {
-            base.TriggerSwitchState(action, dto);
+            if (base.TrySwitchState(action, dto)) return false;
 
             switch (action)
             {
                 case ActionType.Run when CanStandUp() && (dto as RunActionDTO).IsRunPressed:
                     StandUp(StateMachine.Run());
-                    break;
+                    return true;
 
                 case ActionType.Run:
                     StateData.SetData(dto);
-                    break;
+                    return false;
 
                 case ActionType.Crouch when CanStandUp():
                     StandUp(StateMachine.Idle());
-                    break;
+                    return true;
 
                 case ActionType.Jump when CanStandUp():
                     StandUp(StateMachine.Idle());
-                    break;
+                    return true;
 
                 case ActionType.GrabLedge when CanStandUp():
                     StandUp(StateMachine.GrabLedge());
-                    break;
+                    return true;
 
                 case ActionType.Push when CanStandUp():
                     StateData.SetData(dto);
                     StandUp(StateMachine.Push());
-                    break;
+                    return true;
 
                 case ActionType.Climb when CanStandUp():
                     StateData.SetData(dto);
                     StandUp(StateMachine.Climb());
-                    break;
+                    return true;
 
                 case ActionType.Carry:
                     StateData.SetData(dto);
                     SwitchState(this, StateMachine.Carry());
-                    break;
+                    return true;
 
                 case ActionType.Inspect:
                     StateData.SetData(dto);
                     SwitchState(StateMachine.Inspect());
-                    break;
+                    return true;
 
                 case ActionType.Inventory when dto is TransformActionDTO:
                     StateData.SetData(dto);
                     SwitchState(StateMachine.Inventory());
-                    break;
+                    return true;
 
                 case ActionType.Inventory:
                     SwitchState(StateMachine.Inventory());
-                    break;
+                    return true;
 
-                case ActionType.Interact:
-                    (dto as InteractiveActionDTO).Interactive.StartInteraction();
-                    break;
+                case ActionType.Interact when dto is InteractiveActionDTO interactiveDto:
+                    interactiveDto.Interactive.StartInteraction();
+                    return false;
+
+                case ActionType.Interact when dto is ItemStandActionDTO itemStandDto:
+                    if (!itemStandDto.ItemStand.Item) return false;
+
+                    StateData.SetData(new TransformActionDTO(itemStandDto.ItemStand.Item));
+                    SwitchState(this, StateMachine.Carry());
+                    return true;
 
                 case ActionType.Dialogue:
                     StateData.SetData(dto);
                     SwitchState(StateMachine.Dialogue());
-                    break;
+                    return true;
 
                 default:
-                    break;
+                    return false;
             }
         }
 
@@ -140,8 +146,8 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         private Vector3 HandleInput()
         {
-            Vector3 movementVector = Player.Transform.forward * Input.MovementInputValues.y +
-                                     Player.Transform.right * Input.MovementInputValues.x;
+            Vector3 movementVector = Player.Transform.forward * PlayerInput.MovementInputValues.y +
+                                     Player.Transform.right * PlayerInput.MovementInputValues.x;
 
             return movementVector.normalized;
         }

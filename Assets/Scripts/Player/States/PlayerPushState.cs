@@ -1,4 +1,3 @@
-using An01malia.FirstPerson.Core.References;
 using An01malia.FirstPerson.InteractionModule.Environment;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
@@ -67,26 +66,26 @@ namespace An01malia.FirstPerson.PlayerModule.States
             SwitchState(StateMachine.Fall());
         }
 
-        public override void TriggerSwitchState(ActionType action, ActionDTO dto = null)
+        public override bool TrySwitchState(ActionType action, ActionDTO dto = null)
         {
-            base.TriggerSwitchState(action, dto);
+            if (base.TrySwitchState(action, dto)) return false;
 
             switch (action)
             {
                 case ActionType.None:
                     SwitchState(StateMachine.Idle());
-                    break;
+                    return true;
 
                 case ActionType.Run:
                     StateData.SetData(dto);
-                    break;
+                    return false;
 
                 case ActionType.Push when (dto as TransformActionDTO).Transform == _data.Transform:
                     SwitchState(StateMachine.Idle());
-                    break;
+                    return true;
 
                 default:
-                    break;
+                    return false;
             }
         }
 
@@ -100,13 +99,13 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
             if (IsPushingSideways())
             {
-                inputVector = _data.FacingDirection * Input.MovementInputValues.y;
+                inputVector = _data.FacingDirection * PlayerInput.MovementInputValues.y;
                 inputVector.Normalize();
             }
 
             if (IsPushingForward())
             {
-                inputVector = Vector3.Cross(Vector3.up, _data.FacingDirection) * Input.MovementInputValues.x;
+                inputVector = Vector3.Cross(Vector3.up, _data.FacingDirection) * PlayerInput.MovementInputValues.x;
                 inputVector.Normalize();
             }
 
@@ -143,13 +142,13 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         private bool IsPushingForward()
         {
-            return Input.MovementInputValues.x != 0.0f && ((_data.IsZAxisAligned && _data.CanPushSideways) ||
+            return PlayerInput.MovementInputValues.x != 0.0f && ((_data.IsZAxisAligned && _data.CanPushSideways) ||
                                                            (!_data.IsZAxisAligned && _data.CanPushForward));
         }
 
         private bool IsPushingSideways()
         {
-            return Input.MovementInputValues.y != 0.0f && ((_data.IsZAxisAligned && _data.CanPushForward) ||
+            return PlayerInput.MovementInputValues.y != 0.0f && ((_data.IsZAxisAligned && _data.CanPushForward) ||
                                                            (!_data.IsZAxisAligned && _data.CanPushSideways));
         }
 

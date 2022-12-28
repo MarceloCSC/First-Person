@@ -1,4 +1,3 @@
-using An01malia.FirstPerson.Core.References;
 using An01malia.FirstPerson.InteractionModule.Environment;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
@@ -64,26 +63,26 @@ namespace An01malia.FirstPerson.PlayerModule.States
             }
         }
 
-        public override void TriggerSwitchState(ActionType action, ActionDTO dto = null)
+        public override bool TrySwitchState(ActionType action, ActionDTO dto = null)
         {
-            base.TriggerSwitchState(action, dto);
+            if (base.TrySwitchState(action, dto)) return false;
 
             switch (action)
             {
                 case ActionType.Run:
                     StateData.SetData(dto);
-                    break;
+                    return false;
 
                 case ActionType.GrabLedge:
                     SwitchState(StateMachine.GrabLedge());
-                    break;
+                    return true;
 
                 case ActionType.Climb:
                     SwitchState(StateMachine.Fall());
-                    break;
+                    return true;
 
                 default:
-                    break;
+                    return false;
             }
         }
 
@@ -101,8 +100,8 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         private Vector3 HandleInput()
         {
-            Vector3 movementVector = Player.Transform.up * Input.MovementInputValues.y +
-                                     _data.SurfaceRightAxis * Input.MovementInputValues.x;
+            Vector3 movementVector = Player.Transform.up * PlayerInput.MovementInputValues.y +
+                                     _data.SurfaceRightAxis * PlayerInput.MovementInputValues.x;
 
             return movementVector.normalized;
         }

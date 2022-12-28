@@ -1,5 +1,5 @@
 ﻿using An01malia.FirstPerson.Core;
-using An01malia.FirstPerson.Core.References;
+using An01malia.FirstPerson.PlayerModule;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.EnemyModule

@@ -1,8 +1,8 @@
 using An01malia.FirstPerson.Core;
-using An01malia.FirstPerson.Core.References;
+using An01malia.FirstPerson.InteractionModule.Environment;
 using An01malia.FirstPerson.InteractionModule.Interactive;
+using An01malia.FirstPerson.ItemModule;
 using An01malia.FirstPerson.ItemModule.Items;
-using An01malia.FirstPerson.PlayerModule.States;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -13,13 +13,14 @@ namespace An01malia.FirstPerson.PlayerModule
     {
         #region Fields
 
+        private static Vector2 _movementInputValues;
+        private static Vector2 _viewInputValues;
+        private static Vector2 _cursorInputValues;
+        private static Vector2 _zoomInputValues;
+        private static Vector2 _rotationInputValues;
+
         private bool _isGameplayEnabled;
         private bool _isUIEnabled;
-        private Vector2 _movementInputValues;
-        private Vector2 _viewInputValues;
-        private Vector2 _cursorInputValues;
-        private Vector2 _zoomInputValues;
-        private Vector2 _rotationInputValues;
 
         private InputActions _actions;
         private PlayerController _context;
@@ -30,11 +31,11 @@ namespace An01malia.FirstPerson.PlayerModule
 
         #region Properties
 
-        public Vector2 MovementInputValues => _movementInputValues;
-        public Vector2 ViewInputValues => _viewInputValues;
-        public Vector2 CursorInputValues => _cursorInputValues;
-        public Vector2 ZoomInputValues => _zoomInputValues;
-        public Vector2 RotationInputValues => _rotationInputValues;
+        public static Vector2 MovementInputValues => _movementInputValues;
+        public static Vector2 ViewInputValues => _viewInputValues;
+        public static Vector2 CursorInputValues => _cursorInputValues;
+        public static Vector2 ZoomInputValues => _zoomInputValues;
+        public static Vector2 RotationInputValues => _rotationInputValues;
 
         #endregion
 
@@ -84,30 +85,30 @@ namespace An01malia.FirstPerson.PlayerModule
         {
             if (_surroundings.CanGrabLedge)
             {
-                _context.CurrentState.TriggerSwitchState(ActionType.GrabLedge);
+                _context.CurrentState.TrySwitchState(ActionType.GrabLedge);
             }
             else
             {
-                _context.CurrentState.TriggerSwitchState(ActionType.Jump);
+                _context.CurrentState.TrySwitchState(ActionType.Jump);
             }
         }
 
         private void OnRunPressed(InputAction.CallbackContext callback)
         {
-            _context.CurrentState.TriggerSwitchState(ActionType.Run,
+            _context.CurrentState.TrySwitchState(ActionType.Run,
                                                      new RunActionDTO(callback.phase == InputActionPhase.Performed));
         }
 
         private void OnCrouchPressed(InputAction.CallbackContext callback)
         {
-            _context.CurrentState.TriggerSwitchState(ActionType.Crouch);
+            _context.CurrentState.TrySwitchState(ActionType.Crouch);
         }
 
         private void OnInteractionPressed(InputAction.CallbackContext callback)
         {
             if (!_interaction.Interaction)
             {
-                _context.CurrentState.TriggerSwitchState(ActionType.None);
+                _context.CurrentState.TrySwitchState(ActionType.None);
 
                 return;
             }
@@ -123,7 +124,7 @@ namespace An01malia.FirstPerson.PlayerModule
 
         private void OnInventoryPressed(InputAction.CallbackContext callback)
         {
-            _context.CurrentState.TriggerSwitchState(ActionType.Inventory);
+            _context.CurrentState.TrySwitchState(ActionType.Inventory);
         }
 
         private void OnPausePressed(InputAction.CallbackContext callback)
@@ -135,7 +136,7 @@ namespace An01malia.FirstPerson.PlayerModule
         {
             if (_isUIEnabled)
             {
-                _context.CurrentState.TriggerSwitchState(ActionType.None);
+                _context.CurrentState.TrySwitchState(ActionType.None);
 
                 return;
             }
@@ -153,15 +154,15 @@ namespace An01malia.FirstPerson.PlayerModule
             switch (interactive)
             {
                 case StorageUnit:
-                    _context.CurrentState.TriggerSwitchState(ActionType.Inventory, new TransformActionDTO(interaction));
+                    _context.CurrentState.TrySwitchState(ActionType.Inventory, new TransformActionDTO(interaction));
                     break;
 
                 case NPC:
-                    _context.CurrentState.TriggerSwitchState(ActionType.Dialogue, new TransformActionDTO(interaction));
+                    _context.CurrentState.TrySwitchState(ActionType.Dialogue, new TransformActionDTO(interaction));
                     break;
 
                 default:
-                    _context.CurrentState.TriggerSwitchState(ActionType.Interact, new InteractiveActionDTO(interactive));
+                    _context.CurrentState.TrySwitchState(ActionType.Interact, new InteractiveActionDTO(interactive));
                     break;
             }
 
@@ -175,19 +176,18 @@ namespace An01malia.FirstPerson.PlayerModule
             switch (item)
             {
                 case ItemToCarry:
-                    _context.CurrentState.TriggerSwitchState(ActionType.Carry, new TransformActionDTO(interaction));
+                    _context.CurrentState.TrySwitchState(ActionType.Carry, new TransformActionDTO(interaction));
                     break;
 
                 case ItemToPickUp:
                     // HANDLE PICKING UP
                     break;
 
-                case ItemToInspect when _context.CurrentState is PlayerInspectState:
-                    _context.CurrentState.TriggerSwitchState(ActionType.None);
+                case ItemToInspect:
+                    _context.CurrentState.TrySwitchState(ActionType.Inspect, new TransformActionDTO(interaction));
                     break;
 
-                case ItemToInspect:
-                    _context.CurrentState.TriggerSwitchState(ActionType.Inspect, new TransformActionDTO(interaction));
+                default:
                     break;
             }
 
@@ -198,15 +198,24 @@ namespace An01malia.FirstPerson.PlayerModule
         {
             switch (LayerMask.LayerToName(interaction.gameObject.layer))
             {
-                case Layer.ToPush:
-                    _context.CurrentState.TriggerSwitchState(ActionType.Push, new TransformActionDTO(interaction));
+                case Layer.ToInteract when interaction.TryGetComponent(out CrateToPush _):
+                    _context.CurrentState.TrySwitchState(ActionType.Push, new TransformActionDTO(interaction));
+                    break;
+
+                case Layer.ToInteract when interaction.TryGetComponent(out ItemStand itemStand):
+                    _context.CurrentState.TrySwitchState(ActionType.Interact, new ItemStandActionDTO(itemStand));
+                    break;
+
+                case Layer.ToInspect:
+                    _context.CurrentState.TrySwitchState(ActionType.None);
                     break;
 
                 case Layer.ToClimb:
-                    _context.CurrentState.TriggerSwitchState(ActionType.Climb, new TransformActionDTO(interaction));
+                    _context.CurrentState.TrySwitchState(ActionType.Climb, new TransformActionDTO(interaction));
                     break;
 
                 default:
+                    _context.CurrentState.TrySwitchState(ActionType.None);
                     break;
             }
         }
@@ -228,6 +237,9 @@ namespace An01malia.FirstPerson.PlayerModule
                 case GameState.UI:
                     EnableInputActions();
                     ToggleInputReading(false, true);
+                    break;
+
+                default:
                     break;
             }
         }

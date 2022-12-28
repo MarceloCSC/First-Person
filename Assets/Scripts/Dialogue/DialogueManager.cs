@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 
 namespace An01malia.FirstPerson.DialogueModule
 {
-    public class DialogueManager : Singleton<DialogueManager>
+    public class DialogueManager : ComponentSingleton<DialogueManager>
     {
         #region Delegates
 

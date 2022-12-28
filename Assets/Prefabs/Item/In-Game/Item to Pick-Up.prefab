@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3789870229156560977}
   - component: {fileID: 3789870229156560976}
   - component: {fileID: 5485077396051729660}
-  m_Layer: 11
+  m_Layer: 9
   m_Name: Item to Pick-Up
   m_TagString: Untagged
   m_Icon: {fileID: 0}

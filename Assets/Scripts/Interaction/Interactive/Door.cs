@@ -10,24 +10,23 @@ namespace An01malia.FirstPerson.InteractionModule.Interactive
         [SerializeField] private bool _isOpen;
         [SerializeField] private bool _isLocked;
 
-        [Header("Automatic Doors")]
-        [SerializeField] private bool _isOpenedByTrigger;
-        [SerializeField] private bool _hasTimer;
-        [SerializeField] private bool _staysOpen;
-        [SerializeField] private float _timer = 0.0f;
+        [Header("Automatic Door")]
+        [Space]
+        [SerializeField] private bool _isTriggered;
+        [SerializeField] private bool _shouldStayOpen;
+        [SerializeField] private LayerMask _layersToTrigger;
+        [SerializeField] private float _secondsToClose = 0.0f;
 
-        private float _timeLeft;
         private Coroutine _closingDoor;
-
         private Animator _animator;
 
-        #endregion Fields
+        #endregion
 
         #region Properties
 
-        public bool IsLocked { get => _isLocked; set => _isLocked = value; }
+        public bool IsLocked => _isLocked;
 
-        #endregion Properties
+        #endregion
 
         #region Unity Methods
 
@@ -43,25 +42,19 @@ namespace An01malia.FirstPerson.InteractionModule.Interactive
 
         private void OnTriggerEnter(Collider other)
         {
-            if (_isOpenedByTrigger && other.CompareTag("Player"))
-            {
-                if (_isLocked) return;
+            if (_isLocked || !IsTriggered(other)) return;
 
-                ChangeState(true);
+            ChangeState(true);
 
-                if (_closingDoor != null) StopCoroutine(_closingDoor);
-            }
+            if (_closingDoor != null) StopCoroutine(_closingDoor);
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (_isOpenedByTrigger && _isOpen && !_staysOpen && other.CompareTag("Player"))
-            {
-                PrepareCoroutine();
-            }
+            if (ShouldClose() && IsTriggered(other)) PrepareCoroutine();
         }
 
-        #endregion Unity Methods
+        #endregion
 
         #region Public Methods
 
@@ -71,10 +64,10 @@ namespace An01malia.FirstPerson.InteractionModule.Interactive
 
             ChangeState(!_isOpen);
 
-            if (_hasTimer && _isOpen) PrepareCoroutine();
+            if (HasTimerToClose()) PrepareCoroutine();
         }
 
-        #endregion Public Methods
+        #endregion
 
         #region Private Methods
 
@@ -86,7 +79,7 @@ namespace An01malia.FirstPerson.InteractionModule.Interactive
 
         private void SetAnimation()
         {
-            string layer = _isOpen ? "Opened" : "Closed";
+            string layer = _isOpen ? "Open" : "Closed";
 
             _animator.SetBool("isOpen", _isOpen);
             _animator.SetLayerWeight(_animator.GetLayerIndex(layer), 1.0f);
@@ -96,17 +89,16 @@ namespace An01malia.FirstPerson.InteractionModule.Interactive
         {
             if (_closingDoor != null) StopCoroutine(_closingDoor);
 
-            _closingDoor = StartCoroutine(WaitToClose(_timer));
+            _closingDoor = StartCoroutine(WaitToClose());
         }
 
-        private IEnumerator WaitToClose(float timeToWait)
+        private IEnumerator WaitToClose()
         {
-            _timeLeft = timeToWait;
+            float deadline = Time.time + _secondsToClose;
 
-            while (_timeLeft > 0.0f)
+            while (Time.time < deadline)
             {
                 yield return new WaitForSeconds(1.0f);
-                _timeLeft -= 1.0f;
             }
 
             ChangeState(false);
@@ -114,11 +106,20 @@ namespace An01malia.FirstPerson.InteractionModule.Interactive
             yield return null;
         }
 
+        private bool IsTriggered(Collider other)
+        {
+            return _isTriggered && _layersToTrigger == (_layersToTrigger | (1 << other.gameObject.layer));
+        }
+
+        private bool ShouldClose() => _isOpen && !_shouldStayOpen;
+
+        private bool HasTimerToClose() => _secondsToClose > 0 && _isOpen;
+
         private void SetReferences()
         {
             _animator = GetComponent<Animator>();
         }
 
-        #endregion Private Methods
+        #endregion
     }
 }

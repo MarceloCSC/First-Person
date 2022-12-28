@@ -1,6 +1,4 @@
-﻿using An01malia.FirstPerson.Core.References;
-using An01malia.FirstPerson.ItemModule.Items;
-using An01malia.FirstPerson.UserInterfaceModule.Inventory;
+﻿using An01malia.FirstPerson.UserInterfaceModule.Inventory;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -8,48 +6,31 @@ namespace An01malia.FirstPerson.InventoryModule
 {
     public class SlotEvents : Slot, IPointerDownHandler, IPointerClickHandler, ISelectHandler, IDeselectHandler, IDragHandler, IBeginDragHandler, IEndDragHandler, IDropHandler
     {
-        private static Slot originalSlot;
+        #region Fields
 
-        private bool beingDragged;
-
-        #region Cached references
-
-        private Tooltip tooltip;
-        private IconToDrag iconToDrag;
+        private static Slot _originalSlot;
+        private bool _beingDragged;
 
         #endregion
 
-        protected override void Awake()
+        #region Unity Methods
+
+        private void OnDisable()
         {
-            base.Awake();
-            SetReferences();
+            OnDeselect(null);
+
+            if (Tooltip.Instance != null) Tooltip.Instance.HideTooltip();
+
+            if (_beingDragged)
+            {
+                OnEndDrag(null);
+                _originalSlot = null;
+            }
         }
 
-        private void DragItem(bool isDragging)
-        {
-            originalSlot.HideContents(isDragging);
-            iconToDrag.Activate(isDragging);
-            beingDragged = isDragging;
-        }
+        #endregion
 
-        private void AddToStack()
-        {
-            int amountLeft = Item.AmountToBeFilled;
-            int amountToAdd = Mathf.Min(amountLeft, originalSlot.Item.Amount);
-
-            Item.Amount += amountToAdd;
-            originalSlot.Item.Amount -= amountToAdd;
-        }
-
-        private void SwapItems()
-        {
-            InventoryItem itemToDrop = originalSlot.Item;
-
-            originalSlot.Item = Item;
-            Item = itemToDrop;
-        }
-
-        #region EventSystem Methods
+        #region Public Methods
 
         public void OnPointerDown(PointerEventData eventData)
         {
@@ -57,7 +38,7 @@ namespace An01malia.FirstPerson.InventoryModule
             {
                 ItemSelected = Item;
                 IsSelected = false;
-                tooltip.ShowTooltip(Item);
+                Tooltip.Instance.ShowTooltip(Item);
             }
         }
 
@@ -71,33 +52,31 @@ namespace An01malia.FirstPerson.InventoryModule
 
         public void OnSelect(BaseEventData eventData)
         {
-            if (Item != null)
-            {
-                ItemSelected = Item;
-                IsSelected = true;
-            }
+            if (Item == null) return;
+
+            ItemSelected = Item;
+            IsSelected = true;
         }
 
         public void OnDeselect(BaseEventData eventData)
         {
             ItemSelected = null;
 
-            if (Item != null)
-            {
-                IsSelected = false;
-            }
+            if (Item == null) return;
+
+            IsSelected = false;
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
             ItemSelected = null;
-            originalSlot = null;
+            _originalSlot = null;
 
             if (Item != null && eventData.button == PointerEventData.InputButton.Left)
             {
-                originalSlot = this;
+                _originalSlot = this;
                 DragItem(true);
-                iconToDrag.ChangeIcon(this);
+                IconToDrag.Instance.ChangeIcon(this);
                 IsSelected = false;
             }
         }
@@ -108,49 +87,48 @@ namespace An01malia.FirstPerson.InventoryModule
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (originalSlot != null)
-            {
-                DragItem(false);
-            }
+            if (_originalSlot == null) return;
+
+            DragItem(false);
         }
 
         public void OnDrop(PointerEventData eventData)
         {
-            if (originalSlot != null)
+            if (_originalSlot == null) return;
+
+            if (Item != null && Item.CanStack(_originalSlot.Item))
             {
-                if (Item != null && Item.CanStack(originalSlot.Item))
-                {
-                    AddToStack();
-                }
-                else
-                {
-                    SwapItems();
-                }
+                AddToStack();
+            }
+            else
+            {
+                SwapItems();
             }
         }
 
         #endregion
 
-        private void OnDisable()
+        #region Private Methods
+
+        private void DragItem(bool isDragging)
         {
-            OnDeselect(null);
+            IconToDrag.Instance.Activate(isDragging);
 
-            if (tooltip != null)
-            {
-                tooltip.HideTooltip();
-            }
-
-            if (beingDragged)
-            {
-                OnEndDrag(null);
-                originalSlot = null;
-            }
+            _originalSlot.HideContents(isDragging);
+            _beingDragged = isDragging;
         }
 
-        private void SetReferences()
+        private void AddToStack()
         {
-            tooltip = UI.Tooltip.GetComponent<Tooltip>();
-            iconToDrag = UI.IconToDrag.GetComponent<IconToDrag>();
+            int amountLeft = Item.AmountToBeFilled;
+            int amountToAdd = Mathf.Min(amountLeft, _originalSlot.Item.Amount);
+
+            Item.Amount += amountToAdd;
+            _originalSlot.Item.Amount -= amountToAdd;
         }
+
+        private void SwapItems() => (Item, _originalSlot.Item) = (_originalSlot.Item, Item);
+
+        #endregion
     }
 }

@@ -1,4 +1,3 @@
-using An01malia.FirstPerson.Core.References;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using UnityEngine;
@@ -79,23 +78,26 @@ namespace An01malia.FirstPerson.PlayerModule.States
             return;
         }
 
-        public override void TriggerSwitchState(ActionType action, ActionDTO dto = null)
+        public override bool TrySwitchState(ActionType action, ActionDTO dto = null)
         {
-            base.TriggerSwitchState(action, dto);
+            if (base.TrySwitchState(action, dto)) return false;
 
             switch (action)
             {
                 case ActionType.Run:
                     StateData.SetData(dto);
-                    break;
+                    return false;
 
                 case ActionType.Jump when _data.JumpsRemaining > 0:
                     SwitchState(StateMachine.Jump());
-                    break;
+                    return true;
 
                 case ActionType.GrabLedge:
                     SwitchState(StateMachine.GrabLedge());
-                    break;
+                    return true;
+
+                default:
+                    return false;
             }
         }
 
@@ -115,8 +117,8 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         private Vector3 HandleInput()
         {
-            Vector3 movementVector = Player.Transform.forward * Input.MovementInputValues.y +
-                                     Player.Transform.right * Input.MovementInputValues.x;
+            Vector3 movementVector = Player.Transform.forward * PlayerInput.MovementInputValues.y +
+                                     Player.Transform.right * PlayerInput.MovementInputValues.x;
 
             return movementVector.normalized;
         }
@@ -135,7 +137,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         private bool HitTheCeiling() => Controller.collisionFlags == CollisionFlags.Above;
 
-        private bool HasNoInput() => Input.MovementInputValues.y == 0.0f && Input.MovementInputValues.x == 0.0f;
+        private bool HasNoInput() => PlayerInput.MovementInputValues.y == 0.0f && PlayerInput.MovementInputValues.x == 0.0f;
 
         #endregion
     }

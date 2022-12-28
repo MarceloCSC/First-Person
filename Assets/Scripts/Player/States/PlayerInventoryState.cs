@@ -40,22 +40,22 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
         }
 
-        public override void TriggerSwitchState(ActionType action, ActionDTO dto = null)
+        public override bool TrySwitchState(ActionType action, ActionDTO dto = null)
         {
-            base.TriggerSwitchState(action, dto);
+            if (base.TrySwitchState(action, dto)) return false;
 
             switch (action)
             {
                 case ActionType.None:
                     SwitchState(StateMachine.Idle());
-                    break;
+                    return true;
 
                 case ActionType.Inventory:
                     SwitchState(StateMachine.Idle());
-                    break;
+                    return true;
 
                 default:
-                    break;
+                    return false;
             }
         }
 

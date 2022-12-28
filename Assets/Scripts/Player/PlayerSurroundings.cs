@@ -19,11 +19,11 @@ namespace An01malia.FirstPerson.PlayerModule
         #region Properties
 
         public bool CanGrabLedge =>
-            Physics.Raycast(transform.position - _lowerBounds, transform.forward, _rayLength, _layersToGrab) &&
-                !Physics.Raycast(transform.position + _upperBounds, transform.forward, _rayLength, _layersToGrab);
+            Physics.Raycast(Player.Transform.position - _lowerBounds, Player.Transform.forward, _rayLength, _layersToGrab) &&
+                !Physics.Raycast(Player.Transform.position + _upperBounds, Player.Transform.forward, _rayLength, _layersToGrab);
 
-        public Vector3 UpperBounds => transform.position + _upperBounds;
-        public Vector3 LowerBounds => transform.position - _lowerBounds;
+        public Vector3 UpperBounds => Player.Transform.position + _upperBounds;
+        public Vector3 LowerBounds => Player.Transform.position - _lowerBounds;
 
         #endregion
 
@@ -35,8 +35,8 @@ namespace An01malia.FirstPerson.PlayerModule
             {
                 Gizmos.color = Color.green;
 
-                Gizmos.DrawRay(transform.position + _upperBounds, transform.forward * _rayLength);
-                Gizmos.DrawRay(transform.position - _lowerBounds, transform.forward * _rayLength);
+                Gizmos.DrawRay(Player.Transform.position + _upperBounds, Player.Transform.forward * _rayLength);
+                Gizmos.DrawRay(Player.Transform.position - _lowerBounds, Player.Transform.forward * _rayLength);
             }
         }
 

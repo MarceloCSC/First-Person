@@ -1,4 +1,4 @@
-using An01malia.FirstPerson.Core.References;
+using An01malia.FirstPerson.InteractionModule.Environment;
 using An01malia.FirstPerson.InteractionModule.Interactive;
 using An01malia.FirstPerson.ItemModule.Items;
 using System;
@@ -18,12 +18,12 @@ namespace An01malia.FirstPerson.PlayerModule
 
         [SerializeField] private float _distanceToExamine = 10.0f;
         [SerializeField] private float _distanceToInteract = 3.0f;
-        [SerializeField] private LayerMask _visibleLayers;
-        [SerializeField] private LayerMask _examinableLayers;
-        [SerializeField] private LayerMask _reachableLayers;
+        [SerializeField] private LayerMask _layersToExamine;
 
+        private bool _hasToApproach;
         private Transform _examinationObject;
         private Transform _interactionObject;
+
         private PlayerSurroundings _surroundings;
 
         #endregion
@@ -49,15 +49,15 @@ namespace An01malia.FirstPerson.PlayerModule
         {
             if (CanExamine(out RaycastHit hit))
             {
-                SetExamined(hit);
+                SetExamination(hit);
 
-                bool canInteract = TrySetInteractive(hit);
+                bool canInteract = TrySetInteraction(hit);
 
                 OnExamination(true, canInteract);
             }
             else if (_examinationObject)
             {
-                ClearExamined();
+                ClearData();
             }
         }
 
@@ -83,7 +83,7 @@ namespace An01malia.FirstPerson.PlayerModule
 
         #region Private Methods
 
-        private void SetExamined(RaycastHit hit)
+        private void SetExamination(RaycastHit hit)
         {
             if (hit.transform != _examinationObject)
             {
@@ -91,19 +91,21 @@ namespace An01malia.FirstPerson.PlayerModule
             }
         }
 
-        private void SetInteractive(RaycastHit hit)
+        private void SetInteraction(RaycastHit hit)
         {
             if (hit.transform != _interactionObject)
             {
                 _interactionObject = _examinationObject;
+
+                SetHasToApproach(_interactionObject);
             }
         }
 
-        private bool TrySetInteractive(RaycastHit hit)
+        private bool TrySetInteraction(RaycastHit hit)
         {
             if (CanInteract(hit))
             {
-                SetInteractive(hit);
+                SetInteraction(hit);
 
                 return true;
             }
@@ -115,42 +117,44 @@ namespace An01malia.FirstPerson.PlayerModule
             return false;
         }
 
-        private void ClearExamined()
+        private void ClearData()
         {
             _examinationObject = null;
             _interactionObject = null;
+            _hasToApproach = false;
 
             OnExamination(false, false);
         }
 
         private bool CanExamine(out RaycastHit hit)
         {
-            return Physics.Raycast(Player.CameraTransform.position,
-                                   Player.CameraTransform.forward,
+            return Physics.Raycast(Player.Camera.position,
+                                   Player.Camera.forward,
                                    out hit,
                                    _distanceToExamine,
-                                   _visibleLayers) && hit.transform && IsExaminableLayer(ref hit);
+                                   _layersToExamine,
+                                   QueryTriggerInteraction.Collide) && hit.transform;
         }
 
         private bool CanInteract(RaycastHit hit)
         {
-            if (IsReachableLayer(ref hit)) return CanReach(hit);
+            if (_hasToApproach) return CanReach(hit);
 
-            return Vector3.Distance(transform.position, hit.point) <= _distanceToInteract;
+            return Vector3.Distance(Player.Transform.position, hit.point) <= _distanceToInteract;
         }
 
-        private bool IsExaminableLayer(ref RaycastHit hit) => _examinableLayers == (_examinableLayers | (1 << hit.transform.gameObject.layer));
-
-        private bool IsReachableLayer(ref RaycastHit hit) => _reachableLayers == (_reachableLayers | (1 << hit.transform.gameObject.layer));
+        private void SetHasToApproach(Transform interaction)
+        {
+            _hasToApproach = interaction.TryGetComponent(out CrateToPush _) || interaction.TryGetComponent(out SurfaceToClimb _);
+        }
 
         private bool CanReach(RaycastHit hit)
         {
-            return !Physics.Raycast(hit.transform.position, hit.normal, 1.0f, _visibleLayers) &&
+            return !Physics.Raycast(hit.transform.position, hit.normal, 1.0f) &&
                         Physics.Raycast(_surroundings.LowerBounds,
-                                        transform.forward,
+                                        Player.Transform.forward,
                                         out RaycastHit raycastHit,
-                                        _distanceToInteract,
-                                        _visibleLayers) && raycastHit.transform == hit.transform;
+                                        _distanceToInteract) && raycastHit.transform == hit.transform;
         }
 
         private void SetReferences()

@@ -1,5 +1,4 @@
 using An01malia.FirstPerson.Core;
-using An01malia.FirstPerson.Core.References;
 using An01malia.FirstPerson.ItemModule;
 using An01malia.FirstPerson.ItemModule.Items;
 using An01malia.FirstPerson.PlayerModule.States.Data;
@@ -61,18 +60,18 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
         }
 
-        public override void TriggerSwitchState(ActionType action, ActionDTO dto = null)
+        public override bool TrySwitchState(ActionType action, ActionDTO dto = null)
         {
-            base.TriggerSwitchState(action, dto);
+            if (base.TrySwitchState(action, dto)) return false;
 
             switch (action)
             {
                 case ActionType.None:
                     SwitchState(StateMachine.Idle());
-                    break;
+                    return true;
 
                 default:
-                    break;
+                    return false;
             }
         }
 
@@ -82,8 +81,8 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         private void HandleRotation()
         {
-            float inputX = Input.RotationInputValues.x * _rotationSpeed;
-            float inputY = Input.RotationInputValues.y * _rotationSpeed;
+            float inputX = PlayerInput.RotationInputValues.x * _rotationSpeed;
+            float inputY = PlayerInput.RotationInputValues.y * _rotationSpeed;
 
             _item.transform.Rotate(Vector3.back, -inputY, Space.World);
             _item.transform.Rotate(Vector3.up, -inputX, Space.World);
@@ -91,16 +90,16 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         private void HandleZoom()
         {
-            if (Input.ZoomInputValues.y > 0)
+            if (PlayerInput.ZoomInputValues.y > 0)
             {
-                UI.InspectionCamera.fieldOfView -= _zoomSpeed * Time.deltaTime;
+                Player.InspectionCamera.fieldOfView -= _zoomSpeed * Time.deltaTime;
             }
-            else if (Input.ZoomInputValues.y < 0)
+            else if (PlayerInput.ZoomInputValues.y < 0)
             {
-                UI.InspectionCamera.fieldOfView += _zoomSpeed * Time.deltaTime;
+                Player.InspectionCamera.fieldOfView += _zoomSpeed * Time.deltaTime;
             }
 
-            UI.InspectionCamera.fieldOfView = Mathf.Clamp(UI.InspectionCamera.fieldOfView, _minZoom, _maxZoom);
+            Player.InspectionCamera.fieldOfView = Mathf.Clamp(Player.InspectionCamera.fieldOfView, _minZoom, _maxZoom);
         }
 
         private void ActivateUI()
@@ -110,9 +109,10 @@ namespace An01malia.FirstPerson.PlayerModule.States
             UIPanelManager.CloseOpenPanels();
             UIPanelManager.ToggleUIPanel(Panel);
 
-            UI.InspectionCamera.gameObject.SetActive(true);
-            UI.LightSource.SetActive(true);
-            UI.InspectionCamera.fieldOfView = _initialFOV;
+            Player.InspectionCamera.gameObject.SetActive(true);
+            Player.InspectionCamera.transform.SetPositionAndRotation(Player.Camera.position, Player.Camera.rotation);
+            Player.InspectionLightSource.SetActive(true);
+            Player.InspectionCamera.fieldOfView = _initialFOV;
         }
 
         private void DeactivateUI()
@@ -121,8 +121,8 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
             UIPanelManager.ToggleUIPanel(Panel);
 
-            UI.InspectionCamera.gameObject.SetActive(false);
-            UI.LightSource.SetActive(false);
+            Player.InspectionCamera.gameObject.SetActive(false);
+            Player.InspectionLightSource.SetActive(false);
         }
 
         private void SetItemToInspect()
@@ -130,8 +130,8 @@ namespace An01malia.FirstPerson.PlayerModule.States
             if (TrySetItem())
             {
                 _item.SetActive(true);
-                _item.transform.position = UI.ItemPlacement.position;
-                _item.transform.LookAt(UI.InspectionCamera.transform);
+                _item.transform.position = Player.InspectionItemPlacement.position;
+                _item.transform.LookAt(Player.InspectionCamera.transform);
             }
         }
 

@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace An01malia.FirstPerson.UserInterfaceModule.Inventory
 {
-    public class Tooltip : MonoBehaviour, IPointerExitHandler
+    public class Tooltip : SimpleSingleton<Tooltip>, IPointerExitHandler
     {
         #region Fields
 
@@ -21,14 +21,15 @@ namespace An01malia.FirstPerson.UserInterfaceModule.Inventory
 
         private Button[] _buttons;
         private RectTransform _rectTransform;
-        private PlayerInput _playerInput;
 
         #endregion
 
         #region Unity Methods
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             SetReferences();
 
             gameObject.SetActive(false);
@@ -40,7 +41,7 @@ namespace An01malia.FirstPerson.UserInterfaceModule.Inventory
 
         public void ShowTooltip(InventoryItem item)
         {
-            Vector3 cursorPosition = _playerInput.CursorInputValues;
+            Vector3 cursorPosition = PlayerInput.CursorInputValues;
             transform.position = cursorPosition.GetPositionOnScreen(_inventoryCanvas, _rectTransform, _padding);
 
             RestoreButtons();
@@ -110,9 +111,6 @@ namespace An01malia.FirstPerson.UserInterfaceModule.Inventory
         {
             _buttons = new Button[] { ExamineButton, UseButton, EquipButton, DropButton };
             _rectTransform = GetComponent<RectTransform>();
-
-            // MUDAR!!
-            _playerInput = FindObjectOfType<PlayerInput>();
         }
 
         #endregion

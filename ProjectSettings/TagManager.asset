@@ -9,17 +9,17 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Terrain
   - Water
   - UI
   - Player
   - Enemy
   - 
-  - 
-  - Interactive
   - Item
+  - 
+  - 
   - To Inspect
-  - To Push
+  - To Interact
   - To Climb
   - 
   - 

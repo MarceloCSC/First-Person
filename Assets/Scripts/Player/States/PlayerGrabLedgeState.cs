@@ -1,4 +1,3 @@
-using An01malia.FirstPerson.Core.References;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using System.Collections;
@@ -51,18 +50,18 @@ namespace An01malia.FirstPerson.PlayerModule.States
             SwitchState(StateMachine.Idle());
         }
 
-        public override void TriggerSwitchState(ActionType action, ActionDTO dto = null)
+        public override bool TrySwitchState(ActionType action, ActionDTO dto = null)
         {
-            base.TriggerSwitchState(action, dto);
+            if (base.TrySwitchState(action, dto)) return false;
 
             switch (action)
             {
                 case ActionType.Run:
                     StateData.SetData(dto);
-                    break;
+                    return false;
 
                 default:
-                    break;
+                    return false;
             }
         }
 

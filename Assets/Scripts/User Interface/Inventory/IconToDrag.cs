@@ -1,26 +1,19 @@
-﻿using An01malia.FirstPerson.InventoryModule;
+﻿using An01malia.FirstPerson.Core;
+using An01malia.FirstPerson.InventoryModule;
 using An01malia.FirstPerson.PlayerModule;
-using UnityEngine;
 using UnityEngine.UI;
 
 namespace An01malia.FirstPerson.UserInterfaceModule.Inventory
 {
-    public class IconToDrag : MonoBehaviour
+    public class IconToDrag : SimpleSingleton<IconToDrag>
     {
         #region Fields
 
-        private bool _beingDragged;
-        private PlayerInput _playerInput;
+        private bool _isBeingDragged;
 
         #endregion
 
         #region Unity Methods
-
-        private void Awake()
-        {
-            // MUDAR!!
-            _playerInput = FindObjectOfType<PlayerInput>();
-        }
 
         private void Start()
         {
@@ -29,9 +22,9 @@ namespace An01malia.FirstPerson.UserInterfaceModule.Inventory
 
         private void Update()
         {
-            if (!_beingDragged) return;
+            if (!_isBeingDragged) return;
 
-            transform.position = _playerInput.CursorInputValues;
+            transform.position = PlayerInput.CursorInputValues;
         }
 
         #endregion
@@ -46,13 +39,13 @@ namespace An01malia.FirstPerson.UserInterfaceModule.Inventory
 
                 GetComponent<Image>().enabled = true;
 
-                _beingDragged = true;
+                _isBeingDragged = true;
             }
             else
             {
                 GetComponent<Image>().enabled = false;
 
-                _beingDragged = false;
+                _isBeingDragged = false;
             }
         }
 

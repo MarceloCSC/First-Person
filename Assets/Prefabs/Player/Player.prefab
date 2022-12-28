@@ -282,7 +282,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 158903
+    m_Bits: 157375
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -312,6 +312,7 @@ GameObject:
   m_Component:
   - component: {fileID: 192995566219779126}
   - component: {fileID: 192995566219779115}
+  - component: {fileID: 5122400873230871437}
   - component: {fileID: 5268783171210530546}
   - component: {fileID: 9214957603807242117}
   - component: {fileID: 8386371829049879704}
@@ -369,6 +370,25 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5122400873230871437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192995566219779120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56af0a853534c884fb232e8fdef85d03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _firstPersonCamera: {fileID: 192995565477822120}
+  _inspectionCamera: {fileID: 8360076768387177474}
+  _playerSight: {fileID: 3406819940056867827}
+  _playerHand: {fileID: 7095589714586763489}
+  _leaningAxis: {fileID: 2029338692}
+  _itemPlacement: {fileID: 284137231532258633}
+  _lightSource: {fileID: 589492623}
 --- !u!114 &5268783171210530546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -409,11 +429,11 @@ MonoBehaviour:
   _distanceToInteract: 3
   _visibleLayers:
     serializedVersion: 2
-    m_Bits: 31873
-  _examinableLayers:
+    m_Bits: 160409
+  _layersToExamine:
     serializedVersion: 2
-    m_Bits: 31744
-  _reachableLayers:
+    m_Bits: 160401
+  _layersToReach:
     serializedVersion: 2
     m_Bits: 24576
 --- !u!114 &461543981620360515
@@ -433,7 +453,7 @@ MonoBehaviour:
   _lowerBounds: {x: 0, y: 0.9, z: 0}
   _layersToGrab:
     serializedVersion: 2
-    m_Bits: 139264
+    m_Bits: 131072
   _toggleGizmos: 0
 --- !u!114 &3060927387941127836
 MonoBehaviour:
@@ -687,7 +707,7 @@ MonoBehaviour:
     m_Bits: 8192
   _layersToCollide:
     serializedVersion: 2
-    m_Bits: 155777
+    m_Bits: 139905
 --- !u!114 &3675991955413809913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -921,7 +941,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8946050505700804584
 Transform:
   m_ObjectHideFlags: 0

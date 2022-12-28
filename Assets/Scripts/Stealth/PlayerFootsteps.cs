@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using An01malia.FirstPerson.PlayerModule;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.StealthModule

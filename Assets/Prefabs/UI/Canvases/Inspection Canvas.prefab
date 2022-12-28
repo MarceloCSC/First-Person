@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3399516271298642365}
   - component: {fileID: 3399516271298642367}
   - component: {fileID: 3399516271298642366}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 3399516271772128967}
   - component: {fileID: 3399516271772128966}
   - component: {fileID: 3399516271772128965}
-  m_Layer: 11
+  m_Layer: 12
   m_Name: Inspection Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 3399516271777549831}
   - component: {fileID: 3399516271777549825}
   - component: {fileID: 3399516271777549824}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -271,7 +271,7 @@ GameObject:
   - component: {fileID: 3399516271954562108}
   - component: {fileID: 3399516271954562099}
   - component: {fileID: 1881487256652012972}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -403,7 +403,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1166844495168914304}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Inspection Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

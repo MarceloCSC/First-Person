@@ -41,22 +41,22 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
         }
 
-        public override void TriggerSwitchState(ActionType action, ActionDTO dto = null)
+        public override bool TrySwitchState(ActionType action, ActionDTO dto = null)
         {
-            base.TriggerSwitchState(action, dto);
+            if (base.TrySwitchState(action, dto)) return false;
 
             switch (action)
             {
                 case ActionType.Jump:
                     HandleDialogue();
-                    break;
+                    return TryQuitDialogue();
 
                 case ActionType.Dialogue:
                     HandleDialogue();
-                    break;
+                    return TryQuitDialogue();
 
                 default:
-                    break;
+                    return false;
             }
         }
 
@@ -72,14 +72,15 @@ namespace An01malia.FirstPerson.PlayerModule.States
             }
         }
 
-        private void HandleDialogue()
-        {
-            DialogueManager.Instance.HandleDialogue();
+        private void HandleDialogue() => DialogueManager.Instance.HandleDialogue();
 
-            if (DialogueManager.Instance.CanQuitDialogue)
-            {
-                SwitchState(StateMachine.Idle());
-            }
+        private bool TryQuitDialogue()
+        {
+            if (!DialogueManager.Instance.CanQuitDialogue) return false;
+
+            SwitchState(StateMachine.Idle());
+
+            return true;
         }
 
         #endregion

@@ -2,7 +2,7 @@ using System;
 
 namespace An01malia.FirstPerson.Core
 {
-    public class GameStateManager : Singleton<GameStateManager>
+    public class GameStateManager : ComponentSingleton<GameStateManager>
     {
         #region Delegates
 

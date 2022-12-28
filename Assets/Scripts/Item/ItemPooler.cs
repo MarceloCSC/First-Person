@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace An01malia.FirstPerson.ItemModule
 {
-    public class ItemPooler : Singleton<ItemPooler>
+    public class ItemPooler : ComponentSingleton<ItemPooler>
     {
         #region Fields
 

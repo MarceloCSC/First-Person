@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace An01malia.FirstPerson.QuestModule
 {
-    public class QuestManager : Singleton<QuestManager>
+    public class QuestManager : ComponentSingleton<QuestManager>
     {
         private ICollection<IQuest> _activeQuests;
         private ICollection<IQuest> _completedQuests;

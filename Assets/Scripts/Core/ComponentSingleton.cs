@@ -2,7 +2,7 @@
 
 namespace An01malia.FirstPerson.Core
 {
-    public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
+    public abstract class ComponentSingleton<T> : MonoBehaviour where T : ComponentSingleton<T>
     {
         #region Fields
 
@@ -58,6 +58,7 @@ namespace An01malia.FirstPerson.Core
             else if (_instance != this)
             {
                 DestroyImmediate(this);
+
                 return;
             }
 

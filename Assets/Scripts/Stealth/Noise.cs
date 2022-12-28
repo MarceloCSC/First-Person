@@ -1,7 +1,6 @@
-﻿using An01malia.FirstPerson.EnemyModule;
-using An01malia.FirstPerson.Core.References;
+﻿using An01malia.FirstPerson.Core;
+using An01malia.FirstPerson.EnemyModule;
 using UnityEngine;
-using An01malia.FirstPerson.Core;
 
 namespace An01malia.FirstPerson.StealthModule
 {

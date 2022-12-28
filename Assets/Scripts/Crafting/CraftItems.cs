@@ -1,6 +1,6 @@
-﻿using An01malia.FirstPerson.Core.References;
-using An01malia.FirstPerson.InventoryModule;
+﻿using An01malia.FirstPerson.InventoryModule;
 using An01malia.FirstPerson.ItemModule.Items;
+using An01malia.FirstPerson.PlayerModule;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.CraftingModule

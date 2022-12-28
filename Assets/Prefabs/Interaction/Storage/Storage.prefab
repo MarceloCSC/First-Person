@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5502508159101122683}
   - component: {fileID: 5502508159101122682}
   - component: {fileID: 5502508159101122685}
-  m_Layer: 10
+  m_Layer: 17
   m_Name: Storage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,9 +43,17 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5502508159101122684}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!135 &5502508159101122683
@@ -56,9 +64,17 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5502508159101122684}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 1
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_Radius: 4
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5502508159101122682
@@ -85,5 +101,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59f8e7d96824cd54b8b413db4fc340d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  database: {fileID: 11400000, guid: 9ab6f5d371e572040a1eff122ac45e89, type: 2}
-  startingItems: []
+  Database: {fileID: 0}
+  StartingItems: []

@@ -1,7 +1,7 @@
-using An01malia.FirstPerson.Core.References;
+using An01malia.FirstPerson.ItemModule;
+using An01malia.FirstPerson.ItemModule.Items;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
-using UnityEngine;
 
 namespace An01malia.FirstPerson.PlayerModule.States
 {
@@ -32,37 +32,33 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
         }
 
-        public override void TriggerSwitchState(ActionType action, ActionDTO dto = null)
+        public override bool TrySwitchState(ActionType action, ActionDTO dto = null)
         {
-            base.TriggerSwitchState(action, dto);
+            if (base.TrySwitchState(action, dto)) return false;
 
             switch (action)
             {
                 case ActionType.None:
                     SuperState.RemoveSubState();
-                    break;
+                    return true;
 
                 case ActionType.Push:
                     SuperState.RemoveSubState();
-                    break;
+                    return true;
 
                 case ActionType.Climb:
                     SuperState.RemoveSubState();
-                    break;
+                    return true;
 
                 case ActionType.Carry:
                     SuperState.RemoveSubState();
-                    break;
+                    return true;
 
-                case ActionType.Interact:
-                    if (dto is InteractiveActionDTO interactive)
-                    {
-                        PlaceItem(interactive);
-                    }
-                    break;
+                case ActionType.Interact when dto is ItemStandActionDTO actionDto:
+                    return TryPlaceItem(actionDto.ItemStand);
 
                 default:
-                    break;
+                    return false;
             }
         }
 
@@ -72,25 +68,27 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         private void CarryItem()
         {
-            StateData.Transform.GetComponent<Rigidbody>().isKinematic = true;
-            StateData.Transform.GetComponent<Collider>().enabled = false;
-            StateData.Transform.parent = Player.Hand;
-            StateData.Transform.localPosition = Vector3.zero;
-            StateData.Transform.eulerAngles = Vector3.zero;
+            if (StateData.Transform.TryGetComponent(out ItemToCarry item))
+            {
+                item.Carry();
+            }
         }
 
         private void DropItem()
         {
-            StateData.Transform.GetComponent<Rigidbody>().isKinematic = false;
-            StateData.Transform.GetComponent<Collider>().enabled = true;
-            StateData.Transform.parent = null;
+            if (StateData.Transform.TryGetComponent(out ItemToCarry item))
+            {
+                item.Drop();
+            }
         }
 
-        private void PlaceItem(InteractiveActionDTO dto)
+        private bool TryPlaceItem(ItemStand itemStand)
         {
-            print("placing item");
+            if (!itemStand.TryPlaceItem(StateData.Transform)) return false;
 
-            dto.Interactive.StartInteraction();
+            SuperState.RemoveSubState();
+
+            return true;
         }
 
         #endregion

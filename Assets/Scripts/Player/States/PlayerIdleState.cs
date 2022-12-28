@@ -46,68 +46,75 @@ namespace An01malia.FirstPerson.PlayerModule.States
             SwitchState(StateMachine.Walk());
         }
 
-        public override void TriggerSwitchState(ActionType action, ActionDTO dto = null)
+        public override bool TrySwitchState(ActionType action, ActionDTO dto = null)
         {
-            base.TriggerSwitchState(action, dto);
+            if (base.TrySwitchState(action, dto)) return false;
 
             switch (action)
             {
                 case ActionType.Run:
                     StateData.SetData(dto);
-                    break;
+                    return false;
 
                 case ActionType.Crouch:
                     SwitchState(StateMachine.Crouch());
-                    break;
+                    return true;
 
                 case ActionType.Jump:
                     SwitchState(StateMachine.Jump());
-                    break;
+                    return true;
 
                 case ActionType.GrabLedge:
                     SwitchState(StateMachine.GrabLedge());
-                    break;
+                    return true;
 
                 case ActionType.Push:
                     StateData.SetData(dto);
                     SwitchState(StateMachine.Push());
-                    break;
+                    return true;
 
                 case ActionType.Climb:
                     StateData.SetData(dto);
                     SwitchState(StateMachine.Climb());
-                    break;
+                    return true;
 
                 case ActionType.Carry:
                     StateData.SetData(dto);
                     SwitchState(this, StateMachine.Carry());
-                    break;
+                    return true;
 
                 case ActionType.Inspect:
                     StateData.SetData(dto);
                     SwitchState(StateMachine.Inspect());
-                    break;
+                    return true;
 
                 case ActionType.Inventory when dto is TransformActionDTO:
                     StateData.SetData(dto);
                     SwitchState(StateMachine.Inventory());
-                    break;
+                    return true;
 
                 case ActionType.Inventory:
                     SwitchState(StateMachine.Inventory());
-                    break;
+                    return true;
 
-                case ActionType.Interact:
-                    (dto as InteractiveActionDTO).Interactive.StartInteraction();
-                    break;
+                case ActionType.Interact when dto is InteractiveActionDTO interactiveDto:
+                    interactiveDto.Interactive.StartInteraction();
+                    return false;
+
+                case ActionType.Interact when dto is ItemStandActionDTO itemStandDto:
+                    if (!itemStandDto.ItemStand.Item) return false;
+
+                    StateData.SetData(new TransformActionDTO(itemStandDto.ItemStand.Item));
+                    SwitchState(this, StateMachine.Carry());
+                    return true;
 
                 case ActionType.Dialogue:
                     StateData.SetData(dto);
                     SwitchState(StateMachine.Dialogue());
-                    break;
+                    return true;
 
                 default:
-                    break;
+                    return false;
             }
         }
 
@@ -122,7 +129,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
             Controller.Move(gravityVector * Time.fixedDeltaTime);
         }
 
-        private bool HasNoInput() => Input.MovementInputValues.y == 0.0f && Input.MovementInputValues.x == 0.0f;
+        private bool HasNoInput() => PlayerInput.MovementInputValues.y == 0.0f && PlayerInput.MovementInputValues.x == 0.0f;
 
         #endregion
     }

@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using An01malia.FirstPerson.Core.References;
+﻿using An01malia.FirstPerson.PlayerModule;
+using System.Collections;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.EnemyModule

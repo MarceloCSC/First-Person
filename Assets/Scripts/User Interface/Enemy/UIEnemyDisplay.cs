@@ -1,6 +1,6 @@
-﻿using System.Text;
-using An01malia.FirstPerson.Core.References;
-using An01malia.FirstPerson.EnemyModule;
+﻿using An01malia.FirstPerson.EnemyModule;
+using An01malia.FirstPerson.PlayerModule;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,7 +32,7 @@ namespace An01malia.FirstPerson.UserInterfaceModule.Enemy
 
         private void LateUpdate()
         {
-            transform.forward = Player.CameraTransform.forward;
+            transform.forward = Player.Camera.forward;
         }
 
         private void OnDisable()
