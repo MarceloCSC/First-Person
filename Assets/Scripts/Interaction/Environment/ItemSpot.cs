@@ -1,14 +1,16 @@
-﻿using An01malia.FirstPerson.ItemModule.Items;
+﻿using An01malia.FirstPerson.ItemModule;
+using An01malia.FirstPerson.ItemModule.Items;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace An01malia.FirstPerson.ItemModule
+namespace An01malia.FirstPerson.InteractionModule.Environment
 {
-    public class ItemStand : MonoBehaviour
+    public class ItemSpot : MonoBehaviour
     {
         #region Fields
 
         [SerializeField] private GameObject _item;
+        [SerializeField] private bool _isItemLocked;
         [SerializeField] private List<ItemObject> _itemsAllowed;
 
         private ItemToCarry _itemToCarry;
@@ -18,6 +20,8 @@ namespace An01malia.FirstPerson.ItemModule
         #region Properties
 
         public Transform Item => _item ? _item.transform : null;
+
+        public bool IsItemLocked => _isItemLocked;
 
         #endregion
 
@@ -38,15 +42,13 @@ namespace An01malia.FirstPerson.ItemModule
 
         #region Public Methods
 
-        public bool TryPlaceItem(Transform transform)
+        public virtual bool TryPlaceItem(Transform transform)
         {
             if (!transform.TryGetComponent(out ItemToCarry item)) return false;
 
-            if (_item || !CanPlace(item)) return false;
+            if (_item || !IsAllowed(item)) return false;
 
-            transform.localPosition = Vector3.zero;
-            transform.eulerAngles = Vector3.zero;
-            transform.position = base.transform.position;
+            item.Place(base.transform.position, _isItemLocked);
 
             _item = item.gameObject;
             _itemToCarry = item;
@@ -57,16 +59,16 @@ namespace An01malia.FirstPerson.ItemModule
 
         #endregion
 
-        #region Private Methods
+        #region Protected Methods
 
-        private void RemoveItem()
+        protected virtual void RemoveItem()
         {
             _itemToCarry.OnCarrying -= RemoveItem;
             _itemToCarry = null;
             _item = null;
         }
 
-        private bool CanPlace(ItemToCarry item) => _itemsAllowed.Count == 0 || _itemsAllowed.Contains(item.Root);
+        protected virtual bool IsAllowed(ItemToCarry item) => _itemsAllowed.Count == 0 || _itemsAllowed.Contains(item.Root);
 
         #endregion
     }

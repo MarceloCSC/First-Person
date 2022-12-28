@@ -1,4 +1,4 @@
-using An01malia.FirstPerson.ItemModule;
+using An01malia.FirstPerson.InteractionModule.Environment;
 using An01malia.FirstPerson.ItemModule.Items;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
@@ -16,12 +16,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
             CarryItem();
         }
 
-        public override PlayerActionDTO ExitState()
-        {
-            DropItem();
-
-            return null;
-        }
+        public override PlayerActionDTO ExitState() => null;
 
         public override void UpdateState()
         {
@@ -39,23 +34,27 @@ namespace An01malia.FirstPerson.PlayerModule.States
             switch (action)
             {
                 case ActionType.None:
+                    DropItem();
                     SuperState.RemoveSubState();
                     return true;
 
                 case ActionType.Push:
+                    DropItem();
                     SuperState.RemoveSubState();
                     return true;
 
                 case ActionType.Climb:
+                    DropItem();
                     SuperState.RemoveSubState();
                     return true;
 
                 case ActionType.Carry:
+                    DropItem();
                     SuperState.RemoveSubState();
                     return true;
 
-                case ActionType.Interact when dto is ItemStandActionDTO actionDto:
-                    return TryPlaceItem(actionDto.ItemStand);
+                case ActionType.Interact when dto is ItemSpotActionDTO actionDto:
+                    return TryPlaceItem(actionDto.ItemSpot);
 
                 default:
                     return false;
@@ -82,9 +81,9 @@ namespace An01malia.FirstPerson.PlayerModule.States
             }
         }
 
-        private bool TryPlaceItem(ItemStand itemStand)
+        private bool TryPlaceItem(ItemSpot itemSpot)
         {
-            if (!itemStand.TryPlaceItem(StateData.Transform)) return false;
+            if (!itemSpot.TryPlaceItem(StateData.Transform)) return false;
 
             SuperState.RemoveSubState();
 

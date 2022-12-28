@@ -526,7 +526,7 @@ GameObject:
   - component: {fileID: 134149399}
   - component: {fileID: 134149398}
   m_Layer: 13
-  m_Name: Item Stand
+  m_Name: Item Spot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -560,6 +560,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _item: {fileID: 1005909172}
+  _isItemLocked: 0
   _itemsAllowed: []
 --- !u!65 &134149399
 BoxCollider:
@@ -6290,7 +6291,7 @@ PrefabInstance:
     - target: {fileID: 8841902415351357013, guid: 9c17e442b29cf134aa3518761fe98920,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 19.19
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 8841902415351357013, guid: 9c17e442b29cf134aa3518761fe98920,
         type: 3}
@@ -6300,7 +6301,7 @@ PrefabInstance:
     - target: {fileID: 8841902415351357013, guid: 9c17e442b29cf134aa3518761fe98920,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.02
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8841902415351357013, guid: 9c17e442b29cf134aa3518761fe98920,
         type: 3}

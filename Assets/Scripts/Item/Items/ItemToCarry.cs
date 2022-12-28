@@ -55,6 +55,16 @@ namespace An01malia.FirstPerson.ItemModule.Items
             _coroutine = StartCoroutine(SetIsKinematic());
         }
 
+        public void Place(Vector3 position, bool isItemLocked = false)
+        {
+            transform.GetComponent<Rigidbody>().isKinematic = true;
+            transform.GetComponent<Collider>().enabled = !isItemLocked;
+            transform.localPosition = Vector3.zero;
+            transform.eulerAngles = Vector3.zero;
+            transform.position = position;
+            transform.parent = null;
+        }
+
         #endregion
 
         #region Private Methods

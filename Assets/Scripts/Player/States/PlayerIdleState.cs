@@ -97,14 +97,14 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     SwitchState(StateMachine.Inventory());
                     return true;
 
-                case ActionType.Interact when dto is InteractiveActionDTO interactiveDto:
-                    interactiveDto.Interactive.StartInteraction();
+                case ActionType.Interact when dto is InteractiveActionDTO actionDto:
+                    actionDto.Interactive.StartInteraction();
                     return false;
 
-                case ActionType.Interact when dto is ItemStandActionDTO itemStandDto:
-                    if (!itemStandDto.ItemStand.Item) return false;
+                case ActionType.Interact when dto is ItemSpotActionDTO actionDto:
+                    if (!actionDto.ItemSpot.Item || actionDto.ItemSpot.IsItemLocked) return false;
 
-                    StateData.SetData(new TransformActionDTO(itemStandDto.ItemStand.Item));
+                    StateData.SetData(new TransformActionDTO(actionDto.ItemSpot.Item));
                     SwitchState(this, StateMachine.Carry());
                     return true;
 

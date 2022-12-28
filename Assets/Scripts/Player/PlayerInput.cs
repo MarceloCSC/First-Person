@@ -202,8 +202,8 @@ namespace An01malia.FirstPerson.PlayerModule
                     _context.CurrentState.TrySwitchState(ActionType.Push, new TransformActionDTO(interaction));
                     break;
 
-                case Layer.ToInteract when interaction.TryGetComponent(out ItemStand itemStand):
-                    _context.CurrentState.TrySwitchState(ActionType.Interact, new ItemStandActionDTO(itemStand));
+                case Layer.ToInteract when interaction.TryGetComponent(out ItemSpot itemSpot):
+                    _context.CurrentState.TrySwitchState(ActionType.Interact, new ItemSpotActionDTO(itemSpot));
                     break;
 
                 case Layer.ToInspect:
