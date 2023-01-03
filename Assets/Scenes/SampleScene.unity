@@ -400,6 +400,7 @@ MonoBehaviour:
   _character: {fileID: 11400000, guid: 340ca120303a0674a94e24f1563f81ce, type: 2}
   _dialogue: {fileID: 4900000, guid: 021bf23f072e82049a7c9d3e860fe859, type: 3}
   _canInteract: 1
+  _quest: {fileID: 0}
 --- !u!136 &11889045
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -581,8 +582,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 0.22861528, z: 1}
-  m_Center: {x: 0, y: -0.38569236, z: 0}
+  m_Size: {x: 1, y: 0.25, z: 1}
+  m_Center: {x: 0, y: -0.375, z: 0}
 --- !u!1 &202927319
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,6 +619,7 @@ Transform:
   - {fileID: 923488841}
   - {fileID: 652930443}
   - {fileID: 134149397}
+  - {fileID: 417717471}
   - {fileID: 418754134}
   - {fileID: 11889043}
   - {fileID: 1353513053}
@@ -927,6 +929,77 @@ Transform:
   m_Father: {fileID: 202927320}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &417717469
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 417717471}
+  - component: {fileID: 417717472}
+  - component: {fileID: 417717470}
+  m_Layer: 13
+  m_Name: Quest Item Spot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &417717470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 417717469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2823e02d53eecd34a9077f85b4acbe6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _item: {fileID: 0}
+  _isItemLocked: 1
+  _itemsAllowed:
+  - {fileID: 11400000, guid: 19bc983fa013ec4458a21e162c6ac4f9, type: 2}
+  _character: {fileID: 11400000, guid: c3ca748cb8e8d0b4e808af479568eb88, type: 2}
+--- !u!4 &417717471
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 417717469}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 9.76, y: 0, z: -5.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 202927320}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &417717472
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 417717469}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 576
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 3.5, y: 1, z: 2}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &418754132
 GameObject:
   m_ObjectHideFlags: 0
@@ -999,6 +1072,7 @@ MonoBehaviour:
   _character: {fileID: 11400000, guid: c3ca748cb8e8d0b4e808af479568eb88, type: 2}
   _dialogue: {fileID: 4900000, guid: e1c23cf85812aef4085d42aaa92ceb0e, type: 3}
   _canInteract: 1
+  _quest: {fileID: 11400000, guid: 826df4dfab2cf32458337bb2e344e741, type: 2}
 --- !u!4 &498460994 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8841902415351357013, guid: 9c17e442b29cf134aa3518761fe98920,
@@ -1805,6 +1879,12 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8841902415351357011, guid: 9c17e442b29cf134aa3518761fe98920,
+        type: 3}
+      propertyPath: _item
+      value: 
+      objectReference: {fileID: 11400000, guid: 19bc983fa013ec4458a21e162c6ac4f9,
+        type: 2}
     - target: {fileID: 8841902415351357013, guid: 9c17e442b29cf134aa3518761fe98920,
         type: 3}
       propertyPath: m_RootOrder
@@ -3157,10 +3237,10 @@ MonoBehaviour:
   _isLocked: 0
   _isTriggered: 0
   _shouldStayOpen: 0
+  _secondsToClose: 0
   _layersToTrigger:
     serializedVersion: 2
     m_Bits: 64
-  _secondsToClose: 0
 --- !u!4 &1461349772
 Transform:
   m_ObjectHideFlags: 0

@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: Ring Recipe
   m_EditorClassIdentifier: 
   _itemToCraft:
-    item: {fileID: 11400000, guid: 538b3aeb1c333c842b9843976f33948c, type: 2}
-    currentAmount: 0
+    _item: {fileID: 11400000, guid: 538b3aeb1c333c842b9843976f33948c, type: 2}
+    _currentAmount: 1
   _ingredients:
-  - item: {fileID: 0}
-    currentAmount: 0
-  - item: {fileID: 0}
-    currentAmount: 0
-  - item: {fileID: 0}
-    currentAmount: 0
-  - item: {fileID: 0}
-    currentAmount: 0
+  - _item: {fileID: 0}
+    _currentAmount: 0
+  - _item: {fileID: 0}
+    _currentAmount: 0
+  - _item: {fileID: 0}
+    _currentAmount: 0
+  - _item: {fileID: 0}
+    _currentAmount: 0
   _isAvailable: 0

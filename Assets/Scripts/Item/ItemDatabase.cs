@@ -21,11 +21,11 @@ namespace An01malia.FirstPerson.ItemModule
 
         #region Public Methods
 
-        public InventoryItem RetrieveItem(string itemID, int amount = 1)
+        public InventoryItem RetrieveItem(string itemId, int amount = 1)
         {
             foreach (ItemObject item in _allItems)
             {
-                if (item.ID == itemID)
+                if (item.Id == itemId)
                 {
                     return new InventoryItem(item, amount);
                 }
@@ -34,11 +34,11 @@ namespace An01malia.FirstPerson.ItemModule
             return null;
         }
 
-        public void InstantiateItem(string itemID)
+        public void InstantiateItem(string itemId)
         {
             foreach (ItemObject item in _allItems)
             {
-                if (item.ID == itemID)
+                if (item.Id == itemId)
                 {
                     Instantiate(item.Prefab, Player.Transform.position, Quaternion.identity);
                 }

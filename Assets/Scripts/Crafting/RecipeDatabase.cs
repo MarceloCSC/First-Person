@@ -10,8 +10,8 @@ namespace An01malia.FirstPerson.CraftingModule
 
         [SerializeField] private GameObject _recipeSlotsPrefab;
 
-        public Recipe[] AllRecipes;
-        public List<Recipe> AvailableRecipes = new();
+        public RecipeObject[] AllRecipes;
+        public List<RecipeObject> AvailableRecipes = new();
 
         #endregion
 
@@ -19,7 +19,7 @@ namespace An01malia.FirstPerson.CraftingModule
 
         public void UpdateDatabase()
         {
-            foreach (Recipe recipe in AllRecipes)
+            foreach (RecipeObject recipe in AllRecipes)
             {
                 if (recipe.HasBeenLearned && !AvailableRecipes.Contains(recipe))
                 {
@@ -29,7 +29,7 @@ namespace An01malia.FirstPerson.CraftingModule
             }
         }
 
-        public void CreateRecipe(Recipe recipe)
+        public void CreateRecipe(RecipeObject recipe)
         {
             GameObject recipeSlots = Instantiate(_recipeSlotsPrefab, CraftItems.RecipesGrid);
 

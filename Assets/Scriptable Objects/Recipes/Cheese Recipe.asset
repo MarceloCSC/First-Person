@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: Cheese Recipe
   m_EditorClassIdentifier: 
   _itemToCraft:
-    item: {fileID: 11400000, guid: afcaabe1b8212f94bb4bce01920d2bca, type: 2}
-    currentAmount: 0
+    _item: {fileID: 11400000, guid: afcaabe1b8212f94bb4bce01920d2bca, type: 2}
+    _currentAmount: 1
   _ingredients:
-  - item: {fileID: 0}
-    currentAmount: 0
-  - item: {fileID: 0}
-    currentAmount: 0
-  - item: {fileID: 0}
-    currentAmount: 0
-  - item: {fileID: 0}
-    currentAmount: 0
+  - _item: {fileID: 0}
+    _currentAmount: 0
+  - _item: {fileID: 0}
+    _currentAmount: 0
+  - _item: {fileID: 0}
+    _currentAmount: 0
+  - _item: {fileID: 0}
+    _currentAmount: 0
   _isAvailable: 0

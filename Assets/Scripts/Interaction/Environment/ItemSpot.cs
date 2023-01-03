@@ -44,15 +44,9 @@ namespace An01malia.FirstPerson.InteractionModule.Environment
 
         public virtual bool TryPlaceItem(Transform transform)
         {
-            if (!transform.TryGetComponent(out ItemToCarry item)) return false;
+            if (!CanPlaceItem(transform, out ItemToCarry item)) return false;
 
-            if (_item || !IsAllowed(item)) return false;
-
-            item.Place(base.transform.position, _isItemLocked);
-
-            _item = item.gameObject;
-            _itemToCarry = item;
-            _itemToCarry.OnCarrying += RemoveItem;
+            Place(item);
 
             return true;
         }
@@ -61,11 +55,25 @@ namespace An01malia.FirstPerson.InteractionModule.Environment
 
         #region Protected Methods
 
+        protected void Place(ItemToCarry item)
+        {
+            item.Place(transform.position, _isItemLocked);
+
+            _item = item.gameObject;
+            _itemToCarry = item;
+            _itemToCarry.OnCarrying += RemoveItem;
+        }
+
         protected virtual void RemoveItem()
         {
             _itemToCarry.OnCarrying -= RemoveItem;
             _itemToCarry = null;
             _item = null;
+        }
+
+        protected bool CanPlaceItem(Transform transform, out ItemToCarry item)
+        {
+            return transform.TryGetComponent(out item) && !_item && IsAllowed(item);
         }
 
         protected virtual bool IsAllowed(ItemToCarry item) => _itemsAllowed.Count == 0 || _itemsAllowed.Contains(item.Root);

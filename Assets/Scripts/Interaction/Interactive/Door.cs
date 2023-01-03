@@ -10,12 +10,12 @@ namespace An01malia.FirstPerson.InteractionModule.Interactive
         [SerializeField] private bool _isOpen;
         [SerializeField] private bool _isLocked;
 
-        [Header("Automatic Door")]
+        [Header("Automatic Open / Close")]
         [Space]
         [SerializeField] private bool _isTriggered;
         [SerializeField] private bool _shouldStayOpen;
-        [SerializeField] private LayerMask _layersToTrigger;
         [SerializeField] private float _secondsToClose = 0.0f;
+        [SerializeField] private LayerMask _layersToTrigger;
 
         private Coroutine _closingDoor;
         private Animator _animator;

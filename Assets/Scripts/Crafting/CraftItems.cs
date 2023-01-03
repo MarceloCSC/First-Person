@@ -34,7 +34,7 @@ namespace An01malia.FirstPerson.CraftingModule
             _recipeDatabase.UpdateDatabase();
         }
 
-        public void Craft(Recipe recipe)
+        public void Craft(RecipeObject recipe)
         {
             if (HasIngredients(recipe))
             {
@@ -55,7 +55,7 @@ namespace An01malia.FirstPerson.CraftingModule
 
         #region Private Methods
 
-        private bool HasIngredients(Recipe recipe)
+        private bool HasIngredients(RecipeObject recipe)
         {
             foreach (InventoryItem ingredient in recipe.Ingredients)
             {

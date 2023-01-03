@@ -142,7 +142,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
         }
 
         private bool TrySetItem() => StateData.Transform.TryGetComponent(out ItemToInspect item) &&
-                                        ItemPooler.Instance.ItemsToExamine.TryGetValue(item.Root.ID, out _item);
+                                        ItemPooler.Instance.ItemsToExamine.TryGetValue(item.Root.Id, out _item);
 
         private void ToggleInGameItem(bool isActive) => StateData.Transform.gameObject.SetActive(isActive);
 

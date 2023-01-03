@@ -48,7 +48,7 @@ namespace An01malia.FirstPerson.UserInterfaceModule.Inventory
         {
             if (Slot.ItemSelected != null)
             {
-                ItemPooler.Instance.ItemDatabase.InstantiateItem(Slot.ItemSelected.Root.ID);
+                ItemPooler.Instance.ItemDatabase.InstantiateItem(Slot.ItemSelected.Root.Id);
                 Slot.ItemSelected.Amount--;
             }
         }

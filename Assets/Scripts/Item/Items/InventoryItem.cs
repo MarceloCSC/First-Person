@@ -59,9 +59,9 @@ namespace An01malia.FirstPerson.ItemModule.Items
 
         public bool CanStack(InventoryItem item, int amount = 1) => IsSame(item) && _currentAmount + amount <= _item.MaxAmount;
 
-        public bool IsSame(InventoryItem item) => _item.ID == item.Root.ID;
+        public bool IsSame(InventoryItem item) => _item.Id == item.Root.Id;
 
-        public bool IsSame(string itemID) => _item.ID == itemID;
+        public bool IsSame(string itemId) => _item.Id == itemId;
 
         #endregion
     }

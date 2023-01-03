@@ -92,7 +92,7 @@ namespace An01malia.FirstPerson.InventoryModule
                 {
                     if (Slots[i].Item == null)
                     {
-                        Slots[i].Item = Database.RetrieveItem(item.Root.ID, maxAmount);
+                        Slots[i].Item = Database.RetrieveItem(item.Root.Id, maxAmount);
                         break;
                     }
                 }
@@ -105,7 +105,7 @@ namespace An01malia.FirstPerson.InventoryModule
             {
                 if (Slots[i].Item == null)
                 {
-                    Slots[i].Item = Database.RetrieveItem(item.Root.ID, item.Amount);
+                    Slots[i].Item = Database.RetrieveItem(item.Root.Id, item.Amount);
                     item.Amount -= item.Amount;
                     return;
                 }
@@ -151,7 +151,7 @@ namespace An01malia.FirstPerson.InventoryModule
             {
                 if (slot.Item != null)
                 {
-                    var item = Tuple.Create(slot.Item.Root.ID, slot.Item.Amount);
+                    var item = Tuple.Create(slot.Item.Root.Id, slot.Item.Amount);
 
                     StoredItems.Add(slot, item);
                 }

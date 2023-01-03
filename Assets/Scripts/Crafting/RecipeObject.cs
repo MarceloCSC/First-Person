@@ -4,7 +4,7 @@ using UnityEngine;
 namespace An01malia.FirstPerson.CraftingModule
 {
     [CreateAssetMenu(fileName = "NewRecipe", menuName = "Crafting/New Recipe")]
-    public class Recipe : ScriptableObject
+    public class RecipeObject : ScriptableObject
     {
         #region Fields
 

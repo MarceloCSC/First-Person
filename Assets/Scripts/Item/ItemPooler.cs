@@ -46,7 +46,7 @@ namespace An01malia.FirstPerson.ItemModule
                 prefab.SetActive(false);
                 prefab.transform.parent = transform;
 
-                ItemsToExamine.Add(item.ID, prefab);
+                ItemsToExamine.Add(item.Id, prefab);
             }
         }
 

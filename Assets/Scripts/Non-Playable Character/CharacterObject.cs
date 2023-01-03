@@ -11,7 +11,7 @@ namespace An01malia.FirstPerson.NonPlayableCharacterModule
         [SerializeField] private string _characterName;
 
         [Space]
-        [SerializeField] private string _uniqueID;
+        [SerializeField] private string _uniqueId;
         [SerializeField] private Sprite _sprite;
 
         [Space]
@@ -23,9 +23,9 @@ namespace An01malia.FirstPerson.NonPlayableCharacterModule
         #region Properties
 
         public string Name => _characterName;
-        public string ID => _uniqueID;
-        public Sprite Sprite => _sprite;
+        public string Id => _uniqueId;
         public string Description => _description;
+        public Sprite Sprite => _sprite;
 
         #endregion
 
@@ -33,9 +33,11 @@ namespace An01malia.FirstPerson.NonPlayableCharacterModule
 
         private void OnValidate()
         {
+            if (!string.IsNullOrEmpty(_uniqueId)) return;
+
             string path = AssetDatabase.GetAssetPath(this);
 
-            _uniqueID = AssetDatabase.AssetPathToGUID(path);
+            _uniqueId = AssetDatabase.AssetPathToGUID(path);
         }
 
         #endregion

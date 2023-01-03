@@ -1,6 +1,7 @@
 using An01malia.FirstPerson.DialogueModule;
 using An01malia.FirstPerson.DialogueModule.DTOs;
 using An01malia.FirstPerson.NonPlayableCharacterModule;
+using An01malia.FirstPerson.QuestModule;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.InteractionModule.Interactive
@@ -12,6 +13,9 @@ namespace An01malia.FirstPerson.InteractionModule.Interactive
         [SerializeField] private CharacterObject _character;
         [SerializeField] private TextAsset _dialogue;
         [SerializeField] private bool _canInteract = true;
+
+        // TEMPORARY:
+        [SerializeField] private QuestObject _quest;
 
         #endregion
 
@@ -28,6 +32,9 @@ namespace An01malia.FirstPerson.InteractionModule.Interactive
             if (!_canInteract) return;
 
             DialogueManager.Instance.StartDialogue(new DialogueDTO(_dialogue.text, _character.Name));
+
+            // ...
+            QuestManager.Instance.StartQuest(_quest);
         }
 
         #endregion

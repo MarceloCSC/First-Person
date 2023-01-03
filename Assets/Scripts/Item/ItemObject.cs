@@ -12,7 +12,7 @@ namespace An01malia.FirstPerson.ItemModule
         [SerializeField] private ItemType _itemType;
 
         [Space]
-        [SerializeField] private string _uniqueID;
+        [SerializeField] private string _uniqueId;
         [SerializeField] private GameObject _inGamePrefab;
         [SerializeField] private GameObject _itemToInspect;
         [SerializeField] private Sprite _icon;
@@ -30,13 +30,13 @@ namespace An01malia.FirstPerson.ItemModule
         #region Properties
 
         public string Name => _itemName;
-        public ItemType Type => _itemType;
-        public string ID => _uniqueID;
-        public GameObject Prefab => _inGamePrefab;
-        public GameObject InspectPrefab => _itemToInspect;
-        public Sprite Icon => _icon;
+        public string Id => _uniqueId;
         public string Description => _itemDescription;
         public int MaxAmount => _maxAmount;
+        public Sprite Icon => _icon;
+        public GameObject Prefab => _inGamePrefab;
+        public GameObject InspectPrefab => _itemToInspect;
+        public ItemType Type => _itemType;
 
         #endregion
 
@@ -44,9 +44,11 @@ namespace An01malia.FirstPerson.ItemModule
 
         private void OnValidate()
         {
+            if (!string.IsNullOrEmpty(_uniqueId)) return;
+
             string path = AssetDatabase.GetAssetPath(this);
-         
-            _uniqueID = AssetDatabase.AssetPathToGUID(path);
+
+            _uniqueId = AssetDatabase.AssetPathToGUID(path);
         }
 
         #endregion
