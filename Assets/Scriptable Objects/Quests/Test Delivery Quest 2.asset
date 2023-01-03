@@ -10,14 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f03b5b32629860343b3067dfdbce84ef, type: 3}
-  m_Name: Test Delivery Quest
+  m_Name: Test Delivery Quest 2
   m_EditorClassIdentifier: 
-  _questTitle: Test Quest
-  _uniqueId: 826df4dfab2cf32458337bb2e344e741
+  _questTitle: Test Quest 2
+  _uniqueId: 46d5096cb6353ee41a01ea848766c947
   _description: It's a test.
-  _isCompleted: 0
   _objectives:
-  - _item: {fileID: 11400000, guid: 19bc983fa013ec4458a21e162c6ac4f9, type: 2}
-    _recipient: {fileID: 11400000, guid: c3ca748cb8e8d0b4e808af479568eb88, type: 2}
+  - _item: {fileID: 11400000, guid: afcaabe1b8212f94bb4bce01920d2bca, type: 2}
+    _recipient: {fileID: 11400000, guid: 340ca120303a0674a94e24f1563f81ce, type: 2}
     _isCompleted: 0
-    _isSuccessful: 1
+    _isSuccessful: 0

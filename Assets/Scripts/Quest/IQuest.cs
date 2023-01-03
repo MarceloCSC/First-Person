@@ -8,14 +8,17 @@ namespace An01malia.FirstPerson.QuestModule
         string Title { get; }
         string Id { get; }
         string Description { get; }
+        bool IsCompleted { get; }
         DateTime StartedOn { get; }
         DateTime UpdatedOn { get; }
         DateTime CompletedOn { get; }
 
+        void Initialize();
+
         bool SatisfyConditions();
 
-        bool TryCompleteObjective(ObjectiveDTO objectiveDto);
+        bool TryCompleteObjective(ObjectiveDTO dto);
 
-        bool Contains(ObjectiveDTO objectiveDto);
+        bool Contains(ObjectiveDTO dto);
     }
 }

@@ -18,9 +18,8 @@ namespace An01malia.FirstPerson.QuestModule
         [TextArea(10, 30)]
         [SerializeField] private string _description;
 
-        private DateTime _startedOn;
-        private DateTime _updatedOn;
-        private DateTime _completedOn;
+        [Space]
+        [SerializeField] private bool _isCompleted;
 
         #endregion
 
@@ -29,9 +28,10 @@ namespace An01malia.FirstPerson.QuestModule
         public string Title => _questTitle;
         public string Id => _uniqueId;
         public string Description => _description;
-        public DateTime StartedOn => _startedOn;
-        public DateTime UpdatedOn => _updatedOn;
-        public DateTime CompletedOn => _completedOn;
+        public bool IsCompleted { get => _isCompleted; protected set => _isCompleted = value; }
+        public DateTime StartedOn { get; protected set; }
+        public DateTime UpdatedOn { get; protected set; }
+        public DateTime CompletedOn { get; protected set; }
 
         #endregion
 
@@ -48,13 +48,22 @@ namespace An01malia.FirstPerson.QuestModule
 
         #endregion
 
-        #region Public Methods
+        #region Abstract Methods
 
         public abstract bool SatisfyConditions();
 
-        public abstract bool TryCompleteObjective(ObjectiveDTO objectiveDto);
+        public abstract bool TryCompleteObjective(ObjectiveDTO dto);
 
-        public abstract bool Contains(ObjectiveDTO objectiveDto);
+        public abstract bool Contains(ObjectiveDTO dto);
+
+        #endregion
+
+        #region Public Methods
+
+        public virtual void Initialize()
+        {
+            StartedOn = DateTime.UtcNow;
+        }
 
         #endregion
     }

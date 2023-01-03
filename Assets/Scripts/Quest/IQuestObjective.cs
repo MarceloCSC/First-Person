@@ -1,4 +1,5 @@
-﻿using System;
+﻿using An01malia.FirstPerson.QuestModule.DTOs;
+using System;
 
 namespace An01malia.FirstPerson.QuestModule
 {
@@ -9,5 +10,7 @@ namespace An01malia.FirstPerson.QuestModule
         DateTime CompletedOn { get; }
 
         void Complete(bool isSuccessful);
+
+        bool HasValues(ObjectiveDTO dto);
     }
 }

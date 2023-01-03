@@ -400,7 +400,7 @@ MonoBehaviour:
   _character: {fileID: 11400000, guid: 340ca120303a0674a94e24f1563f81ce, type: 2}
   _dialogue: {fileID: 4900000, guid: 021bf23f072e82049a7c9d3e860fe859, type: 3}
   _canInteract: 1
-  _quest: {fileID: 0}
+  _quest: {fileID: 11400000, guid: 46d5096cb6353ee41a01ea848766c947, type: 2}
 --- !u!136 &11889045
 CapsuleCollider:
   m_ObjectHideFlags: 0

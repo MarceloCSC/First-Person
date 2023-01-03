@@ -1,5 +1,6 @@
 ﻿using An01malia.FirstPerson.ItemModule;
 using An01malia.FirstPerson.NonPlayableCharacterModule;
+using An01malia.FirstPerson.QuestModule.DTOs;
 using System;
 using UnityEngine;
 
@@ -31,27 +32,6 @@ namespace An01malia.FirstPerson.QuestModule.DeliveryQuest
 
         #endregion
 
-        #region Constructor
-
-        public DeliveryQuestObjective(ItemObject item, CharacterObject recipient)
-        {
-            _item = item;
-            _recipient = recipient;
-        }
-
-        //public DeliveryQuestObjective(GameObject item, string recipientId)
-        //{
-        //    if (!item.TryGetComponent(out QuestItem questItem)) throw new MissingComponentException(
-        //        $"There is no 'QuestItem' attached to the \"{item.name}\" game object, but a script is trying to access it.");
-
-        //    if (questItem == null) return;
-
-        //    _itemId = questItem.Id;
-        //    _recipientId = recipientId;
-        //}
-
-        #endregion
-
         #region Public Methods
 
         public void Complete(bool isSuccessful)
@@ -59,6 +39,12 @@ namespace An01malia.FirstPerson.QuestModule.DeliveryQuest
             _isCompleted = true;
             _isSuccessful = isSuccessful;
             _completedOn = DateTime.UtcNow;
+        }
+
+        public bool HasValues(ObjectiveDTO dto)
+        {
+            return dto is DeliveryObjectiveDTO objectiveDto &&
+                   ItemId == objectiveDto.ItemId && RecipientId == objectiveDto.RecipientId;
         }
 
         #endregion

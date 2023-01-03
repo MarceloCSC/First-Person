@@ -18,6 +18,8 @@ namespace An01malia.FirstPerson.QuestModule
 
         public void StartQuest(IQuest quest)
         {
+            quest.Initialize();
+
             _activeQuests.Add(quest);
         }
 
