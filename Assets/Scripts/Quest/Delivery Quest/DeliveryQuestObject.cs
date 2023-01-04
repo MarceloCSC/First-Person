@@ -39,9 +39,7 @@ namespace An01malia.FirstPerson.QuestModule.DeliveryQuest
 
         public override bool TryCompleteObjective(ObjectiveDTO dto)
         {
-            if (dto is not DeliveryObjectiveDTO objectiveDto) return false;
-
-            var objective = _objectives.Where(objective => objective.HasValues(objectiveDto)).FirstOrDefault();
+            var objective = _objectives.Where(objective => objective.HasValues(dto)).FirstOrDefault();
 
             if (objective == null) return false;
 
@@ -55,6 +53,17 @@ namespace An01malia.FirstPerson.QuestModule.DeliveryQuest
         public override bool Contains(ObjectiveDTO dto)
         {
             return _objectives.Any(objective => objective.HasValues(dto));
+        }
+
+        public override void End()
+        {
+            foreach (var objective in _objectives)
+            {
+                if (!objective.IsCompleted) objective.Complete(false);
+            }
+
+            IsCompleted = true;
+            CompletedOn = DateTime.UtcNow;
         }
 
         #endregion

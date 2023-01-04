@@ -20,4 +20,4 @@ MonoBehaviour:
   - _item: {fileID: 11400000, guid: 19bc983fa013ec4458a21e162c6ac4f9, type: 2}
     _recipient: {fileID: 11400000, guid: c3ca748cb8e8d0b4e808af479568eb88, type: 2}
     _isCompleted: 0
-    _isSuccessful: 1
+    _isSuccessful: 0

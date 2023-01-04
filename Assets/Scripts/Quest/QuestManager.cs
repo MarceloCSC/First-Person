@@ -36,6 +36,18 @@ namespace An01malia.FirstPerson.QuestModule
             return true;
         }
 
+        public void EndQuest(string questId)
+        {
+            var quest = _activeQuests.Where(quest => quest.Id == questId).FirstOrDefault();
+
+            if (quest == null) return;
+
+            quest.End();
+
+            _activeQuests.Remove(quest);
+            _completedQuests.Add(quest);
+        }
+
         #endregion
 
         #region Protected Methods

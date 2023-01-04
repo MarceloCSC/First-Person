@@ -56,6 +56,8 @@ namespace An01malia.FirstPerson.QuestModule
 
         public abstract bool Contains(ObjectiveDTO dto);
 
+        public abstract void End();
+
         #endregion
 
         #region Public Methods

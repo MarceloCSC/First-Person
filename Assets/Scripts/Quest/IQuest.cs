@@ -20,5 +20,7 @@ namespace An01malia.FirstPerson.QuestModule
         bool TryCompleteObjective(ObjectiveDTO dto);
 
         bool Contains(ObjectiveDTO dto);
+
+        void End();
     }
 }
