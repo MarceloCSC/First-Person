@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bd39a9886bfa9d41a82d5f4685cb308, type: 3}
   m_Name: Ring
   m_EditorClassIdentifier: 
-  _itemName: Golden ring
+  _name: Golden ring
   _itemType: 2
-  _uniqueID: 538b3aeb1c333c842b9843976f33948c
+  _uniqueId: 538b3aeb1c333c842b9843976f33948c
   _inGamePrefab: {fileID: 0}
   _itemToInspect: {fileID: 4764530112575922735, guid: 7ee9ab7c5f9373e4ba6c7bf2d01c66e7,
     type: 3}
   _icon: {fileID: 21300000, guid: 6f5e421f941b64041b48737c9165c062, type: 3}
-  _itemDescription: It's made of real gold.
+  _description: It must cost a fortune!
   _maxAmount: 10

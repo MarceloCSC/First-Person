@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace An01malia.FirstPerson.ItemModule
 {
-    [CreateAssetMenu(fileName = "NewItem", menuName = "Inventory/New Item")]
+    [CreateAssetMenu(fileName = "NewItem", menuName = "Items/New Item")]
     public class ItemObject : ScriptableObject
     {
         #region Fields
 
-        [SerializeField] private string _itemName;
+        [SerializeField] private string _name;
         [SerializeField] private ItemType _itemType;
 
         [Space]
@@ -18,8 +18,8 @@ namespace An01malia.FirstPerson.ItemModule
         [SerializeField] private Sprite _icon;
 
         [Space]
-        [TextArea(5, 30)]
-        [SerializeField] private string _itemDescription;
+        [TextArea(10, 30)]
+        [SerializeField] private string _description;
 
         [Space]
         [Range(1, 999)]
@@ -29,9 +29,9 @@ namespace An01malia.FirstPerson.ItemModule
 
         #region Properties
 
-        public string Name => _itemName;
+        public string Name => _name;
         public string Id => _uniqueId;
-        public string Description => _itemDescription;
+        public string Description => _description;
         public int MaxAmount => _maxAmount;
         public Sprite Icon => _icon;
         public GameObject Prefab => _inGamePrefab;

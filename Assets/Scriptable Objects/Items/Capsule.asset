@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bd39a9886bfa9d41a82d5f4685cb308, type: 3}
   m_Name: Capsule
   m_EditorClassIdentifier: 
-  _itemName: Regular Capsule
+  _name: Regular Capsule
   _itemType: 0
   _uniqueId: f645a8522d0e5144eb82b11f259a1262
   _inGamePrefab: {fileID: 8841902415351356969, guid: 9c17e442b29cf134aa3518761fe98920,
     type: 3}
   _itemToInspect: {fileID: 0}
   _icon: {fileID: 0}
-  _itemDescription: It's just a capsule.
+  _description: It's just a capsule.
   _maxAmount: 1

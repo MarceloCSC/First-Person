@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bd39a9886bfa9d41a82d5f4685cb308, type: 3}
   m_Name: Gloves
   m_EditorClassIdentifier: 
-  _itemName: Gloves
+  _name: Leather Gloves
   _itemType: 0
-  _uniqueID: 041dad495eb602448956af7a8115e3c0
+  _uniqueId: 041dad495eb602448956af7a8115e3c0
   _inGamePrefab: {fileID: 0}
   _itemToInspect: {fileID: 4764530112575922735, guid: 7ee9ab7c5f9373e4ba6c7bf2d01c66e7,
     type: 3}
   _icon: {fileID: 21300000, guid: 08df5602641de154a8de3bee29e94bed, type: 3}
-  _itemDescription: Fancy leather gloves.
+  _description: I don't think this is real leather...
   _maxAmount: 1

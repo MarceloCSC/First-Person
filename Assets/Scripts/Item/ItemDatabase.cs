@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace An01malia.FirstPerson.ItemModule
 {
-    [CreateAssetMenu(fileName = "NewItemDatabase", menuName = "Inventory/New Item Database")]
+    [CreateAssetMenu(fileName = "NewItemDatabase", menuName = "Items/New Item Database")]
     public class ItemDatabase : ScriptableObject
     {
         #region Fields

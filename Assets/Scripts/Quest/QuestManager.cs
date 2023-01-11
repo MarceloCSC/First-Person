@@ -2,12 +2,15 @@ using An01malia.FirstPerson.Core;
 using An01malia.FirstPerson.QuestModule.DTOs;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace An01malia.FirstPerson.QuestModule
 {
     public class QuestManager : ComponentSingleton<QuestManager>
     {
         #region Fields
+
+        [SerializeField] private List<QuestObject> _allQuests;
 
         private ICollection<IQuest> _activeQuests;
         private ICollection<IQuest> _completedQuests;
