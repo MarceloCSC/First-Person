@@ -1,7 +1,6 @@
 using An01malia.FirstPerson.Core;
 using An01malia.FirstPerson.InteractionModule.Environment;
 using An01malia.FirstPerson.InteractionModule.Interactive;
-using An01malia.FirstPerson.ItemModule;
 using An01malia.FirstPerson.ItemModule.Items;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using UnityEngine;
@@ -120,6 +119,11 @@ namespace An01malia.FirstPerson.PlayerModule
             if (TryHandleItem(interaction)) return;
 
             HandleInteraction(interaction);
+        }
+
+        private void OnInspectionPressed(InputAction.CallbackContext callback)
+        {
+            _context.CurrentState.TrySwitchState(ActionType.Inspect);
         }
 
         private void OnInventoryPressed(InputAction.CallbackContext callback)
@@ -259,6 +263,10 @@ namespace An01malia.FirstPerson.PlayerModule
             {
                 _rotationInputValues = _actions.UI.Rotate.ReadValue<Vector2>();
             }
+            else if (_actions.UI.Hold.WasReleasedThisFrame())
+            {
+                _rotationInputValues = Vector3.zero;
+            }
         }
 
         private void ToggleInputReading(bool isGameplayEnabled, bool isUIEnabled)
@@ -287,6 +295,7 @@ namespace An01malia.FirstPerson.PlayerModule
             _actions.Player.Run.canceled += OnRunPressed;
             _actions.Player.Crouch.performed += OnCrouchPressed;
             _actions.Player.Interact.performed += OnInteractionPressed;
+            _actions.Player.Inspect.performed += OnInspectionPressed;
             _actions.UI.Inventory.performed += OnInventoryPressed;
             _actions.Game.Pause.performed += OnPausePressed;
             _actions.Game.Escape.performed += OnEscapePressed;
@@ -301,6 +310,7 @@ namespace An01malia.FirstPerson.PlayerModule
             _actions.Player.Run.canceled -= OnRunPressed;
             _actions.Player.Crouch.performed -= OnCrouchPressed;
             _actions.Player.Interact.performed -= OnInteractionPressed;
+            _actions.Player.Inspect.performed -= OnInspectionPressed;
             _actions.UI.Inventory.performed -= OnInventoryPressed;
             _actions.Game.Pause.performed -= OnPausePressed;
             _actions.Game.Escape.performed -= OnEscapePressed;

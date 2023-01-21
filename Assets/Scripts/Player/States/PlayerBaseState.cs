@@ -48,8 +48,6 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         protected override void SwitchState(BaseState newState)
         {
-            if (newState == _context.CurrentState) return;
-
             base.SwitchState(newState);
 
             _context.SetCurrentState(newState as PlayerBaseState);

@@ -35,22 +35,22 @@ namespace An01malia.FirstPerson.PlayerModule.States
             {
                 case ActionType.None:
                     DropItem();
-                    SuperState.RemoveSubState();
+                    RemoveState();
                     return true;
 
                 case ActionType.Push:
                     DropItem();
-                    SuperState.RemoveSubState();
+                    RemoveState();
                     return true;
 
                 case ActionType.Climb:
                     DropItem();
-                    SuperState.RemoveSubState();
+                    RemoveState();
                     return true;
 
                 case ActionType.Carry:
                     DropItem();
-                    SuperState.RemoveSubState();
+                    RemoveState();
                     return true;
 
                 case ActionType.Interact when dto is ItemSpotActionDTO actionDto:
@@ -85,7 +85,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
             if (!itemSpot.TryPlaceItem(StateData.Transform)) return false;
 
-            SuperState.RemoveSubState();
+            RemoveState();
 
             return true;
         }

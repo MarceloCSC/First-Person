@@ -63,7 +63,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
             if (Controller.isGrounded) return;
 
-            SwitchState(StateMachine.Fall());
+            SwapState(StateMachine.Fall());
         }
 
         public override bool TrySwitchState(ActionType action, ActionDTO dto = null)
@@ -73,7 +73,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
             switch (action)
             {
                 case ActionType.None:
-                    SwitchState(StateMachine.Idle());
+                    SwapState(StateMachine.Idle());
                     return true;
 
                 case ActionType.Run:
@@ -81,7 +81,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     return false;
 
                 case ActionType.Push when (dto as TransformActionDTO).Transform == _data.Transform:
-                    SwitchState(StateMachine.Idle());
+                    SwapState(StateMachine.Idle());
                     return true;
 
                 default:

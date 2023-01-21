@@ -17,7 +17,8 @@ MonoBehaviour:
   _uniqueId: f645a8522d0e5144eb82b11f259a1262
   _inGamePrefab: {fileID: 8841902415351356969, guid: 9c17e442b29cf134aa3518761fe98920,
     type: 3}
-  _itemToInspect: {fileID: 0}
+  _itemToInspect: {fileID: 4764530112575922735, guid: 7ee9ab7c5f9373e4ba6c7bf2d01c66e7,
+    type: 3}
   _icon: {fileID: 0}
   _description: It's just a capsule.
   _maxAmount: 1

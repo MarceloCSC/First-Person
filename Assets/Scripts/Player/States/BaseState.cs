@@ -1,5 +1,6 @@
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
+using System;
 using UnityEngine;
 
 namespace An01malia.FirstPerson.PlayerModule.States
@@ -33,7 +34,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         #region Public Methods
 
-        public void UpdateStates()
+        public virtual void UpdateStates()
         {
             UpdateState();
 
@@ -49,11 +50,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
             return SubState.TrySwitchState(action, dto);
         }
 
-        public void RemoveSubState()
-        {
-            SubState.SuperState = null;
-            SwitchState(this, null);
-        }
+        public PlayerActionDTO GetData() => StateData.GetData();
 
         #endregion
 
@@ -61,46 +58,70 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         protected virtual void SwitchState(BaseState newState)
         {
-            if (SubState)
-            {
-                newState.SetSubState(SubState);
-                SubState = null;
-            }
-
             var actionDto = ExitState();
 
             newState.EnterState(actionDto);
         }
 
-        protected void SwitchState(BaseState newState, BaseState newSubState)
+        protected void SwapState(BaseState newState)
         {
+            if (newState == null) throw new NullReferenceException("BaseState 'newState' cannot be null.");
+
+            if (newState == this) return;
+
+            if (SubState)
+            {
+                newState.SubState = SubState;
+                SubState.SuperState = newState;
+                SubState = null;
+            }
+
             SwitchState(newState);
-            SetSubState(newSubState);
         }
 
-        protected void SetSubState(BaseState newSubState)
+        protected void PushState(BaseState newState)
         {
-            if (SubState && SubState != newSubState)
+            if (newState == null) throw new NullReferenceException("BaseState 'newState' cannot be null.");
+
+            newState.SubState = this;
+            SuperState = newState;
+
+            SwitchState(newState);
+        }
+
+        protected void PopState()
+        {
+            if (!SubState) return;
+
+            SwitchState(SubState);
+
+            SubState.SuperState = null;
+            SubState = null;
+        }
+
+        protected void AppendState(BaseState newState)
+        {
+            if (newState == null) throw new NullReferenceException("BaseState 'newState' cannot be null.");
+
+            if (SubState)
             {
                 SubState.ExitState();
                 SubState.SuperState = null;
             }
 
-            SubState = newSubState;
+            SubState = newState;
+            SubState.SuperState = this;
 
-            if (!newSubState) return;
-
-            if (!SubState.SuperState)
-            {
-                SubState.EnterState(StateData.GetData());
-            }
-
-            SubState.SetSuperState(this);
+            SubState.EnterState(StateData.GetData());
         }
 
-        protected void SetSuperState(BaseState newSuperState)
+        protected void RemoveState()
         {
-            SuperState = newSuperState;
+            if (!SuperState) return;
+
+            ExitState();
+            SuperState.SubState = null;
+            SuperState = null;
         }
 
         #endregion

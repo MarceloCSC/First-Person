@@ -24,9 +24,11 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         public override PlayerActionDTO ExitState()
         {
-            StateData = new PlayerStateData();
-
             return StateData.GetData();
+        }
+
+        public override void UpdateStates()
+        {
         }
 
         public override void UpdateState()
@@ -43,8 +45,6 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         public override bool TrySwitchState(ActionType action, ActionDTO dto = null)
         {
-            if (base.TrySwitchState(action, dto)) return false;
-
             switch (action)
             {
                 case ActionType.Jump:
@@ -78,7 +78,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
             if (!DialogueManager.Instance.CanQuitDialogue) return false;
 
-            SwitchState(StateMachine.Idle());
+            PopState();
 
             return true;
         }

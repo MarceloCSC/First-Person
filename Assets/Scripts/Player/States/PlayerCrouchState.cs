@@ -1,3 +1,4 @@
+using An01malia.FirstPerson.ItemModule.Items;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using System.Collections;
@@ -11,7 +12,9 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         [SerializeField] private float _speed = 5.0f;
         [SerializeField] private float _gravityPull = 10.0f;
+        [SerializeField] private float _standingHeight = 2.0f;
         [SerializeField] private float _crouchingHeight = 1.0f;
+        [SerializeField] private float _sightStandingHeight = 1.8f;
         [SerializeField] private float _distanceToCeiling = 1.0f;
         [SerializeField] private float _interpolationRatio = 0.2f;
         [SerializeField] private float _smoothTime = 0.12f;
@@ -24,12 +27,16 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         public override void EnterState(PlayerActionDTO dto)
         {
-            StateData = new CrouchStateData(Controller.height, Player.SightPosition, dto)
+            StateData = new CrouchStateData(new Vector3(0.0f, _sightStandingHeight), dto)
             {
                 Speed = _speed,
+                IsCrouching = true
             };
 
             _data = StateData as CrouchStateData;
+
+            if (dto.IsCrouching) return;
+
             _data.Coroutine = StartCoroutine(TranslateHeight(_crouchingHeight,
                                                              GetTargetCenter(),
                                                              new Vector3(0.0f, _crouchingHeight)));
@@ -52,7 +59,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
             if (Controller.isGrounded) return;
 
-            StandUp(StateMachine.Fall(), true);
+            StandUpBeforeSwap(StateMachine.Fall(), true);
         }
 
         public override bool TrySwitchState(ActionType action, ActionDTO dto = null)
@@ -62,7 +69,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
             switch (action)
             {
                 case ActionType.Run when CanStandUp() && (dto as RunActionDTO).IsRunPressed:
-                    StandUp(StateMachine.Run());
+                    StandUpBeforeSwap(StateMachine.Run());
                     return true;
 
                 case ActionType.Run:
@@ -70,44 +77,50 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     return false;
 
                 case ActionType.Crouch when CanStandUp():
-                    StandUp(StateMachine.Idle());
+                    StandUpBeforeSwap(StateMachine.Idle());
                     return true;
 
                 case ActionType.Jump when CanStandUp():
-                    StandUp(StateMachine.Idle());
+                    StandUpBeforeSwap(StateMachine.Idle());
                     return true;
 
                 case ActionType.GrabLedge when CanStandUp():
-                    StandUp(StateMachine.GrabLedge());
+                    StandUpBeforeSwap(StateMachine.GrabLedge());
                     return true;
 
                 case ActionType.Push when CanStandUp():
                     StateData.SetData(dto);
-                    StandUp(StateMachine.Push());
+                    StandUpBeforeSwap(StateMachine.Push());
                     return true;
 
                 case ActionType.Climb when CanStandUp():
                     StateData.SetData(dto);
-                    StandUp(StateMachine.Climb());
+                    StandUpBeforeSwap(StateMachine.Climb());
                     return true;
 
                 case ActionType.Carry:
                     StateData.SetData(dto);
-                    SwitchState(this, StateMachine.Carry());
+                    AppendState(StateMachine.Carry());
                     return true;
 
-                case ActionType.Inspect:
+                case ActionType.Inspect when dto is TransformActionDTO:
                     StateData.SetData(dto);
-                    SwitchState(StateMachine.Inspect());
+                    PushState(StateMachine.Inspect());
+                    return true;
+
+                case ActionType.Inspect when SubState is PlayerCarryState &&
+                                             SubState.GetData().Transform.TryGetComponent(out ItemToInspect _):
+                    StateData.SetData(GetData());
+                    PushState(StateMachine.Inspect());
                     return true;
 
                 case ActionType.Inventory when dto is TransformActionDTO:
                     StateData.SetData(dto);
-                    SwitchState(StateMachine.Inventory());
+                    PushState(StateMachine.Inventory());
                     return true;
 
                 case ActionType.Inventory:
-                    SwitchState(StateMachine.Inventory());
+                    PushState(StateMachine.Inventory());
                     return true;
 
                 case ActionType.Interact when dto is InteractiveActionDTO actionDto:
@@ -118,12 +131,12 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     if (!actionDto.ItemSpot.Item || actionDto.ItemSpot.IsItemLocked) return false;
 
                     StateData.SetData(new TransformActionDTO(actionDto.ItemSpot.Item));
-                    SwitchState(this, StateMachine.Carry());
+                    AppendState(StateMachine.Carry());
                     return true;
 
                 case ActionType.Dialogue:
                     StateData.SetData(dto);
-                    SwitchState(StateMachine.Dialogue());
+                    PushState(StateMachine.Dialogue());
                     return true;
 
                 default:
@@ -154,21 +167,24 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         private bool CanStandUp() => !Physics.Raycast(Player.Transform.position, Player.Transform.up, _distanceToCeiling);
 
-        private void StandUp(PlayerBaseState newState, bool skipTransition = false)
+        private void StandUpBeforeSwap(PlayerBaseState newState, bool skipTransition = false)
         {
             if (_data.Coroutine != null) StopCoroutine(_data.Coroutine);
 
+            _data.IsCrouching = false;
+
             if (skipTransition)
             {
-                SetFinalPosition(_data.StandingHeight, Vector3.zero, _data.InitialPosition);
-                SwitchState(newState);
+                SetFinalPosition(_standingHeight, Vector3.zero, _data.SightPosition);
+
+                SwapState(newState);
 
                 return;
             }
 
-            _data.Coroutine = StartCoroutine(TranslateHeight(_data.StandingHeight,
+            _data.Coroutine = StartCoroutine(TranslateHeight(_standingHeight,
                                                              Vector3.zero,
-                                                             _data.InitialPosition,
+                                                             _data.SightPosition,
                                                              newState));
         }
 
@@ -211,7 +227,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
             yield return TranslateHeight(targetHeight, targetCenter, targetPosition);
 
-            SwitchState(newState);
+            SwapState(newState);
         }
 
         private bool IsFarFromTarget(float targetHeight, float targetYPosition)

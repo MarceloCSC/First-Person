@@ -37,7 +37,7 @@ namespace An01malia.FirstPerson.PlayerModule
         private void Start()
         {
             CurrentState = _stateMachine.Idle();
-            CurrentState.EnterState(new PlayerActionDTO(0.0f, false, Vector3.zero));
+            CurrentState.EnterState(new PlayerActionDTO(0.0f, false, false, Vector3.zero));
         }
 
         private void Update()

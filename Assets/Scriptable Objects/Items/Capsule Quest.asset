@@ -17,7 +17,8 @@ MonoBehaviour:
   _uniqueId: 19bc983fa013ec4458a21e162c6ac4f9
   _inGamePrefab: {fileID: 8841902415351356969, guid: 9c17e442b29cf134aa3518761fe98920,
     type: 3}
-  _itemToInspect: {fileID: 0}
+  _itemToInspect: {fileID: 4764530112575922735, guid: 7ee9ab7c5f9373e4ba6c7bf2d01c66e7,
+    type: 3}
   _icon: {fileID: 0}
   _description: Capsule obtained in a quest.
   _maxAmount: 1

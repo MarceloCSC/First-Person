@@ -47,7 +47,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
             if (_data.IsGrabbing) return;
 
-            SwitchState(StateMachine.Idle());
+            SwapState(StateMachine.Idle());
         }
 
         public override bool TrySwitchState(ActionType action, ActionDTO dto = null)

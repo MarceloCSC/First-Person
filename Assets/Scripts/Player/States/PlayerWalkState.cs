@@ -1,3 +1,4 @@
+using An01malia.FirstPerson.ItemModule.Items;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using UnityEngine;
@@ -42,13 +43,13 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
             if (!Controller.isGrounded)
             {
-                SwitchState(StateMachine.Fall());
+                SwapState(StateMachine.Fall());
                 return;
             }
 
             if (HasNoInput())
             {
-                SwitchState(StateMachine.Idle());
+                SwapState(StateMachine.Idle());
             }
         }
 
@@ -59,48 +60,54 @@ namespace An01malia.FirstPerson.PlayerModule.States
             switch (action)
             {
                 case ActionType.Run when (dto as RunActionDTO).IsRunPressed:
-                    SwitchState(StateMachine.Run());
+                    SwapState(StateMachine.Run());
                     return true;
 
                 case ActionType.Crouch:
-                    SwitchState(StateMachine.Crouch());
+                    SwapState(StateMachine.Crouch());
                     return true;
 
                 case ActionType.Jump:
-                    SwitchState(StateMachine.Jump());
+                    SwapState(StateMachine.Jump());
                     return true;
 
                 case ActionType.GrabLedge:
-                    SwitchState(StateMachine.GrabLedge());
+                    SwapState(StateMachine.GrabLedge());
                     return true;
 
                 case ActionType.Push:
                     StateData.SetData(dto);
-                    SwitchState(StateMachine.Push());
+                    SwapState(StateMachine.Push());
                     return true;
 
                 case ActionType.Climb:
                     StateData.SetData(dto);
-                    SwitchState(StateMachine.Climb());
+                    SwapState(StateMachine.Climb());
                     return true;
 
                 case ActionType.Carry:
                     StateData.SetData(dto);
-                    SwitchState(this, StateMachine.Carry());
+                    AppendState(StateMachine.Carry());
                     return true;
 
-                case ActionType.Inspect:
+                case ActionType.Inspect when dto is TransformActionDTO:
                     StateData.SetData(dto);
-                    SwitchState(StateMachine.Inspect());
+                    PushState(StateMachine.Inspect());
+                    return true;
+
+                case ActionType.Inspect when SubState is PlayerCarryState &&
+                                             SubState.GetData().Transform.TryGetComponent(out ItemToInspect _):
+                    StateData.SetData(GetData());
+                    PushState(StateMachine.Inspect());
                     return true;
 
                 case ActionType.Inventory when dto is TransformActionDTO:
                     StateData.SetData(dto);
-                    SwitchState(StateMachine.Inventory());
+                    PushState(StateMachine.Inventory());
                     return true;
 
                 case ActionType.Inventory:
-                    SwitchState(StateMachine.Inventory());
+                    PushState(StateMachine.Inventory());
                     return true;
 
                 case ActionType.Interact when dto is InteractiveActionDTO actionDto:
@@ -111,12 +118,12 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     if (!actionDto.ItemSpot.Item || actionDto.ItemSpot.IsItemLocked) return false;
 
                     StateData.SetData(new TransformActionDTO(actionDto.ItemSpot.Item));
-                    SwitchState(this, StateMachine.Carry());
+                    AppendState(StateMachine.Carry());
                     return true;
 
                 case ActionType.Dialogue:
                     StateData.SetData(dto);
-                    SwitchState(StateMachine.Dialogue());
+                    PushState(StateMachine.Dialogue());
                     return true;
 
                 default:

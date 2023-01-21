@@ -7,18 +7,16 @@ namespace An01malia.FirstPerson.PlayerModule.States.Data
     {
         #region Properties
 
-        public float StandingHeight { get; set; }
-        public Vector3 InitialPosition { get; set; }
+        public Vector3 SightPosition { get; set; }
         public Coroutine Coroutine { get; set; }
 
         #endregion
 
         #region Constructor
 
-        public CrouchStateData(float height, Vector3 initialPosition, PlayerActionDTO dto) : base(dto)
+        public CrouchStateData(Vector3 sightPosition, PlayerActionDTO dto) : base(dto)
         {
-            StandingHeight = height;
-            InitialPosition = initialPosition;
+            SightPosition = sightPosition;
         }
 
         #endregion

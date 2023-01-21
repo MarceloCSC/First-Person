@@ -53,13 +53,13 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
             if (Controller.isGrounded)
             {
-                SwitchState(StateMachine.Idle());
+                SwapState(StateMachine.Idle());
                 return;
             }
 
             if (HasNoSurfaceToClimb())
             {
-                SwitchState(StateMachine.Fall());
+                SwapState(StateMachine.Fall());
             }
         }
 
@@ -74,11 +74,11 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     return false;
 
                 case ActionType.GrabLedge:
-                    SwitchState(StateMachine.GrabLedge());
+                    SwapState(StateMachine.GrabLedge());
                     return true;
 
                 case ActionType.Climb:
-                    SwitchState(StateMachine.Fall());
+                    SwapState(StateMachine.Fall());
                     return true;
 
                 default:

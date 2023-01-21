@@ -51,30 +51,30 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
             if (IsFalling())
             {
-                SwitchState(StateMachine.Fall());
+                SwapState(StateMachine.Fall());
                 return;
             }
 
             if (HitTheCeiling())
             {
-                SwitchState(StateMachine.Fall());
+                SwapState(StateMachine.Fall());
             }
 
             if (!Controller.isGrounded) return;
 
             if (HasNoInput())
             {
-                SwitchState(StateMachine.Idle());
+                SwapState(StateMachine.Idle());
                 return;
             }
 
             if (StateData.IsRunPressed)
             {
-                SwitchState(StateMachine.Run());
+                SwapState(StateMachine.Run());
                 return;
             }
 
-            SwitchState(StateMachine.Walk());
+            SwapState(StateMachine.Walk());
             return;
         }
 
@@ -89,11 +89,11 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     return false;
 
                 case ActionType.Jump when _data.JumpsRemaining > 0:
-                    SwitchState(StateMachine.Jump());
+                    SwapState(StateMachine.Jump());
                     return true;
 
                 case ActionType.GrabLedge:
-                    SwitchState(StateMachine.GrabLedge());
+                    SwapState(StateMachine.GrabLedge());
                     return true;
 
                 default:
