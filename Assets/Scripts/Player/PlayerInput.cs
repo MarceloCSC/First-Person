@@ -179,12 +179,16 @@ namespace An01malia.FirstPerson.PlayerModule
 
             switch (item)
             {
+                case ItemToPickUp:
+                    // HANDLE PICKING UP
+                    break;
+
                 case ItemToCarry:
                     _context.CurrentState.TrySwitchState(ActionType.Carry, new TransformActionDTO(interaction));
                     break;
 
-                case ItemToPickUp:
-                    // HANDLE PICKING UP
+                case ItemToInspect when interaction.TryGetComponent(out ItemToCarry _):
+                    _context.CurrentState.TrySwitchState(ActionType.Carry, new TransformActionDTO(interaction));
                     break;
 
                 case ItemToInspect:

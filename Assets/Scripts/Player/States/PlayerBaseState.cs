@@ -14,18 +14,8 @@ namespace An01malia.FirstPerson.PlayerModule.States
         private float _xAxisRotation;
 
         protected CharacterController Controller;
-        protected PlayerStateMachine StateMachine;
 
         private PlayerController _context;
-
-        #endregion
-
-        #region Unity Methods
-
-        private void Awake()
-        {
-            SetReferences();
-        }
 
         #endregion
 
@@ -71,15 +61,11 @@ namespace An01malia.FirstPerson.PlayerModule.States
             }
         }
 
-        #endregion
-
-        #region Private Methods
-
-        private void SetReferences()
+        protected override void SetReferences()
         {
-            Controller = GetComponentInParent<CharacterController>();
-            StateMachine = GetComponent<PlayerStateMachine>();
+            base.SetReferences();
 
+            Controller = GetComponentInParent<CharacterController>();
             _context = GetComponentInParent<PlayerController>();
         }
 

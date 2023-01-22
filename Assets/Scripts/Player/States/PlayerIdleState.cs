@@ -89,12 +89,6 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     PushState(StateMachine.Inspect());
                     return true;
 
-                case ActionType.Inspect when SubState is PlayerCarryState &&
-                                             SubState.GetData().Transform.TryGetComponent(out ItemToInspect _):
-                    StateData.SetData(GetData());
-                    PushState(StateMachine.Inspect());
-                    return true;
-
                 case ActionType.Inventory when dto is TransformActionDTO:
                     StateData.SetData(dto);
                     PushState(StateMachine.Inventory());

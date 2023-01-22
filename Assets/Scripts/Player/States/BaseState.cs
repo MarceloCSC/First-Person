@@ -12,6 +12,17 @@ namespace An01malia.FirstPerson.PlayerModule.States
         protected BaseState SuperState;
         protected BaseState SubState;
 
+        protected PlayerStateMachine StateMachine;
+
+        #endregion
+
+        #region Unity Methods
+
+        private void Awake()
+        {
+            SetReferences();
+        }
+
         #endregion
 
         #region Properties
@@ -50,7 +61,12 @@ namespace An01malia.FirstPerson.PlayerModule.States
             return SubState.TrySwitchState(action, dto);
         }
 
-        public PlayerActionDTO GetData() => StateData.GetData();
+        public void PushState(BaseState newState, ActionDTO dto)
+        {
+            StateData.SetData(dto);
+
+            PushState(newState);
+        }
 
         #endregion
 
@@ -122,6 +138,11 @@ namespace An01malia.FirstPerson.PlayerModule.States
             ExitState();
             SuperState.SubState = null;
             SuperState = null;
+        }
+
+        protected virtual void SetReferences()
+        {
+            StateMachine = GetComponent<PlayerStateMachine>();
         }
 
         #endregion

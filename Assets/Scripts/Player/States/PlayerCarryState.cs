@@ -53,6 +53,10 @@ namespace An01malia.FirstPerson.PlayerModule.States
                     RemoveState();
                     return true;
 
+                case ActionType.Inspect when StateData.Transform.TryGetComponent(out ItemToInspect _):
+                    SuperState.PushState(StateMachine.Inspect(), new TransformActionDTO(StateData.Transform));
+                    return true;
+
                 case ActionType.Interact when dto is ItemSpotActionDTO actionDto:
                     return TryPlaceItem(actionDto.ItemSpot);
 

@@ -1,6 +1,4 @@
 using An01malia.FirstPerson.Core;
-using An01malia.FirstPerson.ItemModule;
-using An01malia.FirstPerson.ItemModule.Items;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using An01malia.FirstPerson.UserInterfaceModule;
@@ -18,9 +16,9 @@ namespace An01malia.FirstPerson.PlayerModule.States
         [SerializeField] private float _zoomSpeed = 1000.0f;
         [SerializeField] private float _rotationSpeed = 5.0f;
 
-        public static GameObject Panel;
+        private InspectStateData _data;
 
-        private GameObject _item;
+        public static GameObject Panel;
 
         #endregion
 
@@ -28,18 +26,19 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         public override void EnterState(PlayerActionDTO dto)
         {
-            StateData = new PlayerStateData(dto);
+            StateData = new InspectStateData(dto);
+
+            _data = StateData as InspectStateData;
 
             ActivateUI();
             SetItemToInspect();
-            ToggleInGameItem(false);
         }
 
         public override PlayerActionDTO ExitState()
         {
             DeactivateUI();
-            RemoveItemToInspect();
-            ToggleInGameItem(true);
+
+            if (_data.ItemToInspect) _data.ItemToInspect.FinishInspection();
 
             return StateData.GetData();
         }
@@ -85,8 +84,8 @@ namespace An01malia.FirstPerson.PlayerModule.States
             float inputX = PlayerInput.RotationInputValues.x * _rotationSpeed;
             float inputY = PlayerInput.RotationInputValues.y * _rotationSpeed;
 
-            _item.transform.Rotate(Vector3.back, -inputY, Space.World);
-            _item.transform.Rotate(Vector3.up, -inputX, Space.World);
+            _data.Prefab.transform.Rotate(Vector3.back, -inputY, Space.World);
+            _data.Prefab.transform.Rotate(Vector3.up, -inputX, Space.World);
         }
 
         private void HandleZoom()
@@ -128,24 +127,11 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         private void SetItemToInspect()
         {
-            if (TrySetItem())
-            {
-                _item.SetActive(true);
-                _item.transform.position = Player.InspectionItemPlacement.position;
-                _item.transform.LookAt(Player.InspectionCamera.transform);
-            }
+            if (!StateData.Transform.TryGetComponent(out _data.ItemToInspect)) return;
+
+            _data.Prefab = _data.ItemToInspect.GetItemPrefab();
+            _data.ItemToInspect.PrepareInspection();
         }
-
-        private void RemoveItemToInspect()
-        {
-            _item.SetActive(false);
-            _item = null;
-        }
-
-        private bool TrySetItem() => StateData.Transform.TryGetComponent(out ItemToInspect item) &&
-                                        ItemPooler.Instance.ItemsToExamine.TryGetValue(item.Root.Id, out _item);
-
-        private void ToggleInGameItem(bool isActive) => StateData.Transform.gameObject.SetActive(isActive);
 
         #endregion
     }

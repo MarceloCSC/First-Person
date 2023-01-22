@@ -1,4 +1,3 @@
-using An01malia.FirstPerson.ItemModule.Items;
 using An01malia.FirstPerson.PlayerModule.States.Data;
 using An01malia.FirstPerson.PlayerModule.States.DTOs;
 using UnityEngine;
@@ -89,12 +88,6 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
                 case ActionType.Inspect when dto is TransformActionDTO:
                     StateData.SetData(dto);
-                    PushState(StateMachine.Inspect());
-                    return true;
-
-                case ActionType.Inspect when SubState is PlayerCarryState &&
-                                             SubState.GetData().Transform.TryGetComponent(out ItemToInspect _):
-                    StateData.SetData(GetData());
                     PushState(StateMachine.Inspect());
                     return true;
 
