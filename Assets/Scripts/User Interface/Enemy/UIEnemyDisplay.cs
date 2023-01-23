@@ -32,7 +32,7 @@ namespace An01malia.FirstPerson.UserInterfaceModule.Enemy
 
         private void LateUpdate()
         {
-            transform.forward = Player.Camera.forward;
+            transform.forward = Player.Sight.forward;
         }
 
         private void OnDisable()

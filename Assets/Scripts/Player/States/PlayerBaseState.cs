@@ -26,7 +26,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
             _mouseX = PlayerInput.ViewInputValues.x * GameOptions.MouseSensitivity * Time.deltaTime;
             _mouseY = PlayerInput.ViewInputValues.y * GameOptions.MouseSensitivity * Time.deltaTime;
 
-            Player.Camera.Rotate(Vector3.left * _mouseY);
+            Player.Sight.Rotate(Vector3.left * _mouseY);
             Player.Transform.Rotate(Vector3.up * _mouseX);
 
             ClampViewAngle();
@@ -51,13 +51,13 @@ namespace An01malia.FirstPerson.PlayerModule.States
             {
                 _xAxisRotation = _maxVerticalAngle;
                 _mouseY = 0.0f;
-                Player.Camera.ClampRotation(-_maxVerticalAngle);
+                Player.Sight.ClampRotation(-_maxVerticalAngle);
             }
             else if (_xAxisRotation < _minVerticalAngle)
             {
                 _xAxisRotation = _minVerticalAngle;
                 _mouseY = 0.0f;
-                Player.Camera.ClampRotation(-_minVerticalAngle);
+                Player.Sight.ClampRotation(-_minVerticalAngle);
             }
         }
 

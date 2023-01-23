@@ -128,8 +128,8 @@ namespace An01malia.FirstPerson.PlayerModule
 
         private bool CanExamine(out RaycastHit hit)
         {
-            return Physics.Raycast(Player.Camera.position,
-                                   Player.Camera.forward,
+            return Physics.Raycast(Player.Sight.position,
+                                   Player.Sight.forward,
                                    out hit,
                                    _distanceToExamine,
                                    _layersToExamine,

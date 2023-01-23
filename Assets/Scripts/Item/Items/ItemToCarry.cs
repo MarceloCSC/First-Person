@@ -1,4 +1,5 @@
-﻿using An01malia.FirstPerson.PlayerModule;
+﻿using An01malia.FirstPerson.Core;
+using An01malia.FirstPerson.PlayerModule;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -41,6 +42,8 @@ namespace An01malia.FirstPerson.ItemModule.Items
             transform.localPosition = Vector3.zero;
             transform.eulerAngles = Vector3.zero;
 
+            gameObject.layer = LayerMask.NameToLayer(Layer.ToCarry);
+
             OnCarrying();
         }
 
@@ -49,6 +52,8 @@ namespace An01malia.FirstPerson.ItemModule.Items
             transform.GetComponent<Rigidbody>().isKinematic = false;
             transform.GetComponent<Collider>().enabled = true;
             transform.parent = null;
+
+            gameObject.layer = LayerMask.NameToLayer(Layer.Item);
 
             if (_coroutine != null) StopCoroutine(_coroutine);
 

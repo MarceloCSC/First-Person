@@ -16,9 +16,9 @@ namespace An01malia.FirstPerson.PlayerModule.States
         [SerializeField] private float _zoomSpeed = 1000.0f;
         [SerializeField] private float _rotationSpeed = 5.0f;
 
-        private InspectStateData _data;
-
         public static GameObject Panel;
+
+        private InspectStateData _data;
 
         #endregion
 
@@ -92,14 +92,14 @@ namespace An01malia.FirstPerson.PlayerModule.States
         {
             if (PlayerInput.ZoomInputValues.y > 0)
             {
-                Player.InspectionCamera.fieldOfView -= _zoomSpeed * Time.deltaTime;
+                Player.FirstPersonCamera.fieldOfView -= _zoomSpeed * Time.deltaTime;
             }
             else if (PlayerInput.ZoomInputValues.y < 0)
             {
-                Player.InspectionCamera.fieldOfView += _zoomSpeed * Time.deltaTime;
+                Player.FirstPersonCamera.fieldOfView += _zoomSpeed * Time.deltaTime;
             }
 
-            Player.InspectionCamera.fieldOfView = Mathf.Clamp(Player.InspectionCamera.fieldOfView, _minZoom, _maxZoom);
+            Player.FirstPersonCamera.fieldOfView = Mathf.Clamp(Player.FirstPersonCamera.fieldOfView, _minZoom, _maxZoom);
         }
 
         private void ActivateUI()
@@ -109,10 +109,8 @@ namespace An01malia.FirstPerson.PlayerModule.States
             UIPanelManager.CloseOpenPanels();
             UIPanelManager.ToggleUIPanel(Panel);
 
-            Player.InspectionCamera.gameObject.SetActive(true);
-            Player.InspectionCamera.transform.SetPositionAndRotation(Player.Camera.position, Player.Camera.rotation);
             Player.InspectionLightSource.SetActive(true);
-            Player.InspectionCamera.fieldOfView = _initialFOV;
+            Player.FirstPersonCamera.fieldOfView = _initialFOV;
         }
 
         private void DeactivateUI()
@@ -121,8 +119,8 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
             UIPanelManager.ToggleUIPanel(Panel);
 
-            Player.InspectionCamera.gameObject.SetActive(false);
             Player.InspectionLightSource.SetActive(false);
+            Player.FirstPersonCamera.fieldOfView = _initialFOV;
         }
 
         private void SetItemToInspect()

@@ -7,11 +7,10 @@ namespace An01malia.FirstPerson.PlayerModule
         #region Fields
 
         [SerializeField] private Camera _firstPersonCamera;
-        [SerializeField] private Camera _inspectionCamera;
         [SerializeField] private Transform _playerSight;
         [SerializeField] private Transform _playerHand;
         [SerializeField] private Transform _leaningAxis;
-        [SerializeField] private Transform _itemPlacement;
+        [SerializeField] private Transform _inspectionSpot;
         [SerializeField] private GameObject _lightSource;
 
         #endregion
@@ -19,12 +18,11 @@ namespace An01malia.FirstPerson.PlayerModule
         #region Properties
 
         public static Transform Transform { get; private set; }
-        public static Transform Camera { get; private set; }
         public static Transform Sight { get; private set; }
         public static Transform Hand { get; private set; }
         public static Vector3 SightPosition { get; private set; }
-        public static Camera InspectionCamera { get; private set; }
-        public static Transform InspectionItemPlacement { get; private set; }
+        public static Camera FirstPersonCamera { get; private set; }
+        public static Transform InspectionSpot { get; private set; }
         public static GameObject InspectionLightSource { get; private set; }
 
         #endregion
@@ -34,12 +32,11 @@ namespace An01malia.FirstPerson.PlayerModule
         private void Awake()
         {
             Transform = transform;
-            Camera = _firstPersonCamera.transform;
             Sight = _playerSight;
             Hand = _playerHand;
             SightPosition = _playerSight.localPosition;
-            InspectionCamera = _inspectionCamera;
-            InspectionItemPlacement = _itemPlacement;
+            FirstPersonCamera = _firstPersonCamera;
+            InspectionSpot = _inspectionSpot;
             InspectionLightSource = _lightSource;
         }
 

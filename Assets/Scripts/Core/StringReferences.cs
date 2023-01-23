@@ -10,6 +10,7 @@
         public const string Player = "Player";
         public const string Enemy = "Enemy";
         public const string Item = "Item";
+        public const string ToCarry = "To Carry";
         public const string ToInspect = "To Inspect";
         public const string ToInteract = "To Interact";
         public const string ToClimb = "To Climb";

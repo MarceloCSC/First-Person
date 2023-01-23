@@ -95,7 +95,7 @@ namespace An01malia.FirstPerson.PlayerModule
         private void OnRunPressed(InputAction.CallbackContext callback)
         {
             _context.CurrentState.TrySwitchState(ActionType.Run,
-                                                     new RunActionDTO(callback.phase == InputActionPhase.Performed));
+                                                 new RunActionDTO(callback.phase == InputActionPhase.Performed));
         }
 
         private void OnCrouchPressed(InputAction.CallbackContext callback)
