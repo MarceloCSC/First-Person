@@ -84,8 +84,11 @@ namespace An01malia.FirstPerson.PlayerModule.States
             float inputX = PlayerInput.RotationInputValues.x * _rotationSpeed;
             float inputY = PlayerInput.RotationInputValues.y * _rotationSpeed;
 
-            _data.Prefab.transform.Rotate(Vector3.back, -inputY, Space.World);
-            _data.Prefab.transform.Rotate(Vector3.up, -inputX, Space.World);
+            Quaternion rotation = Quaternion.AngleAxis(-inputX, Vector3.up) *
+                                  Quaternion.AngleAxis(inputY, Vector3.right) *
+                                  _data.Prefab.transform.rotation;
+
+            _data.Prefab.transform.SetPositionAndRotation(_data.Prefab.transform.position, rotation);
         }
 
         private void HandleZoom()

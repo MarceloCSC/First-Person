@@ -9,7 +9,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
         #region Fields
 
         [SerializeField] private float _speed = 10.0f;
-        [SerializeField] private float _acceleration = 0.0f;
+        [SerializeField] private float _acceleration = 2.0f;
         [SerializeField] private float _gravityPull = 10.0f;
 
         #endregion
@@ -21,7 +21,6 @@ namespace An01malia.FirstPerson.PlayerModule.States
             StateData = new PlayerStateData(dto)
             {
                 IsRunPressed = false,
-                Speed = _speed
             };
         }
 
@@ -34,6 +33,7 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         public override void UpdateState()
         {
+            SetSpeed();
             HandleMovement();
             CheckSwitchState();
         }
@@ -135,6 +135,11 @@ namespace An01malia.FirstPerson.PlayerModule.States
             movementVector = movementVector * StateData.Speed + _gravityPull * Vector3.down;
 
             Controller.Move(movementVector * Time.fixedDeltaTime);
+        }
+
+        private void SetSpeed()
+        {
+            StateData.Speed = Mathf.Lerp(StateData.Speed, _speed, Time.fixedDeltaTime * _acceleration);
         }
 
         private Vector3 HandleInput()

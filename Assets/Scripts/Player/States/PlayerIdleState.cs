@@ -17,7 +17,10 @@ namespace An01malia.FirstPerson.PlayerModule.States
 
         public override void EnterState(PlayerActionDTO dto)
         {
-            StateData = new PlayerStateData(dto);
+            StateData = new PlayerStateData(dto)
+            {
+                Speed = 0.0f
+            };
         }
 
         public override PlayerActionDTO ExitState() => StateData.GetData();
